@@ -19,6 +19,50 @@ function updateAuthVisibility() {
   }
 }
 
+// =================== GLOBAL CART TOGGLE ===================
+// Navigate to cart page - available on all pages
+function toggleCart() {
+  window.location.href = 'cart.html';
+}
+
+// =================== CART UTILITY FUNCTIONS ===================
+// Get current user ID
+function getCurrentUserId() {
+  return localStorage.getItem('userId') || 'guest';
+}
+
+// Get all cart items from localStorage
+function getAllCartItems() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  let changed = false;
+  for (const item of cart) {
+    if (!item.cartItemId) {
+      item.cartItemId = 'ci_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      changed = true;
+    }
+  }
+  if (changed) localStorage.setItem('cart', JSON.stringify(cart));
+  return cart;
+}
+
+// Get user's cart items
+function getUserCartItems() {
+  const uid = getCurrentUserId();
+  const all = getAllCartItems();
+  if (uid === 'guest') {
+    return all.filter(i => !i.userId || i.userId === 'guest');
+  }
+  return all.filter(i => i.userId === uid);
+}
+
+// Update cart badge count
+function updateCartBadge() {
+  const cart = getUserCartItems();
+  const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const badge = document.getElementById('cartBadge');
+  if (badge) badge.textContent = totalItems;
+}
+
 // Mobile nav toggle for header
 document.addEventListener('DOMContentLoaded', function () {
   // Update auth visibility on page load
