@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>KCP ORGANICS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .navbar{
     background-color: rgb(253, 250, 250);
@@ -13,8 +14,8 @@
     display: flex;
     font-size: 19px;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    
 }
+
 .section1{
     display:flex;
     justify-content:space-between;
@@ -26,9 +27,51 @@
 .section2{
     display:flex;
     justify-content: space-around;
-    align-items: flex-end;
-    gap:100px;
+    align-items: center;
+    gap:40px;
     margin-right: 50px;
+}
+
+.welcome-text {
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 18px;
+    white-space: nowrap;
+    display: none;
+    cursor: pointer;
+    position: relative;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.welcome-text:hover {
+    background: rgba(46, 204, 113, 0.1);
+}
+
+.welcome-text.show {
+    display: block;
+}
+
+/* Logout button in navbar */
+.desktop-logout-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px 10px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.desktop-logout-btn:hover {
+    color: #c0392b;
+}
+
+.desktop-logout-btn.show {
+    display: block;
 }
 
 .navbar a{
@@ -42,7 +85,166 @@
     width: auto; /* maintain aspect ratio */
     border-radius: 0; /* remove circle, optional */
     display: block;
-}               
+}
+
+/* Hamburger Menu Toggle */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 28px;
+    color: black;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.nav-toggle:focus {
+    outline: none;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    right: 0;
+    background: rgb(253, 250, 250);
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    border-bottom: 5px solid rgb(248, 248, 248);
+}
+
+.mobile-menu.show {
+    display: flex;
+}
+
+.mobile-menu a {
+    text-decoration: none;
+    color: black;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    font-size: 16px;
+}
+
+.mobile-menu a:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive - Show hamburger on tablets and mobile */
+@media (max-width: 1024px) {
+    .nav-toggle {
+        display: block;
+    }
+    
+    .section1 {
+        display: none;
+    }
+    
+    .section2 {
+        display: flex;
+        gap: 12px;
+        margin-right: 0;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: nowrap;
+        order: 3;
+    }
+    
+    /* Hide login/signup/logout in navbar on mobile - show in hamburger menu */
+    .section2 #loginLink,
+    .section2 #signupLink,
+    .section2 .desktop-logout-btn {
+        display: none !important;
+    }
+    
+    .navbar {
+        gap: 10px;
+    }
+}
+
+/* Tablet (600px - 1024px) */
+@media (max-width: 1024px) and (min-width: 601px) {
+    .navbar {
+        height: 80px;
+        padding: 0 15px;
+    }
+    
+    .logo img {
+        height: 70px;
+    }
+    
+    .section2 {
+        gap: 15px;
+    }
+    
+    .welcome-text {
+        font-size: 15px;
+        padding: 5px 8px;
+    }
+    
+    .desktop-logout-btn {
+        font-size: 14px;
+        padding: 5px 8px;
+    }
+    
+    #cartLink {
+        font-size: 20px !important;
+    }
+}
+
+/* Responsive - Adjust for very small devices */
+@media (max-width: 600px) {
+    .navbar {
+        height: 70px;
+        padding: 0 12px;
+        font-size: 14px;
+    }
+    
+    .logo img {
+        height: 60px;
+    }
+    
+    .nav-toggle {
+        font-size: 22px;
+        margin-right: 5px;
+        padding: 6px;
+    }
+    
+    .section2 {
+        gap: 10px;
+    }
+    
+    .welcome-text {
+        font-size: 13px;
+        padding: 3px 6px;
+    }
+    
+    .desktop-logout-btn {
+        font-size: 13px;
+        padding: 3px 6px;
+    }
+    
+    #cartLink {
+        font-size: 18px !important;
+    }
+    
+    .mobile-menu {
+        top: 75px;
+        padding: 12px;
+        gap: 8px;
+    }
+    
+    .mobile-menu a {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
   </style>
 </head>
 
@@ -51,6 +253,12 @@
     <div class="logo">
       <a href="home.html"><img src="logo_final.png" alt="logo"></a>
     </div>
+    
+    <!-- Hamburger Toggle (Mobile) -->
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+    
     <div class="section1">
       <a href="home.html">Home</a>
       <a href="#">About us</a>
@@ -58,10 +266,137 @@
       <a href="#">Contact us</a>
       <a href="track-order.html" style="color: #2ecc71; font-weight: bold;">Track Order</a>
     </div>
-    <div class="section2">
-      <a href="login.html">Login</a>
-      <a href="signup.html">Sign up</a>
+    
+    <div class="section2" id="authSection">
+      <!-- Welcome message (shown when logged in) -->
+      <span class="welcome-text" id="welcomeText">Welcome, User</span>
+      
+      <!-- Logout button (shown when logged in) -->
+      <button class="desktop-logout-btn" id="desktopLogoutBtn" onclick="logout(); return false;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+      
+      <!-- Cart icon (shown when logged in) -->
+      <a href="cart.html" id="cartLink" style="color: #2ecc71; font-weight: bold; display: none;">
+        <i class="fas fa-shopping-cart"></i>
+      </a>
+      
+      <!-- Login/Signup (shown when NOT logged in) -->
+      <a href="login.html" id="loginLink">Login</a>
+      <a href="signup.html" id="signupLink">Sign up</a>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="home.html">Home</a>
+      <a href="#">About us</a>
+      <a href="#">Products</a>
+      <a href="#">Contact us</a>
+      <a href="track-order.html" style="color: #2ecc71; font-weight: bold;">Track Order</a>
+      <hr style="width: 100%; margin: 10px 0; border: none; border-top: 1px solid #ddd;">
+      <a href="login.html" id="mobileLoginLink">Login</a>
+      <a href="signup.html" id="mobileSignupLink">Sign up</a>
+      <a href="#" id="mobileLogoutLink" style="color: #e74c3c; font-weight: bold; display: none;" onclick="logout(); return false;">Logout</a>
     </div>
   </nav>
+
+  <script>
+    // ===== HAMBURGER MENU TOGGLE =====
+    const navToggle = document.querySelector('.nav-toggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    navToggle.addEventListener('click', () => {
+      const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', !isExpanded);
+      mobileMenu.classList.toggle('show');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.navbar')) {
+        mobileMenu.classList.remove('show');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('show');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ===== AUTH VISIBILITY LOGIC =====
+    function updateAuthLinks() {
+      const isLoggedIn = localStorage.getItem('token') || sessionStorage.getItem('token') || 
+                        localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      const userName = localStorage.getItem('userName') || sessionStorage.getItem('userName');
+      
+      const loginLink = document.getElementById('loginLink');
+      const signupLink = document.getElementById('signupLink');
+      const mobileLoginLink = document.getElementById('mobileLoginLink');
+      const mobileSignupLink = document.getElementById('mobileSignupLink');
+      const mobileLogoutLink = document.getElementById('mobileLogoutLink');
+      const desktopLogoutBtn = document.getElementById('desktopLogoutBtn');
+      const welcomeText = document.getElementById('welcomeText');
+      const cartLink = document.getElementById('cartLink');
+      
+      if (isLoggedIn) {
+        // User is logged in - show welcome & cart & logout, hide login/signup
+        if (loginLink) loginLink.style.display = 'none';
+        if (signupLink) signupLink.style.display = 'none';
+        if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+        if (mobileSignupLink) mobileSignupLink.style.display = 'none';
+        if (mobileLogoutLink) mobileLogoutLink.style.display = 'flex';
+        if (desktopLogoutBtn) desktopLogoutBtn.classList.add('show');
+        
+        // Show welcome text
+        if (welcomeText) {
+          welcomeText.textContent = `Welcome, ${userName || 'User'}`;
+          welcomeText.classList.add('show');
+        }
+        
+        // Show cart icon
+        if (cartLink) cartLink.style.display = 'block';
+      } else {
+        // User is NOT logged in - hide welcome & cart & logout, show login/signup
+        if (loginLink) loginLink.style.display = 'flex';
+        if (signupLink) signupLink.style.display = 'flex';
+        if (mobileLoginLink) mobileLoginLink.style.display = 'flex';
+        if (mobileSignupLink) mobileSignupLink.style.display = 'flex';
+        if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+        if (desktopLogoutBtn) desktopLogoutBtn.classList.remove('show');
+        
+        // Hide welcome text
+        if (welcomeText) {
+          welcomeText.classList.remove('show');
+        }
+        
+        // Hide cart icon
+        if (cartLink) cartLink.style.display = 'none';
+      }
+    }
+
+    // Check auth status on page load
+    document.addEventListener('DOMContentLoaded', updateAuthLinks);
+
+    // Listen for storage changes (when logged in from another tab)
+    window.addEventListener('storage', updateAuthLinks);
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('authToken');
+      sessionStorage.removeItem('token');
+      localStorage.removeItem('userName');
+      sessionStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      sessionStorage.removeItem('userEmail');
+      updateAuthLinks();
+      window.location.href = 'home.html';
+    }
+  </script>
 </body>
 </html>

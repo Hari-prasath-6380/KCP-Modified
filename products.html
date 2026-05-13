@@ -1706,7 +1706,7 @@
         // Store tried URLs to avoid infinite loops
         const triedImageUrls = new Set();
 
-        // Get proper product image URL (robust against different stored formats)
+        // Get proper product image URL (robust against different stored formats and deployments)
         function getProductImageUrl(imagePath) {
             // Inline SVG placeholder (avoids external network requests)
             const placeholder = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f3f4f6%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23888888%22 font-family=%22Arial%22 font-size=%2218%22>Product+Image</text></svg>';
@@ -1716,24 +1716,22 @@
                 return placeholder;
             }
 
-            // Already a full URL
+            // Already a full URL - return as is
             if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
                 console.log('📸 Using full URL:', imagePath);
                 return imagePath;
             }
 
-            // If path already includes uploads (with or without leading slash), normalize it and prefix IMAGE_BASE_URL
-            if (imagePath.includes('/uploads/')) {
-                const normalized = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-                const fullUrl = IMAGE_BASE_URL + normalized;
-                console.log('📸 Image URL (with /uploads/):', fullUrl);
-                return fullUrl;
+            // Extract filename from path (e.g., "/uploads/products/rice-123.png" → "rice-123.png")
+            let filename = imagePath;
+            if (imagePath.includes('/')) {
+                filename = imagePath.split('/').pop();
             }
 
-            // If the imagePath looks like a filename (e.g., product.jpg), place it under /uploads/products/ and prefix IMAGE_BASE_URL
-            const rel = `/uploads/products/${imagePath}`;
-            const fullUrl = IMAGE_BASE_URL + rel;
-            console.log('📸 Image URL (filename):', fullUrl);
+            // Construct proper URL based on current environment
+            // For both localhost and render, use: BASE_URL/uploads/products/filename
+            const fullUrl = IMAGE_BASE_URL + `/uploads/products/${filename}`;
+            console.log('📸 Image URL:', fullUrl, '(from base:', IMAGE_BASE_URL, ')');
             return fullUrl;
         }
         

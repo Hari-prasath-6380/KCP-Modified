@@ -1,5 +1,29 @@
+// =================== AUTHENTICATION VISIBILITY MANAGEMENT ===================
+// Show/hide login/signup links based on user login state
+function updateAuthVisibility() {
+  const userId = localStorage.getItem('userId');
+  const loginLink = document.getElementById('loginLink');
+  const signupLink = document.getElementById('signupLink');
+  const userDropdown = document.getElementById('userDropdown');
+  
+  if (userId) {
+    // User is logged in - hide login/signup, show user dropdown
+    if (loginLink) loginLink.style.display = 'none';
+    if (signupLink) signupLink.style.display = 'none';
+    if (userDropdown) userDropdown.style.display = 'inline-block';
+  } else {
+    // User is not logged in - show login/signup, hide user dropdown
+    if (loginLink) loginLink.style.display = 'inline-block';
+    if (signupLink) signupLink.style.display = 'inline-block';
+    if (userDropdown) userDropdown.style.display = 'none';
+  }
+}
+
 // Mobile nav toggle for header
 document.addEventListener('DOMContentLoaded', function () {
+  // Update auth visibility on page load
+  updateAuthVisibility();
+  
   const toggle = document.querySelector('.nav-toggle');
   if (!toggle) return;
 
@@ -88,6 +112,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape' && mobileMenu.classList.contains('show')) {
       mobileMenu.classList.remove('show');
       toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  
+  // Listen for auth state changes and update visibility
+  window.addEventListener('storage', function(event) {
+    if (event.key === 'userId') {
+      updateAuthVisibility();
     }
   });
 });
