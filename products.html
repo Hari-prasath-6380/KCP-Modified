@@ -1181,29 +1181,51 @@
                 padding: 10px 12px;
             }
 
+            /* 2-column grid on tablets */
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-                gap: 12px;
-                margin-bottom: 20px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+                margin-bottom: 24px;
             }
 
+            /* Clear image height on tablets */
             .product-image-container {
-                height: 100px;
+                height: 200px;
+            }
+
+            .product-card {
+                border-radius: 16px;
+            }
+
+            .product-content {
+                padding: 14px;
             }
 
             .product-name {
-                font-size: 12px;
+                font-size: 14px;
             }
 
-            .add-to-cart-btn {
-                padding: 8px 12px;
-                font-size: 11px;
+            .price-current {
+                font-size: 18px;
+            }
+
+            .add-to-cart-modern {
+                width: 36px;
+                height: 36px;
+                font-size: 15px;
+            }
+
+            .wishlist-btn {
+                width: 36px;
+                height: 36px;
+                min-width: 36px;
+                font-size: 16px;
             }
         }
 
         @media (max-width: 600px) {
             .products-header {
-                padding: 30px 8px;
+                padding: 28px 10px;
                 margin-bottom: 15px;
             }
 
@@ -1221,7 +1243,7 @@
             }
 
             .products-container {
-                padding: 0 8px 20px;
+                padding: 0 10px 20px;
             }
 
             .products-controls {
@@ -1251,22 +1273,53 @@
                 min-width: 45%;
             }
 
+            /* Always 2-column on small screens */
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
 
+            /* Good image height for phones */
             .product-image-container {
-                height: 85px;
+                height: 170px;
+            }
+
+            .product-card {
+                border-radius: 14px;
+            }
+
+            .product-content {
+                padding: 12px;
             }
 
             .product-name {
-                font-size: 11px;
+                font-size: 13px;
+                margin-bottom: 6px;
             }
 
-            .add-to-cart-btn {
-                padding: 6px 10px;
-                font-size: 10px;
+            .product-rating {
+                margin-bottom: 8px;
+            }
+
+            .price-current {
+                font-size: 16px;
+            }
+
+            .price-original {
+                font-size: 12px;
+            }
+
+            .add-to-cart-modern {
+                width: 34px;
+                height: 34px;
+                font-size: 14px;
+            }
+
+            .wishlist-btn {
+                width: 34px;
+                height: 34px;
+                min-width: 34px;
+                font-size: 15px;
             }
 
             .results-info {
@@ -1276,7 +1329,7 @@
 
         @media (max-width: 480px) {
             .products-header {
-                padding: 25px 6px;
+                padding: 22px 10px;
                 margin-bottom: 10px;
             }
 
@@ -1295,13 +1348,13 @@
             }
 
             .products-container {
-                padding: 0 6px 15px;
+                padding: 0 8px 15px;
             }
 
+            /* 2-column maintained, cards slightly compact */
             .products-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-                min-height: 250px;
+                gap: 10px;
             }
 
             .products-controls {
@@ -1319,22 +1372,53 @@
                 font-size: 10px;
             }
 
+            /* Prominent image — the key fix */
             .product-image-container {
-                height: 70px;
-                border-radius: 8px;
+                height: 160px;
+                border-radius: 12px 12px 0 0;
+            }
+
+            .product-card {
+                border-radius: 14px;
+            }
+
+            .product-content {
+                padding: 10px;
             }
 
             .product-name {
-                font-size: 10px;
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+
+            /* Hide rating row to save space */
+            .product-rating {
+                display: none;
             }
 
             .price-current {
-                font-size: 16px;
+                font-size: 15px;
             }
 
-            .add-to-cart-btn {
-                padding: 5px 8px;
-                font-size: 9px;
+            .price-original {
+                font-size: 11px;
+            }
+
+            .product-footer {
+                padding-top: 10px;
+            }
+
+            .add-to-cart-modern {
+                width: 32px;
+                height: 32px;
+                font-size: 13px;
+            }
+
+            .wishlist-btn {
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
+                font-size: 14px;
             }
 
             .results-info {
@@ -1348,23 +1432,52 @@
                 font-size: 18px;
             }
 
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
+            .products-container {
+                padding: 0 6px 15px;
             }
 
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            /* Still keep image clearly visible at 360px */
             .product-image-container {
-                height: 60px;
+                height: 140px;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .product-content {
+                padding: 8px;
             }
 
             .product-name {
-                font-size: 9px;
+                font-size: 11px;
+                -webkit-line-clamp: 2;
             }
 
-            .add-to-cart-btn {
-                font-size: 8px;
-                padding: 4px 6px;
+            .price-current {
+                font-size: 14px;
             }
+
+            .price-original {
+                display: none;
+            }
+
+            .add-to-cart-modern {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+
+            .wishlist-btn {
+                width: 30px;
+                height: 30px;
+                min-width: 30px;
+                font-size: 13px;
+                border-width: 1.5px;
+            }
+        }
     </style>
 </head>
 

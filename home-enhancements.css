@@ -1273,13 +1273,16 @@
   /* Chat modal */
   .chat-modal { width: calc(100% - 32px); right: 16px; bottom: 80px; max-height: 70vh; }
 
-  /* Dynamic products */
+  /* Tablets */
   .section-header-products h2 { font-size: 26px; }
   .section-header-products p { font-size: 15px; }
-  .dynamic-products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-  .product-image-wrapper { height: 160px; }
-  .product-info-home { padding: 12px; }
-  .product-info-home h3 { font-size: 14px; }
+  .dynamic-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .product-image-wrapper { height: 200px; }
+  .product-info-home { padding: 14px; }
+  .product-info-home h3 { font-size: 15px; }
 }
 
 /* ----- Tablet/Mobile (≤600px) ----- */
@@ -1398,14 +1401,21 @@
   .footer-bottom-links a { font-size: 12px; }
 
   /* Products */
-  .dynamic-products-section { padding: 40px 14px; }
+  /* Mobile product cards — always clearly visible */
+  .dynamic-products-section { padding: 30px 12px; }
   .section-header-products h2 { font-size: 22px; }
-  .dynamic-products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .product-image-wrapper { height: 130px; }
-  .product-info-home { padding: 10px; }
+  .dynamic-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .product-image-wrapper {
+    height: 180px;
+  }
+  .product-info-home { padding: 12px; }
   .product-info-home h3 { font-size: 13px; }
   .product-category-home { font-size: 11px; }
   .product-description-home { font-size: 11px; -webkit-line-clamp: 2; }
+  .add-to-cart-home { padding: 9px 14px; font-size: 12px; }
 }
 
 /* ----- Very small (≤360px) ----- */
