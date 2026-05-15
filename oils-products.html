@@ -342,7 +342,7 @@
             let actualImage = 'oil.png';  // Default fallback
             
             try {
-                const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api');
+                const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : window.location.origin + '/api');
                 const response = await fetch(`${API_URL}/products?name=${encodeURIComponent(productName)}`);
                 const data = await response.json();
                 

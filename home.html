@@ -751,7 +751,8 @@
 
       try {
         // Save review to backend API
-        const response = await fetch('https://kcp-organics-1.onrender.com/api/reviews', {
+        const baseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
+        const response = await fetch(`${baseUrl}/api/reviews`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -856,7 +857,8 @@
 
       try {
         // Send message to backend (stored in MongoDB + admin notification)
-        const response = await fetch('https://kcp-organics-1.onrender.com/api/messages', {
+        const baseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
+        const response = await fetch(`${baseUrl}/api/messages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -920,7 +922,8 @@
 
         // Send message to backend for storage and admin notification
         try {
-          await fetch('https://kcp-organics-1.onrender.com/api/messages', {
+          const baseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
+          await fetch(`${baseUrl}/api/messages`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1017,7 +1020,7 @@
 
     // ========== LOAD DYNAMIC PRODUCTS ==========
     function getBaseUrl() {
-      return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
+      return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
     }
 
     const API_BASE_URL = getBaseUrl() + '/api';
@@ -1272,7 +1275,7 @@
       document.body.appendChild(modal);
 
       // Fetch user orders
-      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+      const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
       fetch(`${API_BASE_URL}/orders/user/${userId}`)
         .then(res => res.json())
         .then(data => {

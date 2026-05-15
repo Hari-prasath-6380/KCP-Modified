@@ -41,7 +41,8 @@ function loadCartCount() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    fetch(`https://kcp-organics-1.onrender.com/api/cart`, {
+    const baseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
+    fetch(`${baseUrl}/api/cart`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,

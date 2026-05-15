@@ -646,9 +646,7 @@
             }
             
             // For deployed environments, use production URL
-            if (hostname.includes('render') || hostname.includes('herokuapp') || hostname.includes('.app')) {
-                return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
-            }
+                return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
             
             // For custom domains, try to construct the backend URL
             if (hostname.includes('kcporganics') || hostname.includes('kcp-organics')) {
@@ -657,7 +655,7 @@
             }
             
             // Default fallback
-            return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
+            return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
         }
         const API_BASE_URL = getBaseUrl() + '/api';
         const IMAGE_BASE_URL = getBaseUrl();
@@ -812,7 +810,7 @@
             
             // Try fallback to production URL if we're on localhost
             if (IMAGE_BASE_URL.includes('localhost') || IMAGE_BASE_URL.includes('127.0.0.1')) {
-                const prodUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com') + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
+                const prodUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
                 if (!triedImageUrls.has(prodUrl)) {
                     console.log('🔄 Trying production URL:', prodUrl);
                     triedImageUrls.add(prodUrl);
@@ -1108,7 +1106,7 @@
             document.body.appendChild(modal);
             
             // Fetch user orders
-            const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+            const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
             fetch(`${API_BASE_URL}/orders/user/${userId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -1175,7 +1173,7 @@
         // Download Receipt as PDF
         async function downloadReceiptPDF(orderId) {
             const userId = localStorage.getItem('userId');
-            const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+            const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
             
             try {
                 const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);

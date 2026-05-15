@@ -1686,19 +1686,9 @@
                 return port ? `http://${hostname}:5000` : 'http://localhost:5000';
             }
             
-            // For deployed environments, use production URL
-            if (hostname.includes('render') || hostname.includes('herokuapp') || hostname.includes('.app')) {
-                return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
-            }
-            
-            // For custom domains, try to construct the backend URL
-            if (hostname.includes('kcporganics') || hostname.includes('kcp-organics')) {
-                const protocol = window.location.protocol;
-                return `${protocol}//${hostname}:5000`;
-            }
-            
-            // Default fallback
-            return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
+            // For deployed environments, use the current origin
+            // (since the backend serves the frontend files)
+            return window.location.origin;
         }
 
         const API_BASE_URL = getBaseUrl() + '/api';
@@ -1745,7 +1735,7 @@
             
             // Try fallback to production URL if we're on localhost
             if (IMAGE_BASE_URL.includes('localhost') || IMAGE_BASE_URL.includes('127.0.0.1')) {
-                const prodUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com') + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
+                const prodUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
                 if (!triedImageUrls.has(prodUrl)) {
                     console.log('🔄 Trying production URL:', prodUrl);
                     triedImageUrls.add(prodUrl);

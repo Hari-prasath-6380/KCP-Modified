@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const API_URL = (typeof window !== 'undefined' && window.API_URL)
     ? window.API_URL
-    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
+    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
 
   for (const btn of buttons) {
     const onclickStr = btn.getAttribute('onclick') || '';
@@ -287,7 +287,7 @@ window.addEventListener('storage', function(event) {
     
       const API_URL = (typeof window !== 'undefined' && window.API_URL)
         ? window.API_URL
-        : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
+        : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
     
       for (const btn of buttons) {
         const onclickStr = btn.getAttribute('onclick') || '';
@@ -459,7 +459,7 @@ async function openMyOrders(event) {
   
   const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
     ? 'http://localhost:5000/api' 
-    : 'https://kcp-organics-1.onrender.com/api';
+    : window.location.origin + '/api';
 
   try {
     const res = await fetch(`${API_BASE_URL}/orders/user/${userId}`);
@@ -531,7 +531,7 @@ function getStatusColor(status) {
 async function downloadReceiptPDF(orderId) {
   const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
     ? 'http://localhost:5000/api' 
-    : 'https://kcp-organics-1.onrender.com/api';
+    : window.location.origin + '/api';
   
   try {
     const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);

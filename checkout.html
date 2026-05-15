@@ -1080,7 +1080,7 @@
 
     <script>
         // API Configuration - change to 'http://localhost:3000/api' for local development
-        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+        const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
 
         // Populate user data if logged in
         function populateUserData() {
@@ -1135,7 +1135,7 @@
             document.body.appendChild(modal);
             
             // Fetch user orders
-            const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+            const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
             fetch(`${API_BASE_URL}/orders/user/${userId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -1208,7 +1208,7 @@
 
         // Normalize image paths (handle truncated placeholders like '60x60?text=Product')
         function getImageUrl(imagePath) {
-            const ORIGIN = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
+            const ORIGIN = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
             const fallback = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23888" font-family="Arial" font-size="10">Product</text></svg>';
             
             if (!imagePath) return fallback;
