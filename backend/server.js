@@ -133,12 +133,10 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-// ================= SERVE FRONTEND =================
+// Serve frontend static files from the frontend/ directory
+const rootPath = path.join(__dirname, "../frontend");
 
-// serve static files from public folder
-const rootPath = path.join(__dirname, "..");
-
-// serve css, js, images from root folder
+// serve css, js, images from frontend folder
 app.use(express.static(rootPath));
 
 // homepage
@@ -146,9 +144,15 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(rootPath, "home.html"));
 });
 
-// all non-API routes → open website
+// all non-API routes → serve home page from frontend/
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) return next();
+  if (req.path.startsWith("/uploads")) return next();
+  // Try to serve from frontend/ first, fallback to home.html
+  const filePath = path.join(rootPath, req.path);
+  if (require('fs').existsSync(filePath) && require('fs').statSync(filePath).isFile()) {
+    return res.sendFile(filePath);
+  }
   res.sendFile(path.join(rootPath, "home.html"));
 });
 
