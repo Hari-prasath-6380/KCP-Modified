@@ -813,16 +813,16 @@
             <a href="products.html">Products</a>
             <a href="contact.html">Contact us</a>
             <a href="admin-dashboard.html">Admin</a>
-            <a href="track-order.html">Track Order</a>
+            <!-- <a href="track-order.html">Track Order</a> -->
         </div>
         <div class="section2" id="authSection">
             <a href="login.html" id="loginLink">Login</a>
             <a href="signup.html" id="signupLink">Sign up</a>
             <div class="user-dropdown" id="userDropdown" style="display: none;">
-                <span id="userName" class="dropdown-toggle"></span>
+                <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="#" onclick="openMyOrders(event)"><i class="fas fa-box"></i> My Orders</a>
-                  <a href="#" onclick="logoutUser(event)"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
             <div class="navbar-cart" onclick="toggleCart()">
@@ -1080,7 +1080,7 @@
 
     <script>
         // API Configuration - change to 'http://localhost:3000/api' for local development
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
 
         // Populate user data if logged in
         function populateUserData() {
@@ -1135,7 +1135,7 @@
             document.body.appendChild(modal);
             
             // Fetch user orders
-            const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+            const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
             fetch(`${API_BASE_URL}/orders/user/${userId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -1208,7 +1208,7 @@
 
         // Normalize image paths (handle truncated placeholders like '60x60?text=Product')
         function getImageUrl(imagePath) {
-            const ORIGIN = 'https://kcp-organics-1.onrender.com';
+            const ORIGIN = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
             const fallback = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23888" font-family="Arial" font-size="10">Product</text></svg>';
             
             if (!imagePath) return fallback;
@@ -1494,200 +1494,28 @@
             }, 3000);
         }
 
-        // Download Receipt as PDF
+        /**
+         * Download Receipt as PDF (Calls Global site.js function)
+         */
         async function downloadReceiptPDF(orderId) {
-            const userId = localStorage.getItem('userId');
-            const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    const order = data.data;
-                    const PDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
-                    if (!PDFClass) {
-                        alert('PDF library not loaded. Please refresh the page.');
-                        return;
-                    }
-                    
-                    const doc = new PDFClass('p', 'mm', 'a4');
-                    const pageWidth = doc.internal.pageSize.getWidth();
-                    let y = 15;
-                    
-                    // Header
-                    doc.setFontSize(18);
-                    doc.setTextColor(46, 125, 50);
-                    doc.setFont(undefined, 'bold');
-                    doc.text('KCP ORGANICS', pageWidth / 2, y, { align: 'center' });
-                    
-                    y += 6;
-                    doc.setFontSize(10);
-                    doc.setTextColor(100, 100, 100);
-                    doc.setFont(undefined, 'normal');
-                    doc.text('100% Organic | Farm Fresh to Your Doorstep', pageWidth / 2, y, { align: 'center' });
-                    
-                    y += 4;
-                    doc.setFontSize(9);
-                    doc.text('Contact: +91 98765 43210 | Email: support@kcporganics.com', pageWidth / 2, y, { align: 'center' });
-                    
-                    // Horizontal line
-                    y += 6;
-                    doc.setDrawColor(46, 125, 50);
-                    doc.setLineWidth(0.5);
-                    doc.line(15, y, pageWidth - 15, y);
-                    
-                    // Invoice Details Section
-                    y += 8;
-                    doc.setFontSize(11);
-                    doc.setTextColor(0, 0, 0);
-                    doc.setFont(undefined, 'bold');
-                    doc.text('INVOICE DETAILS', 15, y);
-                    
-                    y += 6;
-                    doc.setFontSize(9);
-                    doc.setFont(undefined, 'normal');
-                    const orderIdFormatted = order._id.substring(0, 8).toUpperCase();
-                    const tax = Math.round(order.totalAmount * 0.05 / 1.05);
-                    const subtotal = order.totalAmount - tax;
-                    
-                    doc.text(`Order ID: ORD-${orderIdFormatted}-${new Date(order.createdAt).getTime().toString().slice(-6)}`, 15, y);
-                    y += 5;
-                    doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString('en-IN')}`, 15, y);
-                    y += 5;
-                    doc.text(`Payment Method: ${order.paymentMethod || 'COD'}`, 15, y);
-                    
-                    // Bill To Section
-                    y += 8;
-                    doc.setFont(undefined, 'bold');
-                    doc.setFontSize(10);
-                    doc.text('BILL TO', 15, y);
-                    
-                    y += 5;
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(9);
-                    doc.text(`${order.customerName || 'Valued Customer'}`, 15, y);
-                    y += 4;
-                    doc.text(`${order.address || 'Address on file'}`, 15, y);
-                    y += 4;
-                    doc.text(`${order.phone || order.email || ''}`, 15, y);
-                    y += 4;
-                    doc.text(`Email: ${order.email || ''}`, 15, y);
-                    
-                    // Items Table
-                    y += 8;
-                    const tableStartY = y;
-                    const colWidths = {
-                        sno: 12,
-                        productId: 35,
-                        productName: 70,
-                        qty: 15,
-                        unitPrice: 25,
-                        total: 25
-                    };
-                    
-                    const col1 = 15;
-                    const col2 = col1 + colWidths.sno;
-                    const col3 = col2 + colWidths.productId;
-                    const col4 = col3 + colWidths.productName;
-                    const col5 = col4 + colWidths.qty;
-                    const col6 = col5 + colWidths.unitPrice;
-                    
-                    // Table header background
-                    doc.setFillColor(46, 125, 50);
-                    doc.rect(col1 - 2, y - 3, pageWidth - 30, 6, 'F');
-                    
-                    // Table headers
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFont(undefined, 'bold');
-                    doc.setFontSize(9);
-                    doc.text('S.No', col1, y);
-                    doc.text('Product ID', col2, y);
-                    doc.text('Product Name', col3, y);
-                    doc.text('Qty', col4 + 2, y);
-                    doc.text('Unit Price', col5 + 2, y);
-                    doc.text('Total', col6 + 5, y);
-                    
-                    y += 7;
-                    doc.setTextColor(0, 0, 0);
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(8);
-                    
-                    // Table rows
-                    order.products.forEach((item, index) => {
-                        const itemTotal = (item.price * item.quantity).toFixed(2);
-                        doc.text(`${index + 1}`, col1, y);
-                        doc.text(item._id ? item._id.toString().substring(0, 8) : 'N/A', col2, y);
-                        doc.text(item.name.substring(0, 45), col3, y);
-                        doc.text(item.quantity.toString(), col4 + 2, y);
-                        doc.text(`₹${item.price}`, col5 + 2, y);
-                        doc.text(`₹${itemTotal}`, col6 + 5, y);
-                        y += 5;
-                        
-                        if (y > 250) {
-                            doc.addPage();
-                            y = 15;
-                        }
-                    });
-                    
-                    // Totals Section
-                    y += 3;
-                    doc.setDrawColor(46, 125, 50);
-                    doc.line(col1 - 2, y, pageWidth - 15, y);
-                    
-                    y += 6;
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(9);
-                    doc.setTextColor(0, 0, 0);
-                    
-                    const subtotalAmount = subtotal.toFixed(2);
-                    const taxAmount = tax.toFixed(2);
-                    const totalAmount = order.totalAmount.toFixed(2);
-                    
-                    // Align right for amounts
-                    const amountColX = pageWidth - 30;
-                    const labelColX = col3;
-                    
-                    doc.text('Subtotal:', labelColX, y);
-                    doc.text(`₹${subtotalAmount}`, amountColX, y, { align: 'right' });
-                    
-                    y += 4;
-                    doc.text('Tax (5%):', labelColX, y);
-                    doc.text(`₹${taxAmount}`, amountColX, y, { align: 'right' });
-                    
-                    y += 6;
-                    doc.setFont(undefined, 'bold');
-                    doc.setFontSize(10);
-                    doc.setTextColor(46, 125, 50);
-                    doc.text('Total Amount:', labelColX, y);
-                    doc.text(`₹${totalAmount}`, amountColX, y, { align: 'right' });
-                    
-                    // Footer
-                    y = doc.internal.pageSize.getHeight() - 25;
-                    doc.setDrawColor(200, 200, 200);
-                    doc.line(15, y, pageWidth - 15, y);
-                    
-                    y += 4;
-                    doc.setFontSize(8);
-                    doc.setTextColor(100, 100, 100);
-                    doc.setFont(undefined, 'normal');
-                    doc.text('Thank you for shopping with KCP Organics!', pageWidth / 2, y, { align: 'center' });
-                    
-                    y += 3;
-                    doc.text(`You can track your order using Order ID and Mobile Number at www.kcporganics.com`, pageWidth / 2, y, { align: 'center' });
-                    
-                    y += 3;
-                    doc.text('This is a computer generated invoice. No signature required.', pageWidth / 2, y, { align: 'center' });
-                    
-                    const fileName = `Invoice_KCP_${orderIdFormatted}_${new Date().getTime()}.pdf`;
-                    doc.save(fileName);
-                } else {
-                    alert('Unable to load order details');
-                }
-            } catch (error) {
-                console.error('Error downloading receipt:', error);
-                alert('Error downloading receipt: ' + error.message);
+            if (typeof window.downloadReceiptPDF === 'function') {
+                await window.downloadReceiptPDF(orderId);
+            } else {
+                console.error('Global downloadReceiptPDF not found in site.js');
+                alert('Invoice service currently unavailable.');
             }
+        }
+
+        /**
+         * Download bill as PDF (Fallback for older calls)
+         */
+        function downloadBill() {
+            const orderData = JSON.parse(localStorage.getItem('lastOrderData'));
+            if (!orderData || !orderData.orderId) {
+                alert('Order data not found.');
+                return;
+            }
+            downloadReceiptPDF(orderData.mongoId || orderData.orderId);
         }
 
         // Logout
@@ -2026,11 +1854,44 @@
             window.location.href = 'home.html';
         }
 
+        // Logout function
+        function logoutUser(event) {
+            if (event) event.preventDefault();
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            window.location.reload();
+        }
+
+        function toggleCart() {
+            window.location.href = 'cart.html';
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             populateUserData();
             loadOrderSummary();
             updateCartBadge();
+            if (typeof updateAuthVisibility === 'function') {
+                updateAuthVisibility();
+            } else {
+                const userName = localStorage.getItem('userName');
+                const userId = localStorage.getItem('userId') || localStorage.getItem('token');
+                if (userName || userId) {
+                    const loginLink = document.getElementById('loginLink');
+                    const signupLink = document.getElementById('signupLink');
+                    const userDropdown = document.getElementById('userDropdown');
+                    const welcomeText = document.getElementById('userName');
+                    
+                    if (loginLink) loginLink.style.display = 'none';
+                    if (signupLink) signupLink.style.display = 'none';
+                    if (userDropdown) userDropdown.style.display = 'inline-block';
+                    if (welcomeText) welcomeText.textContent = 'Welcome, ' + (userName || 'User');
+                }
+            }
         });
     </script>
     <script src="site.js"></script>

@@ -35,6 +35,27 @@ router.get('/admin/all', async (req, res) => {
     }
 });
 
+// Get random products for homepage
+router.get('/random', async (req, res) => {
+    try {
+        const count = parseInt(req.query.count) || 8;
+        
+        // Match only active products (or those without isActive field)
+        const products = await Product.aggregate([
+            { $match: { $or: [ { isActive: { $exists: false } }, { isActive: true } ] } },
+            { $sample: { size: count } }
+        ]);
+        
+        res.status(200).json({
+            success: true,
+            data: products
+        });
+    } catch (error) {
+        console.error('Error fetching random products:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // Get all products with pagination
 router.get('/', async (req, res) => {
     try {

@@ -504,16 +504,17 @@
             <a href="products.html">Products</a>
             <a href="contact.html">Contact us</a>
             <a href="admin-dashboard.html">Admin</a>
-            <a href="track-order.html">Track Order</a>
+            <!-- <a href="track-order.html">Track Order</a> -->
         </div>
         <div class="section2" id="authSection">
             <a href="login.html" id="loginLink">Login</a>
             <a href="signup.html" id="signupLink">Sign up</a>
             <div class="user-dropdown" id="userDropdown" style="display: none;">
-                <span id="userName" class="dropdown-toggle"></span>
+                <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="#" onclick="openMyOrders(event)"><i class="fas fa-box"></i> My Orders</a>
-                  <a href="#" onclick="logoutUser(event)"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                  <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
             <div class="navbar-cart" onclick="toggleCart()">
@@ -646,7 +647,7 @@
             
             // For deployed environments, use production URL
             if (hostname.includes('render') || hostname.includes('herokuapp') || hostname.includes('.app')) {
-                return 'https://kcp-organics-1.onrender.com';
+                return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
             }
             
             // For custom domains, try to construct the backend URL
@@ -656,7 +657,7 @@
             }
             
             // Default fallback
-            return 'https://kcp-organics-1.onrender.com';
+            return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
         }
         const API_BASE_URL = getBaseUrl() + '/api';
         const IMAGE_BASE_URL = getBaseUrl();
@@ -811,7 +812,7 @@
             
             // Try fallback to production URL if we're on localhost
             if (IMAGE_BASE_URL.includes('localhost') || IMAGE_BASE_URL.includes('127.0.0.1')) {
-                const prodUrl = 'https://kcp-organics-1.onrender.com' + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
+                const prodUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com') + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
                 if (!triedImageUrls.has(prodUrl)) {
                     console.log('🔄 Trying production URL:', prodUrl);
                     triedImageUrls.add(prodUrl);
@@ -1041,18 +1042,36 @@
         }
 
         function checkUserLogin() {
-            const userName = localStorage.getItem('userName');
-            if (userName) {
-                document.getElementById('loginLink').style.display = 'none';
-                document.getElementById('signupLink').style.display = 'none';
-                document.getElementById('userDropdown').style.display = 'block';
-                document.getElementById('userName').textContent = 'Welcome, ' + userName;
-                document.getElementById('reviewForm').style.display = 'block';
+            if (typeof updateAuthVisibility === 'function') {
+                updateAuthVisibility();
+                const userName = localStorage.getItem('userName');
+                const userId = localStorage.getItem('userId') || localStorage.getItem('token');
+                if (userName || userId) {
+                    document.getElementById('reviewForm').style.display = 'block';
+                } else {
+                    document.getElementById('reviewForm').style.display = 'block';
+                }
             } else {
-                document.getElementById('loginLink').style.display = 'inline';
-                document.getElementById('signupLink').style.display = 'inline';
-                document.getElementById('userDropdown').style.display = 'none';
-                document.getElementById('reviewForm').style.display = 'block';
+                const userName = localStorage.getItem('userName');
+                const userId = localStorage.getItem('userId') || localStorage.getItem('token');
+                
+                const loginLink = document.getElementById('loginLink');
+                const signupLink = document.getElementById('signupLink');
+                const userDropdown = document.getElementById('userDropdown');
+                const welcomeText = document.getElementById('userName');
+                
+                if (userName || userId) {
+                    if (loginLink) loginLink.style.display = 'none';
+                    if (signupLink) signupLink.style.display = 'none';
+                    if (userDropdown) userDropdown.style.display = 'inline-block';
+                    if (welcomeText) welcomeText.textContent = 'Welcome, ' + (userName || 'User');
+                    document.getElementById('reviewForm').style.display = 'block';
+                } else {
+                    if (loginLink) loginLink.style.display = 'inline-block';
+                    if (signupLink) signupLink.style.display = 'inline-block';
+                    if (userDropdown) userDropdown.style.display = 'none';
+                    document.getElementById('reviewForm').style.display = 'block';
+                }
             }
         }
 
@@ -1089,7 +1108,7 @@
             document.body.appendChild(modal);
             
             // Fetch user orders
-            const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+            const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
             fetch(`${API_BASE_URL}/orders/user/${userId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -1156,7 +1175,7 @@
         // Download Receipt as PDF
         async function downloadReceiptPDF(orderId) {
             const userId = localStorage.getItem('userId');
-            const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+            const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
             
             try {
                 const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
@@ -1351,9 +1370,13 @@
 
         function logoutUser(event) {
             if (event) event.preventDefault();
-            localStorage.removeItem('userId');
             localStorage.removeItem('userName');
-            window.location.href = 'home.html';
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            window.location.reload();
         }
 
         function showToast(message) {

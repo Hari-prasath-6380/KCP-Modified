@@ -4,6 +4,11 @@ require('dotenv').config();
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.warn('⚠️  Telegram configuration missing in environment variables');
+    console.warn('💡 Add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID to your Render environment');
+}
+
 // Admin notification details
 const ADMIN_PHONE = process.env.ADMIN_PHONE || '6380442089';
 

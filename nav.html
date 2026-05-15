@@ -37,40 +37,42 @@
     font-weight: bold;
     font-size: 18px;
     white-space: nowrap;
-    display: none;
     cursor: pointer;
-    position: relative;
     padding: 5px 10px;
     border-radius: 5px;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .welcome-text:hover {
     background: rgba(46, 204, 113, 0.1);
 }
 
-.welcome-text.show {
-    display: block;
+.welcome-text::after {
+    content: '\f107';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 12px;
+    transition: transform 0.3s ease;
 }
 
-/* Logout button in navbar */
-.desktop-logout-btn {
+.user-dropdown:hover .welcome-text::after {
+    transform: rotate(180deg);
+}
+
+/* User Dropdown */
+.user-dropdown {
+    position: relative;
     display: none;
-    background: none;
-    border: none;
-    color: #e74c3c;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 5px 10px;
-    font-weight: bold;
-    transition: color 0.3s ease;
 }
 
-.desktop-logout-btn:hover {
-    color: #c0392b;
+.user-dropdown.show {
+    display: inline-block;
 }
 
-.desktop-logout-btn.show {
+.user-dropdown:hover .dropdown-menu {
     display: block;
 }
 
@@ -156,10 +158,9 @@
         order: 3;
     }
     
-    /* Hide login/signup/logout in navbar on mobile - show in hamburger menu */
+    /* Hide login/signup in navbar on mobile - show in hamburger menu */
     .section2 #loginLink,
-    .section2 #signupLink,
-    .section2 .desktop-logout-btn {
+    .section2 #signupLink {
         display: none !important;
     }
     
@@ -185,11 +186,6 @@
     
     .welcome-text {
         font-size: 15px;
-        padding: 5px 8px;
-    }
-    
-    .desktop-logout-btn {
-        font-size: 14px;
         padding: 5px 8px;
     }
     
@@ -221,11 +217,6 @@
     }
     
     .welcome-text {
-        font-size: 13px;
-        padding: 3px 6px;
-    }
-    
-    .desktop-logout-btn {
         font-size: 13px;
         padding: 3px 6px;
     }
@@ -264,17 +255,19 @@
       <a href="#">About us</a>
       <a href="#">Products</a>
       <a href="#">Contact us</a>
-      <a href="track-order.html" style="color: #2ecc71; font-weight: bold;">Track Order</a>
+      <!-- <a href="track-order.html" style="color: #2ecc71; font-weight: bold;">Track Order</a> -->
     </div>
     
     <div class="section2" id="authSection">
-      <!-- Welcome message (shown when logged in) -->
-      <span class="welcome-text" id="welcomeText">Welcome, User</span>
-      
-      <!-- Logout button (shown when logged in) -->
-      <button class="desktop-logout-btn" id="desktopLogoutBtn" onclick="logout(); return false;">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </button>
+      <!-- User Dropdown (shown when logged in) -->
+      <div class="user-dropdown" id="userDropdown">
+        <span class="welcome-text" id="welcomeText">Welcome, User</span>
+        <div class="dropdown-menu">
+          <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+          <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+          <a href="#" onclick="logoutUser(event); return false;" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
       
       <!-- Cart icon (shown when logged in) -->
       <a href="cart.html" id="cartLink" style="color: #2ecc71; font-weight: bold; display: none;">
@@ -292,7 +285,7 @@
       <a href="#">About us</a>
       <a href="#">Products</a>
       <a href="#">Contact us</a>
-      <a href="track-order.html" style="color: #2ecc71; font-weight: bold;">Track Order</a>
+      <!-- <a href="track-order.html" style="color: #2ecc71; font-weight: bold;">Track Order</a> -->
       <hr style="width: 100%; margin: 10px 0; border: none; border-top: 1px solid #ddd;">
       <a href="login.html" id="mobileLoginLink">Login</a>
       <a href="signup.html" id="mobileSignupLink">Sign up</a>
@@ -338,39 +331,39 @@
       const mobileLoginLink = document.getElementById('mobileLoginLink');
       const mobileSignupLink = document.getElementById('mobileSignupLink');
       const mobileLogoutLink = document.getElementById('mobileLogoutLink');
-      const desktopLogoutBtn = document.getElementById('desktopLogoutBtn');
+      const userDropdown = document.getElementById('userDropdown');
       const welcomeText = document.getElementById('welcomeText');
       const cartLink = document.getElementById('cartLink');
       
       if (isLoggedIn) {
-        // User is logged in - show welcome & cart & logout, hide login/signup
+        // User is logged in - show welcome dropdown & cart, hide login/signup
         if (loginLink) loginLink.style.display = 'none';
         if (signupLink) signupLink.style.display = 'none';
         if (mobileLoginLink) mobileLoginLink.style.display = 'none';
         if (mobileSignupLink) mobileSignupLink.style.display = 'none';
         if (mobileLogoutLink) mobileLogoutLink.style.display = 'flex';
-        if (desktopLogoutBtn) desktopLogoutBtn.classList.add('show');
         
-        // Show welcome text
+        // Show welcome dropdown
+        if (userDropdown) {
+          userDropdown.classList.add('show');
+        }
         if (welcomeText) {
           welcomeText.textContent = `Welcome, ${userName || 'User'}`;
-          welcomeText.classList.add('show');
         }
         
         // Show cart icon
         if (cartLink) cartLink.style.display = 'block';
       } else {
-        // User is NOT logged in - hide welcome & cart & logout, show login/signup
+        // User is NOT logged in - hide welcome dropdown & cart, show login/signup
         if (loginLink) loginLink.style.display = 'flex';
         if (signupLink) signupLink.style.display = 'flex';
         if (mobileLoginLink) mobileLoginLink.style.display = 'flex';
         if (mobileSignupLink) mobileSignupLink.style.display = 'flex';
         if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
-        if (desktopLogoutBtn) desktopLogoutBtn.classList.remove('show');
         
-        // Hide welcome text
-        if (welcomeText) {
-          welcomeText.classList.remove('show');
+        // Hide welcome dropdown
+        if (userDropdown) {
+          userDropdown.classList.remove('show');
         }
         
         // Hide cart icon

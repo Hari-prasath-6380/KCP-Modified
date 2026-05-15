@@ -23,16 +23,17 @@
       <a href="products.html">Products</a>
       <a href="contact.html">Contact us</a>
       <a href="admin-dashboard.html">Admin</a>
-      <a href="track-order.html">Track Order</a>
+      <!-- <a href="track-order.html">Track Order</a> -->
     </div>
     <div class="section2 section2-home" id="authSection">
       <a href="login.html" id="loginLink">Login</a>
       <a href="signup.html" id="signupLink">Sign up</a>
       <div class="user-dropdown" id="userDropdown" style="display: none;">
-        <span id="userName" class="dropdown-toggle"></span>
+        <span id="userName" class="dropdown-toggle">Welcome, User</span>
         <div class="dropdown-menu">
-          <a href="#" onclick="openMyOrders(event)"><i class="fas fa-box"></i> My Orders</a>
-          <a href="#" onclick="logoutUser(event)" title="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+          <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+          <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
       </div>
       <div class="navbar-cart" onclick="toggleCart()">
@@ -1015,30 +1016,38 @@
     ];
 
     // ========== LOAD DYNAMIC PRODUCTS ==========
+    function getBaseUrl() {
+      return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com');
+    }
+
+    const API_BASE_URL = getBaseUrl() + '/api';
+    const IMAGE_BASE_URL = getBaseUrl();
+    const triedImageUrls = new Set();
+
     async function loadDynamicProducts() {
       const container = document.getElementById('dynamicProductsGrid');
       const viewMoreContainer = document.getElementById('viewMoreContainer');
 
       try {
-        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
-        
-        const response = await fetch(`${API_BASE_URL}/products?limit=8`);
+        // Fetch 8 random products from the backend
+        const response = await fetch(`${API_BASE_URL}/products/random?count=8`);
         const data = await response.json();
         
         if (data.success && data.data && data.data.length > 0) {
           displayHomeProducts(data.data);
         } else {
-          // Fallback to hardcoded if API returns no products
-          displayHomeProducts(homePageProducts);
+          // Fallback to hardcoded if API returns no products (shuffle them for variety)
+          const shuffled = shuffleArray([...homePageProducts]);
+          displayHomeProducts(shuffled.slice(0, 8));
         }
       } catch (error) {
         console.error('Error fetching products for home page:', error);
-        // Fallback to hardcoded on network error
-        displayHomeProducts(homePageProducts);
+        // Fallback to hardcoded on network error (shuffle them for variety)
+        const shuffled = shuffleArray([...homePageProducts]);
+        displayHomeProducts(shuffled.slice(0, 8));
       }
 
-      viewMoreContainer.style.display = 'block';
+      if (viewMoreContainer) viewMoreContainer.style.display = 'block';
     }
 
     function displayHomeProducts(products) {
@@ -1055,27 +1064,56 @@
         return;
       }
 
-      container.innerHTML = products.map(product => `
-        <div class="dynamic-product-card" onclick="viewProductDetails('${product._id}')">
-          <div class="product-image-wrapper">
-            <img src="${getProductImageUrl(product.image)}" alt="${escapeHtmlHome(product.name)}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22250%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+      container.innerHTML = products.map(product => {
+        const escapedName = escapeHtmlHome(product.name);
+        const safeImage = product.image || '';
+        return `
+          <div class="dynamic-product-card" onclick="viewProductDetails('${product._id}')">
+            <div class="product-image-wrapper">
+              <img src="${getProductImageUrl(safeImage)}" alt="${escapedName}" onerror="handleImageErrorHome(this, '${safeImage}')">
+            </div>
+            <div class="product-info-home">
+              <h3>${escapedName}</h3>
+              <p class="product-category-home">${product.category}</p>
+              <p class="product-description-home">${escapeHtmlHome(product.description)}</p>
+            </div>
           </div>
-          <div class="product-info-home">
-            <h3>${escapeHtmlHome(product.name)}</h3>
-            <p class="product-category-home">${product.category}</p>
-            <p class="product-description-home">${escapeHtmlHome(product.description)}</p>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function getProductImageUrl(imagePath) {
-      const PRODUCT_PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22250%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E';
-      if (!imagePath) return PRODUCT_PLACEHOLDER;
+      const placeholder = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22250%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E';
+      
+      if (!imagePath || imagePath.trim() === '') return placeholder;
       if (imagePath.startsWith('http')) return imagePath;
-      if (imagePath.startsWith('/uploads')) return `https://kcp-organics-1.onrender.com${imagePath}`;
-      if (imagePath === 'product.jpg') return PRODUCT_PLACEHOLDER;
-      return imagePath;
+      
+      // If imagePath is just a filename (no slash), construct the full path
+      let filename = imagePath;
+      if (imagePath.includes('/')) {
+          filename = imagePath.split('/').pop();
+      }
+      
+      return IMAGE_BASE_URL + `/uploads/products/${filename}`;
+    }
+
+    function handleImageErrorHome(img, imagePath) {
+      console.warn('Image failed to load on home:', img.src);
+      
+      // Try root directory if /uploads/products/ fails
+      let filename = imagePath;
+      if (imagePath && imagePath.includes('/')) {
+        filename = imagePath.split('/').pop();
+      }
+      
+      const frontendUrl = './' + filename;
+      if (!triedImageUrls.has(frontendUrl)) {
+        triedImageUrls.add(frontendUrl);
+        img.src = frontendUrl;
+        img.onerror = () => {
+          img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22250%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E';
+        };
+      }
     }
 
     function escapeHtmlHome(text) {
@@ -1097,6 +1135,14 @@
         }
       }
       return stars;
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
     }
 
     function viewProductDetails(productId) {
@@ -1226,7 +1272,7 @@
       document.body.appendChild(modal);
 
       // Fetch user orders
-      const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
       fetch(`${API_BASE_URL}/orders/user/${userId}`)
         .then(res => res.json())
         .then(data => {
@@ -1279,201 +1325,7 @@
         });
     }
 
-    // Download Receipt as PDF
-    async function downloadReceiptPDF(orderId) {
-      const userId = localStorage.getItem('userId');
-      const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
-        const data = await response.json();
-
-        if (data.success) {
-          const order = data.data;
-          const PDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
-          if (!PDFClass) {
-            alert('PDF library not loaded. Please refresh the page.');
-            return;
-          }
-
-          const doc = new PDFClass('p', 'mm', 'a4');
-          const pageWidth = doc.internal.pageSize.getWidth();
-          let y = 15;
-
-          // Header
-          doc.setFontSize(18);
-          doc.setTextColor(46, 125, 50);
-          doc.setFont(undefined, 'bold');
-          doc.text('KCP ORGANICS', pageWidth / 2, y, { align: 'center' });
-
-          y += 6;
-          doc.setFontSize(10);
-          doc.setTextColor(100, 100, 100);
-          doc.setFont(undefined, 'normal');
-          doc.text('100% Organic | Farm Fresh to Your Doorstep', pageWidth / 2, y, { align: 'center' });
-
-          y += 4;
-          doc.setFontSize(9);
-          doc.text('Contact: +91 98765 43210 | Email: support@kcporganics.com', pageWidth / 2, y, { align: 'center' });
-
-          // Horizontal line
-          y += 6;
-          doc.setDrawColor(46, 125, 50);
-          doc.setLineWidth(0.5);
-          doc.line(15, y, pageWidth - 15, y);
-
-          // Invoice Details Section
-          y += 8;
-          doc.setFontSize(11);
-          doc.setTextColor(0, 0, 0);
-          doc.setFont(undefined, 'bold');
-          doc.text('INVOICE DETAILS', 15, y);
-
-          y += 6;
-          doc.setFontSize(9);
-          doc.setFont(undefined, 'normal');
-          const orderIdFormatted = order._id.substring(0, 8).toUpperCase();
-          const tax = Math.round(order.totalAmount * 0.05 / 1.05);
-          const subtotal = order.totalAmount - tax;
-
-          doc.text(`Order ID: ORD-${orderIdFormatted}-${new Date(order.createdAt).getTime().toString().slice(-6)}`, 15, y);
-          y += 5;
-          doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString('en-IN')}`, 15, y);
-          y += 5;
-          doc.text(`Payment Method: ${order.paymentMethod || 'COD'}`, 15, y);
-
-          // Bill To Section
-          y += 8;
-          doc.setFont(undefined, 'bold');
-          doc.setFontSize(10);
-          doc.text('BILL TO', 15, y);
-
-          y += 5;
-          doc.setFont(undefined, 'normal');
-          doc.setFontSize(9);
-          doc.text(`${order.customerName || 'Valued Customer'}`, 15, y);
-          y += 4;
-          doc.text(`${order.address || 'Address on file'}`, 15, y);
-          y += 4;
-          doc.text(`${order.phone || order.email || ''}`, 15, y);
-          y += 4;
-          doc.text(`Email: ${order.email || ''}`, 15, y);
-
-          // Items Table
-          y += 8;
-          const tableStartY = y;
-          const colWidths = {
-            sno: 12,
-            productId: 35,
-            productName: 70,
-            qty: 15,
-            unitPrice: 25,
-            total: 25
-          };
-
-          const col1 = 15;
-          const col2 = col1 + colWidths.sno;
-          const col3 = col2 + colWidths.productId;
-          const col4 = col3 + colWidths.productName;
-          const col5 = col4 + colWidths.qty;
-          const col6 = col5 + colWidths.unitPrice;
-
-          // Table header background
-          doc.setFillColor(46, 125, 50);
-          doc.rect(col1 - 2, y - 3, pageWidth - 30, 6, 'F');
-
-          // Table headers
-          doc.setTextColor(255, 255, 255);
-          doc.setFont(undefined, 'bold');
-          doc.setFontSize(9);
-          doc.text('S.No', col1, y);
-          doc.text('Product ID', col2, y);
-          doc.text('Product Name', col3, y);
-          doc.text('Qty', col4 + 2, y);
-          doc.text('Unit Price', col5 + 2, y);
-          doc.text('Total', col6 + 5, y);
-
-          y += 7;
-          doc.setTextColor(0, 0, 0);
-          doc.setFont(undefined, 'normal');
-          doc.setFontSize(8);
-
-          // Table rows
-          order.products.forEach((item, index) => {
-            const itemTotal = (item.price * item.quantity).toFixed(2);
-            doc.text(`${index + 1}`, col1, y);
-            doc.text(item._id ? item._id.toString().substring(0, 8) : 'N/A', col2, y);
-            doc.text(item.name.substring(0, 45), col3, y);
-            doc.text(item.quantity.toString(), col4 + 2, y);
-            doc.text(`₹${item.price}`, col5 + 2, y);
-            doc.text(`₹${itemTotal}`, col6 + 5, y);
-            y += 5;
-
-            if (y > 250) {
-              doc.addPage();
-              y = 15;
-            }
-          });
-
-          // Totals Section
-          y += 3;
-          doc.setDrawColor(46, 125, 50);
-          doc.line(col1 - 2, y, pageWidth - 15, y);
-
-          y += 6;
-          doc.setFont(undefined, 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(0, 0, 0);
-
-          const subtotalAmount = subtotal.toFixed(2);
-          const taxAmount = tax.toFixed(2);
-          const totalAmount = order.totalAmount.toFixed(2);
-
-          // Align right for amounts
-          const amountColX = pageWidth - 30;
-          const labelColX = col3;
-
-          doc.text('Subtotal:', labelColX, y);
-          doc.text(`₹${subtotalAmount}`, amountColX, y, { align: 'right' });
-
-          y += 4;
-          doc.text('Tax (5%):', labelColX, y);
-          doc.text(`₹${taxAmount}`, amountColX, y, { align: 'right' });
-
-          y += 6;
-          doc.setFont(undefined, 'bold');
-          doc.setFontSize(10);
-          doc.setTextColor(46, 125, 50);
-          doc.text('Total Amount:', labelColX, y);
-          doc.text(`₹${totalAmount}`, amountColX, y, { align: 'right' });
-
-          // Footer
-          y = doc.internal.pageSize.getHeight() - 25;
-          doc.setDrawColor(200, 200, 200);
-          doc.line(15, y, pageWidth - 15, y);
-
-          y += 4;
-          doc.setFontSize(8);
-          doc.setTextColor(100, 100, 100);
-          doc.setFont(undefined, 'normal');
-          doc.text('Thank you for shopping with KCP Organics!', pageWidth / 2, y, { align: 'center' });
-
-          y += 3;
-          doc.text(`You can track your order using Order ID and Mobile Number at www.kcporganics.com`, pageWidth / 2, y, { align: 'center' });
-
-          y += 3;
-          doc.text('This is a computer generated invoice. No signature required.', pageWidth / 2, y, { align: 'center' });
-
-          const fileName = `Invoice_KCP_${orderIdFormatted}_${new Date().getTime()}.pdf`;
-          doc.save(fileName);
-        } else {
-          alert('Unable to load order details');
-        }
-      } catch (error) {
-        console.error('Error downloading receipt:', error);
-        alert('Error downloading receipt: ' + error.message);
-      }
-    }
+    // downloadReceiptPDF is now handled globally by site.js
 
     // Logout user
     function logoutUser(event) {

@@ -403,13 +403,19 @@
             <a href="products.html">Products</a>
             <a href="contact.html">Contact us</a>
             <a href="admin-dashboard.html">Admin</a>
-            <a href="track-order.html">Track Order</a>
+            <!-- <a href="track-order.html">Track Order</a> -->
         </div>
         <div class="section2" id="authSection">
             <a href="login.html" id="loginLink">Login</a>
             <a href="signup.html" id="signupLink">Sign up</a>
-            <span id="userName" style="display: none;"></span>
-            <a href="#" id="logoutLink" style="display: none;" onclick="logoutUser()">Logout</a>
+            <div class="user-dropdown" id="userDropdown" style="display: none;">
+                <span id="userName" class="dropdown-toggle">Welcome, User</span>
+                <div class="dropdown-menu">
+                    <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                    <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+                    <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
             <div class="navbar-cart" onclick="toggleCart()">
                 <i class="fas fa-shopping-cart"></i>
                 <span id="cartBadge">0</span>
@@ -523,7 +529,7 @@
     </div>
 
     <script>
-        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api';
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentPage = 1;
         let totalPages = 1;
@@ -643,7 +649,7 @@
         // Helper function to get full image URL
         function getImageUrl(imagePath) {
             const PRODUCT_PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2216%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E';
-            const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com';
+            const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://kcp-organics-1.onrender.com';
             if (!imagePath) return PRODUCT_PLACEHOLDER;
             if (imagePath.startsWith('http')) return imagePath;
             if (imagePath.startsWith('/uploads')) return `${baseUrl}${imagePath}`;
@@ -909,24 +915,39 @@
     </div>
 
     <script>
-        function logoutUser() {
+        function logoutUser(event) {
+            if (event) event.preventDefault();
             localStorage.removeItem('userName');
             localStorage.removeItem('userId');
             localStorage.removeItem('userEmail');
             localStorage.removeItem('userRole');
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
             window.location.reload();
         }
 
         function checkUserSession() {
-            const userName = localStorage.getItem('userName');
-            const userId = localStorage.getItem('userId');
-            
-            if (userName && userId) {
-                document.getElementById('loginLink').style.display = 'none';
-                document.getElementById('signupLink').style.display = 'none';
-                document.getElementById('userName').style.display = 'inline';
-                document.getElementById('userName').textContent = 'Welcome, ' + userName;
-                document.getElementById('logoutLink').style.display = 'inline';
+            if (typeof updateAuthVisibility === 'function') {
+                updateAuthVisibility();
+            } else {
+                const userName = localStorage.getItem('userName');
+                const userId = localStorage.getItem('userId') || localStorage.getItem('token');
+                
+                const loginLink = document.getElementById('loginLink');
+                const signupLink = document.getElementById('signupLink');
+                const userDropdown = document.getElementById('userDropdown');
+                const welcomeText = document.getElementById('userName');
+                
+                if (userName || userId) {
+                    if (loginLink) loginLink.style.display = 'none';
+                    if (signupLink) signupLink.style.display = 'none';
+                    if (userDropdown) userDropdown.style.display = 'inline-block';
+                    if (welcomeText) welcomeText.textContent = 'Welcome, ' + (userName || 'User');
+                } else {
+                    if (loginLink) loginLink.style.display = 'inline-block';
+                    if (signupLink) signupLink.style.display = 'inline-block';
+                    if (userDropdown) userDropdown.style.display = 'none';
+                }
             }
         }
 

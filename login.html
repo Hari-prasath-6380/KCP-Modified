@@ -234,13 +234,19 @@
             <a href="products.html">Products</a>
             <a href="contact.html">Contact us</a>
             <a href="admin-dashboard.html">Admin</a>
-            <a href="track-order.html">Track Order</a>
+            <!-- <a href="track-order.html">Track Order</a> -->
         </div>
         <div class="section2" id="authSection">
             <a href="login.html" id="loginLink" class="active">Login</a>
             <a href="signup.html" id="signupLink">Sign up</a>
-            <span id="userName" style="display: none;"></span>
-            <a href="#" id="logoutLink" style="display: none;" onclick="logoutUser()">Logout</a>
+            <div class="user-dropdown" id="userDropdown" style="display: none;">
+                <span id="userName" class="dropdown-toggle">Welcome, User</span>
+                <div class="dropdown-menu">
+                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                  <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
             <div class="navbar-cart" onclick="toggleCart()">
                 <i class="fas fa-shopping-cart"></i>
                 <span id="cartBadge">0</span>
@@ -325,19 +331,28 @@
 
     <script>
         function toggleCart() { window.location.href = 'cart.html'; }
-        function logoutUser() {
-            localStorage.removeItem('userName'); localStorage.removeItem('userId');
-            localStorage.removeItem('userEmail'); localStorage.removeItem('userRole');
-            window.location.href = 'home.html';
+        function logoutUser(event) {
+            if (event) event.preventDefault();
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            window.location.reload();
         }
         function checkUserSession() {
-            const n = localStorage.getItem('userName');
-            if (n) {
-                document.getElementById('loginLink').style.display = 'none';
-                document.getElementById('signupLink').style.display = 'none';
-                document.getElementById('userName').style.display = 'inline';
-                document.getElementById('userName').textContent = 'Welcome, ' + n;
-                document.getElementById('logoutLink').style.display = 'inline';
+            if (typeof updateAuthVisibility === 'function') {
+                updateAuthVisibility();
+            } else {
+                const n = localStorage.getItem('userName');
+                const u = localStorage.getItem('userId') || localStorage.getItem('token');
+                if (n || u) {
+                    if (document.getElementById('loginLink')) document.getElementById('loginLink').style.display = 'none';
+                    if (document.getElementById('signupLink')) document.getElementById('signupLink').style.display = 'none';
+                    if (document.getElementById('userDropdown')) document.getElementById('userDropdown').style.display = 'inline-block';
+                    if (document.getElementById('userName')) document.getElementById('userName').textContent = 'Welcome, ' + (n || 'User');
+                }
             }
         }
         document.addEventListener('DOMContentLoaded', function() {

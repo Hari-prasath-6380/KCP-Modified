@@ -203,12 +203,10 @@ body.sidebar-open {
 }
 
 .header-left h1 {
-    font-size: clamp(20px, 4vw, 28px);
+    font-size: clamp(18px, 4vw, 24px);
     color: var(--text-dark);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     margin: 0;
+    white-space: normal; /* Allow title to wrap on very small screens */
 }
 
 .header-right {
@@ -268,6 +266,90 @@ body.sidebar-open {
     .sidebar.open {
         transform: translateX(0) !important;
     }
+/* ===== ADMIN TABLES RESPONSIVE (mobile) ===== */
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .section-header div {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Allow tables to shrink and stack */
+  .data-table {
+    min-width: 0 !important;
+    width: 100% !important;
+    border: 0;
+    table-layout: fixed; /* Prevent table from expanding based on content */
+  }
+  
+  .data-table thead {
+    display: none !important;
+  }
+  
+  .data-table tbody tr {
+    display: block !important;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 10px;
+    width: 100% !important;
+  }
+  
+  .data-table td {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    width: 100% !important;
+    text-align: right !important;
+    padding: 12px 10px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    min-height: 45px;
+    white-space: normal !important; /* Allow text wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .data-table td:last-child {
+    border-bottom: 0 !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    text-align: left !important;
+  }
+
+  .data-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    font-size: 11px;
+    text-align: left;
+    flex: 0 0 40%; /* Give label fixed width to align values */
+    padding-right: 10px;
+  }
+
+  .product-image-box {
+    margin-left: auto !important;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
 
     /* overlay shown when sidebar is open on mobile */
     .admin-overlay {
@@ -337,7 +419,22 @@ body.sidebar-open {
     gap: 15px;
     transition: var(--transition);
     border-left: 5px solid var(--primary-color);
-    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .stat-icon {
+        margin-bottom: 10px;
+    }
+
+    .analytics-grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 .stat-card:hover {

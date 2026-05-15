@@ -193,17 +193,21 @@
       <a href="products.html" class="active">Products</a>
       <a href="contact.html">Contact us</a>
       <a href="admin-dashboard.html">Admin</a>
-      <a href="track-order.html">Track Order</a>
+      <!-- <a href="track-order.html">Track Order</a> -->
     </div>
     <div class="section2" id="authSection">
       <div class="navbar-cart" onclick="window.location.href='cart.html'">
         <i class="fas fa-shopping-cart"></i>
         <span id="cartBadge">0</span>
       </div>
-      <a href="login.html" id="loginLink">Login</a>
-      <a href="signup.html" id="signupLink">Sign up</a>
-      <span id="userName" style="display: none;"></span>
-      <a href="#" id="logoutLink" style="display: none;" onclick="logoutUser()">Logout</a>
+      <div class="user-dropdown" id="userDropdown" style="display: none;">
+        <span id="userName" class="dropdown-toggle">Welcome, User</span>
+        <div class="dropdown-menu">
+          <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+          <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+          <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
     </div>
     <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
       <span class="hamburger"></span>
@@ -264,22 +268,31 @@
 </section>
 
   <script>
-    function logoutUser() {
-      localStorage.removeItem('userName'); localStorage.removeItem('userId');
-      localStorage.removeItem('userEmail'); localStorage.removeItem('userRole');
-      window.location.href = 'home.html';
+    function logoutUser(event) {
+      if (event) event.preventDefault();
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      window.location.reload();
     }
     document.addEventListener('DOMContentLoaded', function() {
-      var n = localStorage.getItem('userName');
-      if (n) {
-        var ll = document.getElementById('loginLink');
-        var sl = document.getElementById('signupLink');
-        var ul = document.getElementById('userName');
-        var lo = document.getElementById('logoutLink');
-        if (ll) ll.style.display = 'none';
-        if (sl) sl.style.display = 'none';
-        if (ul) { ul.style.display = 'inline'; ul.textContent = 'Welcome, ' + n; }
-        if (lo) lo.style.display = 'inline';
+      if (typeof updateAuthVisibility === 'function') {
+        updateAuthVisibility();
+      } else {
+        var n = localStorage.getItem('userName');
+        if (n) {
+          var ll = document.getElementById('loginLink');
+          var sl = document.getElementById('signupLink');
+          var ud = document.getElementById('userDropdown');
+          var ut = document.getElementById('userName');
+          if (ll) ll.style.display = 'none';
+          if (sl) sl.style.display = 'none';
+          if (ud) ud.style.display = 'inline-block';
+          if (ut) ut.textContent = 'Welcome, ' + n;
+        }
       }
       var cart = JSON.parse(localStorage.getItem('cart') || '[]');
       var badge = document.getElementById('cartBadge');

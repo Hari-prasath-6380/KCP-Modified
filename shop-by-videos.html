@@ -175,7 +175,7 @@
 
     <script>
         <script src="site.js"></script>
-        const API_URL = 'https://kcp-organics-1.onrender.com/api';
+        const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : 'https://kcp-organics-1.onrender.com/api');
 
         // Load videos from API
         async function loadVideos() {

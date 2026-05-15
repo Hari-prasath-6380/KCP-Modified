@@ -5,6 +5,9 @@
 
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
+const QRCodeFile = require("qrcode"); // New dependency for saving to file
+const fs = require("fs");
+const path = require("path");
 
 // Use the bundled Chromium from puppeteer@21 (compatible with whatsapp-web.js)
 const puppeteer = require("puppeteer");
@@ -28,10 +31,12 @@ const client = new Client({
         dataPath: "./.wwebjs_auth"
     }),
 
-    // ── 🔧 PUPPETEER: Uses bundled Chromium from puppeteer@21 ────
+    // ── 🔧 PUPPETEER: Optimized for Render/Linux Containers ────
     puppeteer: {
         headless: true,
-        executablePath: CHROME_PATH,
+        // On Render, we might need to let puppeteer find the path itself
+        // or use the one from the buildpack
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || CHROME_PATH,
         
         timeout: 60000, // 60 seconds timeout
         
@@ -53,20 +58,36 @@ const client = new Client({
             "--disable-preconnect",
             "--disable-client-side-phishing-detection",
             "--disable-breakpad",
-            "--disable-popup-blocking"
+            "--disable-popup-blocking",
+            "--window-size=1280,800"
         ]
     }
     // ──────────────────────────────────────────────────────────
 });
 
 // ── QR CODE: Scan with WhatsApp → Linked Devices ────────────
-client.on("qr", (qr) => {
+client.on("qr", async (qr) => {
     console.log("\n");
     console.log("╔════════════════════════════════════════════════════════╗");
     console.log("║    📱 WHATSAPP: SCAN QR CODE TO LINK DEVICE            ║");
     console.log("╚════════════════════════════════════════════════════════╝");
     console.log("");
     qrcode.generate(qr, { small: true });
+    console.log("");
+    
+    // SAVE QR CODE AS IMAGE FOR RENDER USERS
+    try {
+        const uploadsDir = path.join(__dirname, "uploads");
+        if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+        
+        const qrPath = path.join(uploadsDir, "last_qr.png");
+        await QRCodeFile.toFile(qrPath, qr);
+        console.log("🖼️  QR code saved to: backend/uploads/last_qr.png");
+        console.log("🌐 You can view it at: [YOUR_BACKEND_URL]/uploads/last_qr.png");
+    } catch (err) {
+        console.error("❌ Failed to save QR code image:", err.message);
+    }
+
     console.log("");
     console.log("➡️  STEPS TO LINK:");
     console.log("   1. Open WhatsApp on your phone");

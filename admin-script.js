@@ -1,7 +1,17 @@
-const API_URL = 'https://kcp-organics-1.onrender.com/api';
-const IMAGE_BASE_URL = 'https://kcp-organics-1.onrender.com';
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.') || window.location.hostname.endsWith('.local');
+const API_URL = isLocalhost ? `http://${window.location.hostname}:5000/api` : 'https://kcp-organics-1.onrender.com/api';
+const IMAGE_BASE_URL = isLocalhost ? `http://${window.location.hostname}:5000` : 'https://kcp-organics-1.onrender.com';
 let uploadedImageUrl = ''; // Store uploaded image URL
 let isImageUploading = false; // Track if image is currently uploading
+ 
+// ===== IMAGE ERROR HANDLER =====
+window.handleAdminImageError = function(img) {
+    img.style.display = 'none';
+    const container = img.parentElement;
+    if (container) {
+        container.innerHTML = '<i class="fas fa-image" style="color:#ccc; font-size:24px;"></i>';
+    }
+};
 
 // ===== LOCAL STORAGE HELPER =====
 const AdminStorage = {
@@ -216,26 +226,26 @@ async function loadProducts() {
                                 const escapedName = product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                                 
                                 return `
-                                <tr style="border-bottom: 1px solid #eee;">
-                                    <td style="padding: 12px 15px; text-align: center; vertical-align: middle;">
-                                        <div class="product-image-box" onclick="window.open('${imageUrl}', '_blank')">
+                                <tr class="product-row">
+                                    <td data-label="Image" class="td-image">
+                                        <div class="product-image-box" onclick="window.open('${imageUrl.replace(/'/g, "\\'")}', '_blank')">
                                             <img src="${imageUrl}" alt="${escapedName}" 
-                                                onerror="this.parentElement.innerHTML='<span style=\"color:#d32f2f; font-size:20px;\">❌</span>'"
+                                                onerror="handleAdminImageError(this)"
                                             >
                                         </div>
                                     </td>
-                                    <td style="padding: 12px 15px;"><strong>${escapedName}</strong></td>
-                                    <td style="padding: 12px 15px;">₹${product.price.toFixed(2)}</td>
-                                    <td style="padding: 12px 15px;" id="stock-cell-${product._id}">
-                                        <span style="background: ${product.stock > 20 ? '#4CAF50' : product.stock > 0 ? '#FFC107' : '#f44336'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+                                    <td data-label="Product Name" class="td-name"><strong>${escapedName}</strong></td>
+                                    <td data-label="Price" class="td-price">₹${product.price.toFixed(2)}</td>
+                                    <td data-label="Stock" class="td-stock" id="stock-cell-${product._id}">
+                                        <span class="stock-badge" style="background: ${product.stock > 20 ? '#4CAF50' : product.stock > 0 ? '#FFC107' : '#f44336'};">
                                             ${product.stock} units
                                         </span>
                                     </td>
-                                    <td style="padding: 12px 15px;">${new Date(product.createdAt).toLocaleDateString()}</td>
-                                    <td style="padding: 12px 15px;">
+                                    <td data-label="Created" class="td-created">${new Date(product.createdAt).toLocaleDateString()}</td>
+                                    <td data-label="Actions" class="td-actions">
                                         <div class="action-buttons">
                                             <button class="btn btn-info" onclick="editProduct('${product._id}')" style="padding: 6px 12px; font-size: 12px;">Edit</button>
-                                            <button class="btn btn-secondary" onclick="quickUpdateStock('${product._id}', '${escapedName.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', ${product.stock})" style="padding: 6px 12px; font-size: 12px; background:#2e7d32; color:white;"><i class='fas fa-boxes'></i> Stock</button>
+                                            <button class="btn btn-secondary" onclick="quickUpdateStock('${product._id}', ${product.stock || 0})" style="padding: 6px 12px; font-size: 12px; background:#2e7d32; color:white;"><i class='fas fa-boxes'></i> Stock</button>
                                             <button class="btn btn-danger" onclick="deleteProduct('${product._id}')" style="padding: 6px 12px; font-size: 12px;">Delete</button>
                                         </div>
                                     </td>
@@ -274,7 +284,16 @@ function closeProductModal() {
 }
 
 // Quick stock update without opening full edit modal
-async function quickUpdateStock(productId, productName, currentStock) {
+async function quickUpdateStock(productId, currentStock) {
+    // Find product name from the same row
+    let productName = "Product";
+    const cell = document.getElementById(`stock-cell-${productId}`);
+    if (cell) {
+        const row = cell.closest('tr');
+        const nameCell = row.querySelector('[data-label="Product Name"]');
+        if (nameCell) productName = nameCell.textContent.trim();
+    }
+
     const newStock = prompt(`Update stock for "${productName}"\nCurrent stock: ${currentStock}\n\nEnter new stock quantity:`, currentStock);
     if (newStock === null) return; // cancelled
     const qty = parseInt(newStock);
@@ -576,10 +595,19 @@ function setupProductForm() {
         if (uploadedImageUrl) {
             imageUrl = uploadedImageUrl; // Use uploaded image if available
             console.log('📸 Using uploaded image:', imageUrl);
-        } else {
-            // Warn user if editing and no new image uploaded (keep existing)
-            if (!productId) {
-                console.warn('⚠️  No image uploaded - using default image');
+        } else if (productId) {
+            // When editing, if no NEW image was uploaded, we MUST keep the existing one
+            // We'll try to find it from the preview image if it exists
+            const previewImg = document.getElementById('previewImg');
+            if (previewImg && previewImg.src && !previewImg.src.includes('placeholder')) {
+                // Extract the relative path from the absolute URL if necessary
+                const src = previewImg.src;
+                if (src.includes('/uploads/')) {
+                    imageUrl = '/uploads/' + src.split('/uploads/')[1].split('?')[0];
+                } else {
+                    imageUrl = src.split('?')[0]; // fallback
+                }
+                console.log('📸 Preserving existing image:', imageUrl);
             }
         }
         
@@ -750,12 +778,12 @@ async function loadUsers() {
 
         table.innerHTML = data.data.map(user => `
             <tr>
-                <td><strong>${user.name}</strong></td>
-                <td>${user.email}</td>
-                <td>${user.number}</td>
-                <td><span style="background-color: ${user.role === 'admin' ? '#e74c3c' : '#3498db'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${user.role}</span></td>
-                <td>${new Date(user.createdAt).toLocaleDateString()}</td>
-                <td>
+                <td data-label="Name"><strong>${user.name}</strong></td>
+                <td data-label="Email">${user.email}</td>
+                <td data-label="Phone">${user.number}</td>
+                <td data-label="Role"><span style="background-color: ${user.role === 'admin' ? '#e74c3c' : '#3498db'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${user.role}</span></td>
+                <td data-label="Joined">${new Date(user.createdAt).toLocaleDateString()}</td>
+                <td data-label="Actions">
                     <div class="action-buttons">
                         <button class="btn btn-info" onclick="editUser('${user._id}')">Edit</button>
                         <button class="btn btn-danger" onclick="deleteUser('${user._id}')">Delete</button>
@@ -1023,19 +1051,19 @@ async function loadOrders() {
             
             return `
             <tr>
-                <td><strong>${order._id.substring(0, 8)}</strong></td>
-                <td>${customerName}</td>
-                <td>${customerEmail}</td>
-                <td>${customerPhone}</td>
-                <td>${productNames}</td>
-                <td>$${totalAmount.toFixed(2)}</td>
-                <td>
+                <td data-label="Order ID"><strong>${order._id.substring(0, 8)}</strong></td>
+                <td data-label="Customer Name">${customerName}</td>
+                <td data-label="Email">${customerEmail}</td>
+                <td data-label="Phone">${customerPhone}</td>
+                <td data-label="Products">${productNames}</td>
+                <td data-label="Total Amount">$${totalAmount.toFixed(2)}</td>
+                <td data-label="Status">
                     <span class="status-badge status-${orderStatus}">
                         ${orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1)}
                     </span>
                 </td>
-                <td>${dateTime}</td>
-                <td>
+                <td data-label="Date & Time">${dateTime}</td>
+                <td data-label="Actions">
                     <div class="action-buttons">
                         <button class="btn btn-info" onclick="viewOrder('${order._id}')">View</button>
                         <button class="btn btn-warning" onclick="updateOrderStatus('${order._id}')">Update</button>
@@ -1635,19 +1663,19 @@ async function loadVideos() {
 
         table.innerHTML = data.data.map(video => `
             <tr>
-                <td>
+                <td data-label="Preview">
                     <video src="${getFullUrl(video.videoUrl)}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;" muted></video>
                 </td>
-                <td><strong>${escapeHtml(video.title)}</strong></td>
-                <td>${escapeHtml(video.productName || '-')}</td>
-                <td>${video.category || 'General'}</td>
-                <td>
+                <td data-label="Title"><strong>${escapeHtml(video.title)}</strong></td>
+                <td data-label="Product">${escapeHtml(video.productName || '-')}</td>
+                <td data-label="Category">${video.category || 'General'}</td>
+                <td data-label="Status">
                     <span class="status-badge ${video.isActive ? 'status-active' : 'status-inactive'}">
                         ${video.isActive ? 'Active' : 'Inactive'}
                     </span>
                 </td>
-                <td>${video.views || 0}</td>
-                <td>
+                <td data-label="Views">${video.views || 0}</td>
+                <td data-label="Actions">
                     <div class="action-buttons">
                         <button class="btn btn-info btn-sm" onclick="editVideo('${video._id}')">
                             <i class="fas fa-edit"></i>
@@ -2002,21 +2030,21 @@ function displayAboutUsVideos(videos) {
 
     tableBody.innerHTML = videos.map(video => `
         <tr>
-            <td>
+            <td data-label="Preview">
                 <div class="video-preview">
                     ${video.thumbnailUrl ? `<img src="${video.thumbnailUrl}" alt="${video.title}">` : '<i class="fas fa-video"></i>'}
                 </div>
             </td>
-            <td>${video.title}</td>
-            <td>${video.description ? video.description.substring(0, 50) + '...' : '-'}</td>
-            <td>
+            <td data-label="Title">${video.title}</td>
+            <td data-label="Description">${video.description ? video.description.substring(0, 50) + '...' : '-'}</td>
+            <td data-label="Status">
                 <span class="status-badge ${video.isActive ? 'active' : 'inactive'}">
                     ${video.isActive ? 'Active' : 'Inactive'}
                 </span>
             </td>
-            <td>${video.views || 0}</td>
-            <td>${video.displayOrder}</td>
-            <td>
+            <td data-label="Views">${video.views || 0}</td>
+            <td data-label="Order">${video.displayOrder}</td>
+            <td data-label="Actions">
                 <button class="btn btn-sm btn-info" onclick="editAboutUsVideo('${video._id}')">
                     <i class="fas fa-edit"></i>
                 </button>
