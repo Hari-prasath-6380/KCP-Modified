@@ -48,6 +48,11 @@
                     <span>Videos</span>
                     <span class="badge" id="videoBadge">0</span>
                 </a>
+                <a href="#" class="nav-item" data-section="recipevideos">
+                    <i class="fas fa-film"></i>
+                    <span>Recipe Videos</span>
+                    <span class="badge" id="recipeVideoBadge">0</span>
+                </a>
                 <a href="#" class="nav-item" data-section="aboutus">
                     <i class="fas fa-info-circle"></i>
                     <span>About Us</span>
@@ -400,8 +405,167 @@
                         </table>
                     </div>
                 </section>
+                <!-- Recipe Videos Section -->
+                <section id="recipevideos" class="section-content">
+                    <div class="section-header">
+                        <h2>Recipe Videos Management</h2>
+                        <button class="btn btn-primary" onclick="openRecipeVideoModal()" id="addRecipeVideoBtn">
+                            <i class="fas fa-plus"></i> Add Recipe Video
+                        </button>
+                    </div>
+                    <!-- Stats Row -->
+                    <div class="videos-stats" id="recipeVideoStats">
+                        <div class="video-stat-card">
+                            <i class="fas fa-film"></i>
+                            <div class="stat-content">
+                                <h3 id="totalRecipeVideosCount">0</h3>
+                                <p>Total Videos</p>
+                            </div>
+                        </div>
+                        <div class="video-stat-card">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="stat-content">
+                                <h3 id="activeRecipeVideosCount">0</h3>
+                                <p>Active Videos</p>
+                            </div>
+                        </div>
+                        <div class="video-stat-card">
+                            <i class="fas fa-boxes"></i>
+                            <div class="stat-content">
+                                <h3 id="linkedProductsCount">0</h3>
+                                <p>Linked Products</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Search/Filter -->
+                    <div class="recipe-video-filters" style="margin-bottom:16px; display:flex; gap:12px; flex-wrap:wrap;">
+                        <input type="text" id="recipeVideoSearch" placeholder="🔍 Search by product name or title..." style="flex:1; min-width:200px; padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:14px;" oninput="filterRecipeVideos()">
+                        <select id="recipeVideoStatusFilter" onchange="filterRecipeVideos()" style="padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="recipeVideosTable">
+                            <thead>
+                                <tr>
+                                    <th>Preview</th>
+                                    <th>Product</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Views</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recipeVideosTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
         </main>
+    </div>
+
+    <!-- ===== RECIPE VIDEO MODAL ===== -->
+    <div id="recipeVideoModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="recipeVideoModalTitle">
+        <div class="modal-content recipe-video-modal-content">
+            <button class="close" onclick="closeRecipeVideoModal()" aria-label="Close">&times;</button>
+            <h2 id="recipeVideoModalTitle"><i class="fas fa-film"></i> Add Recipe Video</h2>
+
+            <!-- Product Picker -->
+            <div class="recipe-product-picker" id="recipeProductPicker">
+                <div class="form-group">
+                    <label for="recipeVideoProductSearch">Search &amp; Select Product *</label>
+                    <div style="position:relative;">
+                        <input type="text" id="recipeVideoProductSearch" placeholder="Type product name to search..." autocomplete="off"
+                            oninput="searchProductsForRecipeVideo(this.value)">
+                        <div id="recipeProductDropdown" class="recipe-product-dropdown" style="display:none;"></div>
+                    </div>
+                    <input type="hidden" id="recipeVideoProductId">
+                    <input type="hidden" id="recipeVideoProductName">
+                    <div id="selectedProductBadge" class="selected-product-badge" style="display:none;">
+                        <i class="fas fa-box"></i>
+                        <span id="selectedProductLabel"></span>
+                        <button type="button" onclick="clearRecipeProductSelection()" style="background:none;border:none;cursor:pointer;color:#e74c3c;margin-left:8px;" title="Clear selection"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <form id="recipeVideoForm">
+                <input type="hidden" id="recipeVideoId">
+
+                <div class="form-grid" style="margin-top:16px;">
+                    <div class="form-group full-width">
+                        <label for="recipeVideoTitle">Video Title *</label>
+                        <input type="text" id="recipeVideoTitle" required placeholder="e.g. How to make Honey Lemonade">
+                    </div>
+
+                    <!-- Video Source Tabs -->
+                    <div class="form-group full-width">
+                        <label>Video Source *</label>
+                        <div class="video-source-tabs">
+                            <button type="button" class="tab-btn active" id="recipeUploadTabBtn" onclick="switchRecipeTab('upload')">Upload File</button>
+                            <button type="button" class="tab-btn" id="recipeUrlTabBtn" onclick="switchRecipeTab('url')">Video URL</button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Tab -->
+                    <div id="recipeUploadTab" class="form-group full-width recipe-tab-content active">
+                        <label for="recipeVideoFile">Select Video File (MP4, WebM)</label>
+                        <input type="file" id="recipeVideoFile" accept="video/mp4,video/webm,video/ogg,.mp4,.webm,.ogg" class="file-input" onchange="handleRecipeVideoSelect()">
+                        <label for="recipeVideoFile" class="file-input-label video-label" id="recipeVideoDropArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Click or drag &amp; drop video here</span>
+                            <small>MP4, WebM, OGG — max 100 MB</small>
+                        </label>
+                        <!-- Progress Bar -->
+                        <div id="recipeUploadProgress" style="display:none; margin-top:10px;">
+                            <div class="progress-bar">
+                                <div id="recipeProgressFill" class="progress-fill" style="width:0%"></div>
+                            </div>
+                            <p id="recipeProgressText" style="font-size:12px; color:#666; margin-top:4px;">Uploading... 0%</p>
+                        </div>
+                        <!-- Preview -->
+                        <div id="recipeVideoPreviewBox" style="display:none; margin-top:10px; position:relative;">
+                            <video id="recipeVideoPreview" controls style="width:100%; max-height:200px; border-radius:8px;"></video>
+                            <button type="button" onclick="clearRecipeVideoFile()" class="btn-remove-image" style="position:absolute;top:6px;right:6px;">✕</button>
+                        </div>
+                    </div>
+
+                    <!-- URL Tab -->
+                    <div id="recipeUrlTab" class="form-group full-width recipe-tab-content" style="display:none;">
+                        <label for="recipeVideoUrlInput">Video URL (YouTube embed, Vimeo, or direct URL)</label>
+                        <input type="url" id="recipeVideoUrlInput" placeholder="https://www.youtube.com/embed/... or direct mp4 URL">
+                        <small style="color:#666; margin-top:4px;">For YouTube: use the embed URL (https://www.youtube.com/embed/VIDEO_ID)</small>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="recipeVideoDescription">Description</label>
+                        <textarea id="recipeVideoDescription" rows="3" placeholder="Brief description of this recipe video"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="recipeVideoIsActive" checked>
+                            Active (visible on website)
+                        </label>
+                    </div>
+
+                    <div class="form-group full-width recipe-form-actions">
+                        <button type="submit" class="btn btn-primary" id="recipeVideoSaveBtn">
+                            <i class="fas fa-save"></i> Save Recipe Video
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeRecipeVideoModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- About Us Video Modal -->

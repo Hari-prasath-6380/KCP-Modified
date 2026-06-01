@@ -490,6 +490,110 @@
                 grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             }
         }
+
+        /* ===== RECIPE VIDEO SECTION ===== */
+        .recipe-video-section {
+            margin-bottom: 40px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 0;
+            display: none; /* hidden until video loads */
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .recipe-video-section.has-video {
+            display: block;
+        }
+
+        .recipe-video-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 24px 16px;
+        }
+
+        .recipe-video-header .icon-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .recipe-video-header .icon-badge i {
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .recipe-video-header .recipe-title-group h3 {
+            color: #fff;
+            font-size: clamp(16px, 3vw, 20px);
+            margin: 0 0 2px;
+            font-weight: 700;
+        }
+
+        .recipe-video-header .recipe-title-group p {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .recipe-video-body {
+            padding: 0 24px 24px;
+        }
+
+        .recipe-video-player {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+        }
+
+        .recipe-video-player video {
+            width: 100%;
+            max-height: 480px;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .recipe-video-player iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .recipe-video-desc {
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 14px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 8px;
+            border-left: 3px solid #e74c3c;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .recipe-video-header { padding: 16px 16px 12px; }
+            .recipe-video-body { padding: 0 16px 18px; }
+            .recipe-video-player iframe { height: 220px; }
+            .recipe-video-player video { max-height: 260px; }
+        }
+
+        @media (max-width: 480px) {
+            .recipe-video-header { gap: 10px; }
+            .recipe-video-header .icon-badge { width: 36px; height: 36px; }
+            .recipe-video-header .recipe-title-group h3 { font-size: 15px; }
+            .recipe-video-player iframe { height: 190px; }
+        }
     </style>
 </head>
 <body>
@@ -591,6 +695,23 @@
             <p id="productDescription"></p>
         </div>
 
+        <!-- ===== RECIPE VIDEO SECTION ===== -->
+        <div class="recipe-video-section" id="recipeVideoSection">
+            <div class="recipe-video-header">
+                <div class="icon-badge">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="recipe-title-group">
+                    <h3 id="recipeVideoTitle">Recipe Video</h3>
+                    <p>Watch how to use this product</p>
+                </div>
+            </div>
+            <div class="recipe-video-body">
+                <div class="recipe-video-player" id="recipeVideoPlayer"></div>
+                <div class="recipe-video-desc" id="recipeVideoDesc" style="display:none;"></div>
+            </div>
+        </div>
+
         <!-- Reviews Section -->
         <div class="reviews-section">
             <h2>Customer Reviews</h2>
@@ -671,6 +792,7 @@
             if (currentProductId) {
                 loadProductDetail();
                 loadProductReviews();
+                loadRecipeVideo();
                 checkUserLogin();
                 updateCartBadge();
             } else {
@@ -699,6 +821,70 @@
                     console.error('Error loading product:', err);
                     showToast('❌ Error loading product: ' + err.message);
                 });
+        }
+
+        // ===== RECIPE VIDEO =====
+        function loadRecipeVideo() {
+            fetch(`${API_BASE_URL}/videos/product/${currentProductId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        renderRecipeVideo(data.data);
+                    }
+                    // If no video, section stays hidden (display:none)
+                })
+                .catch(err => {
+                    console.warn('Recipe video not available:', err.message);
+                });
+        }
+
+        function renderRecipeVideo(video) {
+            const section  = document.getElementById('recipeVideoSection');
+            const player   = document.getElementById('recipeVideoPlayer');
+            const titleEl  = document.getElementById('recipeVideoTitle');
+            const descEl   = document.getElementById('recipeVideoDesc');
+
+            if (!video.videoUrl) return;
+
+            titleEl.textContent = video.title || 'Recipe Video';
+
+            const url = video.videoUrl;
+            const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
+            const isVimeo   = url.includes('vimeo.com');
+
+            if (isYoutube || isVimeo) {
+                // Embed via iframe (YouTube / Vimeo)
+                let embedUrl = url;
+                // Convert youtu.be short link → embed if needed
+                if (url.includes('youtu.be/')) {
+                    const id = url.split('youtu.be/')[1].split('?')[0];
+                    embedUrl = `https://www.youtube.com/embed/${id}`;
+                } else if (url.includes('youtube.com/watch?v=')) {
+                    const id = new URLSearchParams(url.split('?')[1]).get('v');
+                    embedUrl = `https://www.youtube.com/embed/${id}`;
+                }
+                player.innerHTML = `<iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+            } else {
+                // Direct file / server-hosted video
+                const BASE = getBaseUrl();
+                let src = url;
+                if (!url.startsWith('http')) {
+                    src = BASE + (url.startsWith('/') ? url : '/' + url);
+                }
+                player.innerHTML = `<video src="${src}" controls preload="metadata" playsinline poster=""></video>`;
+            }
+
+            // Show description if present
+            if (video.description && video.description.trim()) {
+                descEl.textContent = video.description;
+                descEl.style.display = 'block';
+            }
+
+            section.classList.add('has-video');
+            // Smooth reveal
+            section.style.opacity = '0';
+            section.style.transition = 'opacity 0.5s ease';
+            requestAnimationFrame(() => { section.style.opacity = '1'; });
         }
 
         function displayProductDetail(product) {

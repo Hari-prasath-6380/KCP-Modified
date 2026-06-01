@@ -30,6 +30,7 @@ const productSchema = new mongoose.Schema({
     image: { type: String, default: 'product.jpg' },
     images: [{ type: String }], // multiple product images
     thumbnail: { type: String },
+    recipeVideoUrl: { type: String, default: '' }, // recipe/demo video for this product
     
     // Categorization
     category: { type: String, required: true, index: true },

@@ -85,6 +85,7 @@ function setupNavigation() {
             if (section === 'orders') loadOrders();
             if (section === 'reviews') loadReviews();
             if (section === 'videos') loadVideos();
+            if (section === 'recipevideos') loadRecipeVideos();
             if (section === 'aboutus') loadAboutUsVideos();
         });
     });
@@ -100,6 +101,7 @@ function showSection(sectionId) {
         'orders': 'Customer Orders',
         'reviews': 'Customer Reviews',
         'videos': 'Shop by Videos',
+        'recipevideos': 'Recipe Videos',
         'aboutus': 'About Us Videos'
     };
 
@@ -246,6 +248,11 @@ async function loadProducts() {
                                         <div class="action-buttons">
                                             <button class="btn btn-info" onclick="editProduct('${product._id}')" style="padding: 6px 12px; font-size: 12px;">Edit</button>
                                             <button class="btn btn-secondary" onclick="quickUpdateStock('${product._id}', ${product.stock || 0})" style="padding: 6px 12px; font-size: 12px; background:#2e7d32; color:white;"><i class='fas fa-boxes'></i> Stock</button>
+                                            <button class="btn" onclick="openRecipeVideoModal('${product._id}', '${escapedName.replace(/'/g, "&apos;")}')"
+                                                style="padding:6px 12px; font-size:12px; background:linear-gradient(135deg,#8e44ad,#9b59b6); color:white; border-radius:6px;"
+                                                title="Manage recipe video for this product">
+                                                <i class='fas fa-film'></i> Video
+                                            </button>
                                             <button class="btn btn-danger" onclick="deleteProduct('${product._id}')" style="padding: 6px 12px; font-size: 12px;">Delete</button>
                                         </div>
                                     </td>
@@ -2397,3 +2404,540 @@ function clearUnitsForm() {
     unitsCount = 0;
 }
 
+// ===================================================================
+// ===== RECIPE VIDEOS MANAGEMENT =====
+// ===================================================================
+
+let recipeVideoUploadedUrl = '';
+let isRecipeVideoUploading = false;
+let allRecipeVideosCache = [];
+let recipeProductSearchTimeout = null;
+
+// ---- Load & Display ----
+async function loadRecipeVideos() {
+    try {
+        const resp = await fetch(`${API_URL}/videos/admin/all?category=recipe`);
+        const data = await resp.json();
+        allRecipeVideosCache = (data.data || []).filter(v => v.category === 'recipe');
+        renderRecipeVideosTable(allRecipeVideosCache);
+        updateRecipeVideoStats(allRecipeVideosCache);
+        updateRecipeVideoBadge(allRecipeVideosCache.length);
+    } catch (err) {
+        console.error('Error loading recipe videos:', err);
+        document.getElementById('recipeVideosTableBody').innerHTML =
+            '<tr><td colspan="6" class="text-center text-danger">Error loading recipe videos</td></tr>';
+    }
+}
+
+function renderRecipeVideosTable(videos) {
+    const tbody = document.getElementById('recipeVideosTableBody');
+    if (!videos || videos.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center" style="padding:40px;">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <i class="fas fa-film" style="font-size:48px;color:#ddd;"></i>
+                        <p style="color:#999;font-size:15px;">No recipe videos yet</p>
+                        <button class="btn btn-primary" onclick="openRecipeVideoModal()">
+                            <i class="fas fa-plus"></i> Add First Recipe Video
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
+        return;
+    }
+
+    tbody.innerHTML = videos.map(video => {
+        const productLabel = escapeHtml(video.productName || 'Not linked');
+        const videoSrc = getFullUrl(video.videoUrl);
+        const isYoutube = video.videoUrl && (video.videoUrl.includes('youtube.com') || video.videoUrl.includes('youtu.be'));
+        const isVimeo = video.videoUrl && video.videoUrl.includes('vimeo.com');
+        const isExternalEmbed = isYoutube || isVimeo;
+
+        let previewHtml;
+        if (isExternalEmbed) {
+            previewHtml = `<div class="recipe-preview-thumb" style="width:90px;height:56px;background:#1a1a2e;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="window.open('${escapeHtml(videoSrc)}','_blank')" title="Open in new tab"><i class='fas fa-play-circle' style='color:#fff;font-size:24px;'></i></div>`;
+        } else if (videoSrc) {
+            previewHtml = `<video src="${escapeHtml(videoSrc)}" style="width:90px;height:56px;object-fit:cover;border-radius:6px;" muted preload="metadata"></video>`;
+        } else {
+            previewHtml = `<div style="width:90px;height:56px;background:#f0f0f0;border-radius:6px;display:flex;align-items:center;justify-content:center;"><i class='fas fa-video' style='color:#bbb;font-size:20px;'></i></div>`;
+        }
+
+        return `
+        <tr>
+            <td data-label="Preview">${previewHtml}</td>
+            <td data-label="Product">
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                    <strong>${productLabel}</strong>
+                    ${video.productId ? `<small style="color:#aaa;font-size:11px;">ID: ${video.productId}</small>` : ''}
+                </div>
+            </td>
+            <td data-label="Title">${escapeHtml(video.title || '-')}</td>
+            <td data-label="Status">
+                <span class="status-badge ${video.isActive ? 'status-active' : 'status-inactive'}">
+                    ${video.isActive ? 'Active' : 'Inactive'}
+                </span>
+            </td>
+            <td data-label="Views">${video.views || 0}</td>
+            <td data-label="Actions">
+                <div class="action-buttons">
+                    <button class="btn btn-info btn-sm" onclick="editRecipeVideo('${video._id}')" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm ${video.isActive ? 'btn-warning' : 'btn-success'}" onclick="toggleRecipeVideoStatus('${video._id}')" title="${video.isActive ? 'Deactivate' : 'Activate'}">
+                        <i class="fas fa-${video.isActive ? 'eye-slash' : 'eye'}"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteRecipeVideo('${video._id}')" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function updateRecipeVideoStats(videos) {
+    const total = videos.length;
+    const active = videos.filter(v => v.isActive).length;
+    const linked = videos.filter(v => v.productId).length;
+    const elTotal = document.getElementById('totalRecipeVideosCount');
+    const elActive = document.getElementById('activeRecipeVideosCount');
+    const elLinked = document.getElementById('linkedProductsCount');
+    if (elTotal) elTotal.textContent = total;
+    if (elActive) elActive.textContent = active;
+    if (elLinked) elLinked.textContent = linked;
+}
+
+function updateRecipeVideoBadge(count) {
+    const badge = document.getElementById('recipeVideoBadge');
+    if (badge) badge.textContent = count;
+}
+
+// ---- Filter/Search ----
+function filterRecipeVideos() {
+    const query = (document.getElementById('recipeVideoSearch')?.value || '').toLowerCase();
+    const status = document.getElementById('recipeVideoStatusFilter')?.value || 'all';
+    let filtered = allRecipeVideosCache;
+    if (query) {
+        filtered = filtered.filter(v =>
+            (v.productName || '').toLowerCase().includes(query) ||
+            (v.title || '').toLowerCase().includes(query)
+        );
+    }
+    if (status === 'active') filtered = filtered.filter(v => v.isActive);
+    if (status === 'inactive') filtered = filtered.filter(v => !v.isActive);
+    renderRecipeVideosTable(filtered);
+}
+
+// ---- Modal Open/Close ----
+function openRecipeVideoModal(productId, productName) {
+    // Reset form
+    document.getElementById('recipeVideoId').value = '';
+    document.getElementById('recipeVideoForm').reset();
+    document.getElementById('recipeVideoModalTitle').innerHTML = '<i class="fas fa-film"></i> Add Recipe Video';
+    document.getElementById('recipeVideoIsActive').checked = true;
+    clearRecipeVideoFile();
+    recipeVideoUploadedUrl = '';
+    isRecipeVideoUploading = false;
+
+    // Pre-fill product if passed from product row
+    if (productId && productName) {
+        document.getElementById('recipeVideoProductId').value = productId;
+        document.getElementById('recipeVideoProductName').value = productName;
+        document.getElementById('recipeVideoProductSearch').value = productName;
+        document.getElementById('recipeVideoProductSearch').disabled = true;
+        document.getElementById('selectedProductLabel').textContent = productName;
+        document.getElementById('selectedProductBadge').style.display = 'flex';
+    } else {
+        document.getElementById('recipeVideoProductId').value = '';
+        document.getElementById('recipeVideoProductName').value = '';
+        document.getElementById('recipeVideoProductSearch').value = '';
+        document.getElementById('recipeVideoProductSearch').disabled = false;
+        document.getElementById('selectedProductBadge').style.display = 'none';
+    }
+    document.getElementById('recipeProductDropdown').style.display = 'none';
+    switchRecipeTab('upload');
+    document.getElementById('recipeVideoModal').classList.add('show');
+
+    // Setup form submit
+    const form = document.getElementById('recipeVideoForm');
+    form.onsubmit = saveRecipeVideo;
+}
+
+function closeRecipeVideoModal() {
+    document.getElementById('recipeVideoModal').classList.remove('show');
+    clearRecipeVideoFile();
+    document.getElementById('recipeProductDropdown').style.display = 'none';
+}
+
+// ---- Product Search in Modal ----
+async function searchProductsForRecipeVideo(query) {
+    const dropdown = document.getElementById('recipeProductDropdown');
+    if (!query || query.length < 2) {
+        dropdown.style.display = 'none';
+        return;
+    }
+    clearTimeout(recipeProductSearchTimeout);
+    recipeProductSearchTimeout = setTimeout(async () => {
+        try {
+            const resp = await fetch(`${API_URL}/products?name=${encodeURIComponent(query)}&limit=10`);
+            const data = await resp.json();
+            const products = data.data || [];
+            if (products.length === 0) {
+                dropdown.innerHTML = '<div class="recipe-dropdown-item" style="color:#999;">No products found</div>';
+                dropdown.style.display = 'block';
+                return;
+            }
+            dropdown.innerHTML = products.map(p => `
+                <div class="recipe-dropdown-item" onclick="selectRecipeProduct('${p._id}', '${escapeHtml(p.name).replace(/'/g,"&apos;")}')">
+                    <i class="fas fa-box" style="color:#2ecc71; margin-right:8px;"></i>
+                    ${escapeHtml(p.name)}
+                    <small style="color:#aaa; margin-left:8px;">${p.category || ''}</small>
+                </div>
+            `).join('');
+            dropdown.style.display = 'block';
+        } catch (err) {
+            console.error('Error searching products:', err);
+        }
+    }, 300);
+}
+
+function selectRecipeProduct(productId, productName) {
+    document.getElementById('recipeVideoProductId').value = productId;
+    document.getElementById('recipeVideoProductName').value = productName;
+    document.getElementById('recipeVideoProductSearch').value = productName;
+    document.getElementById('selectedProductLabel').textContent = productName;
+    document.getElementById('selectedProductBadge').style.display = 'flex';
+    document.getElementById('recipeProductDropdown').style.display = 'none';
+}
+
+function clearRecipeProductSelection() {
+    document.getElementById('recipeVideoProductId').value = '';
+    document.getElementById('recipeVideoProductName').value = '';
+    document.getElementById('recipeVideoProductSearch').value = '';
+    document.getElementById('recipeVideoProductSearch').disabled = false;
+    document.getElementById('selectedProductBadge').style.display = 'none';
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+    const search = document.getElementById('recipeVideoProductSearch');
+    const dropdown = document.getElementById('recipeProductDropdown');
+    if (search && dropdown && !search.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
+
+// ---- Tab Switching ----
+function switchRecipeTab(tab) {
+    const uploadTab = document.getElementById('recipeUploadTab');
+    const urlTab = document.getElementById('recipeUrlTab');
+    const uploadBtn = document.getElementById('recipeUploadTabBtn');
+    const urlBtn = document.getElementById('recipeUrlTabBtn');
+    if (tab === 'upload') {
+        uploadTab.style.display = 'block';
+        urlTab.style.display = 'none';
+        uploadBtn.classList.add('active');
+        urlBtn.classList.remove('active');
+    } else {
+        uploadTab.style.display = 'none';
+        urlTab.style.display = 'block';
+        urlBtn.classList.add('active');
+        uploadBtn.classList.remove('active');
+    }
+}
+
+// ---- Video File Handling ----
+function handleRecipeVideoSelect() {
+    const fileInput = document.getElementById('recipeVideoFile');
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('video/')) {
+        alert('Please select a valid video file (MP4, WebM, OGG)');
+        fileInput.value = '';
+        return;
+    }
+    if (file.size > 100 * 1024 * 1024) {
+        alert('Video file must be under 100MB');
+        fileInput.value = '';
+        return;
+    }
+
+    // Show local preview immediately
+    const previewBox = document.getElementById('recipeVideoPreviewBox');
+    const previewVid = document.getElementById('recipeVideoPreview');
+    previewVid.src = URL.createObjectURL(file);
+    previewBox.style.display = 'block';
+
+    // Upload via XHR for progress tracking
+    uploadRecipeVideoWithProgress(file);
+}
+
+function uploadRecipeVideoWithProgress(file) {
+    const formData = new FormData();
+    formData.append('video', file);
+
+    isRecipeVideoUploading = true;
+    recipeVideoUploadedUrl = '';
+
+    const progressDiv = document.getElementById('recipeUploadProgress');
+    const progressFill = document.getElementById('recipeProgressFill');
+    const progressText = document.getElementById('recipeProgressText');
+    const saveBtn = document.getElementById('recipeVideoSaveBtn');
+
+    progressDiv.style.display = 'block';
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Uploading... 0%';
+    if (saveBtn) saveBtn.disabled = true;
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `Uploading... ${pct}%`;
+        }
+    });
+
+    xhr.addEventListener('load', () => {
+        progressDiv.style.display = 'none';
+        isRecipeVideoUploading = false;
+        if (saveBtn) saveBtn.disabled = false;
+        try {
+            const result = JSON.parse(xhr.responseText);
+            if (xhr.status === 200 && result.success) {
+                recipeVideoUploadedUrl = result.videoUrl || (result.data && result.data.videoUrl);
+                progressText.textContent = '✅ Uploaded!';
+                progressDiv.style.display = 'block';
+                setTimeout(() => { progressDiv.style.display = 'none'; }, 2500);
+            } else {
+                alert('Upload failed: ' + (result.message || 'Unknown error'));
+                clearRecipeVideoFile();
+            }
+        } catch (e) {
+            alert('Upload error: ' + e.message);
+            clearRecipeVideoFile();
+        }
+    });
+
+    xhr.addEventListener('error', () => {
+        progressDiv.style.display = 'none';
+        isRecipeVideoUploading = false;
+        if (saveBtn) saveBtn.disabled = false;
+        alert('Network error during video upload. Please check your connection.');
+        clearRecipeVideoFile();
+    });
+
+    xhr.open('POST', `${API_URL}/uploads/upload-video`);
+    xhr.send(formData);
+}
+
+function clearRecipeVideoFile() {
+    const fileInput = document.getElementById('recipeVideoFile');
+    const previewBox = document.getElementById('recipeVideoPreviewBox');
+    const previewVid = document.getElementById('recipeVideoPreview');
+    const progressDiv = document.getElementById('recipeUploadProgress');
+    if (fileInput) fileInput.value = '';
+    if (previewVid) previewVid.src = '';
+    if (previewBox) previewBox.style.display = 'none';
+    if (progressDiv) progressDiv.style.display = 'none';
+    recipeVideoUploadedUrl = '';
+    isRecipeVideoUploading = false;
+}
+
+// ---- Save Recipe Video ----
+async function saveRecipeVideo(e) {
+    if (e) e.preventDefault();
+
+    if (isRecipeVideoUploading) {
+        alert('⏳ Please wait for the video upload to complete.');
+        return;
+    }
+
+    const recipeVideoId = document.getElementById('recipeVideoId').value;
+    const productId = document.getElementById('recipeVideoProductId').value;
+    const productName = document.getElementById('recipeVideoProductName').value;
+    const title = document.getElementById('recipeVideoTitle').value.trim();
+    const description = document.getElementById('recipeVideoDescription').value.trim();
+    const isActive = document.getElementById('recipeVideoIsActive').checked;
+
+    // Determine video source
+    const isUploadTab = document.getElementById('recipeUploadTab').style.display !== 'none';
+    let videoUrl = '';
+    if (isUploadTab) {
+        videoUrl = recipeVideoUploadedUrl;
+        if (!recipeVideoId && !videoUrl) {
+            alert('❌ Please upload a video file first.');
+            return;
+        }
+    } else {
+        videoUrl = document.getElementById('recipeVideoUrlInput').value.trim();
+        if (!recipeVideoId && !videoUrl) {
+            alert('❌ Please enter a video URL.');
+            return;
+        }
+    }
+
+    if (!title) {
+        alert('❌ Video title is required.');
+        return;
+    }
+
+    if (!productId && !recipeVideoId) {
+        alert('❌ Please select a product for this recipe video.');
+        return;
+    }
+
+    const payload = {
+        title,
+        description,
+        category: 'recipe',
+        isActive,
+        productId: productId || null,
+        productName: productName || '',
+    };
+    if (videoUrl) payload.videoUrl = videoUrl;
+
+    const saveBtn = document.getElementById('recipeVideoSaveBtn');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+    try {
+        const url = recipeVideoId ? `${API_URL}/videos/${recipeVideoId}` : `${API_URL}/videos`;
+        const method = recipeVideoId ? 'PUT' : 'POST';
+
+        const resp = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await resp.json();
+
+        if (result.success) {
+            // Also update recipeVideoUrl on the product record for quick access
+            if (productId && videoUrl) {
+                await fetch(`${API_URL}/products/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recipeVideoUrl: videoUrl })
+                }).catch(() => {});
+            }
+
+            alert(recipeVideoId ? '✅ Recipe video updated!' : '✅ Recipe video added!');
+            closeRecipeVideoModal();
+            loadRecipeVideos();
+        } else {
+            alert('❌ Error: ' + (result.message || 'Unknown error'));
+        }
+    } catch (err) {
+        console.error('Error saving recipe video:', err);
+        alert('❌ Error saving recipe video: ' + err.message);
+    } finally {
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Recipe Video'; }
+    }
+}
+
+// ---- Edit Recipe Video ----
+async function editRecipeVideo(videoId) {
+    try {
+        const resp = await fetch(`${API_URL}/videos/${videoId}`);
+        const data = await resp.json();
+
+        if (data.success && data.data) {
+            const v = data.data;
+
+            document.getElementById('recipeVideoId').value = v._id;
+            document.getElementById('recipeVideoTitle').value = v.title || '';
+            document.getElementById('recipeVideoDescription').value = v.description || '';
+            document.getElementById('recipeVideoIsActive').checked = v.isActive !== false;
+            document.getElementById('recipeVideoModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Recipe Video';
+
+            // Set product info
+            if (v.productId) {
+                document.getElementById('recipeVideoProductId').value = v.productId;
+                document.getElementById('recipeVideoProductName').value = v.productName || '';
+                document.getElementById('recipeVideoProductSearch').value = v.productName || '';
+                document.getElementById('recipeVideoProductSearch').disabled = true;
+                document.getElementById('selectedProductLabel').textContent = v.productName || v.productId;
+                document.getElementById('selectedProductBadge').style.display = 'flex';
+            } else {
+                clearRecipeProductSelection();
+            }
+
+            // Show existing video preview
+            recipeVideoUploadedUrl = '';
+            clearRecipeVideoFile();
+            if (v.videoUrl) {
+                const isExternalUrl = v.videoUrl.startsWith('http') && !v.videoUrl.startsWith(window.location.origin);
+                const isEmbed = v.videoUrl.includes('youtube') || v.videoUrl.includes('vimeo');
+                if (isEmbed || isExternalUrl) {
+                    // Show as URL tab
+                    switchRecipeTab('url');
+                    document.getElementById('recipeVideoUrlInput').value = v.videoUrl;
+                } else {
+                    // Show as upload tab with preview
+                    switchRecipeTab('upload');
+                    const previewVid = document.getElementById('recipeVideoPreview');
+                    const previewBox = document.getElementById('recipeVideoPreviewBox');
+                    previewVid.src = getFullUrl(v.videoUrl);
+                    previewBox.style.display = 'block';
+                    recipeVideoUploadedUrl = v.videoUrl;
+                }
+            } else {
+                switchRecipeTab('upload');
+            }
+
+            document.getElementById('recipeProductDropdown').style.display = 'none';
+            const form = document.getElementById('recipeVideoForm');
+            form.onsubmit = saveRecipeVideo;
+            document.getElementById('recipeVideoModal').classList.add('show');
+        }
+    } catch (err) {
+        console.error('Error loading recipe video:', err);
+        alert('Error loading recipe video details');
+    }
+}
+
+// ---- Toggle Status ----
+async function toggleRecipeVideoStatus(videoId) {
+    try {
+        const resp = await fetch(`${API_URL}/videos/${videoId}/toggle`, { method: 'PATCH' });
+        const result = await resp.json();
+        if (result.success) {
+            loadRecipeVideos();
+        } else {
+            alert('Error toggling video status');
+        }
+    } catch (err) {
+        console.error('Error toggling recipe video:', err);
+    }
+}
+
+// ---- Delete ----
+async function deleteRecipeVideo(videoId) {
+    if (!confirm('Are you sure you want to delete this recipe video? This action cannot be undone.')) return;
+    try {
+        const resp = await fetch(`${API_URL}/videos/${videoId}`, { method: 'DELETE' });
+        const result = await resp.json();
+        if (result.success) {
+            alert('✅ Recipe video deleted successfully!');
+            loadRecipeVideos();
+        } else {
+            alert('Error deleting recipe video');
+        }
+    } catch (err) {
+        console.error('Error deleting recipe video:', err);
+    }
+}
+
+// Load recipe video badge on page init
+document.addEventListener('DOMContentLoaded', () => {
+    fetch(`${API_URL}/videos/admin/all`)
+        .then(r => r.json())
+        .then(data => {
+            const recipeVids = (data.data || []).filter(v => v.category === 'recipe');
+            updateRecipeVideoBadge(recipeVids.length);
+        })
+        .catch(() => {});
+});

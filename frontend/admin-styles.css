@@ -559,6 +559,28 @@ body.sidebar-open {
     background-color: #2980b9;
 }
 
+.btn-warning {
+    background-color: var(--warning-color);
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-warning:hover {
+    background-color: #d68910;
+}
+
+.btn-success {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-success:hover {
+    background-color: var(--secondary-color);
+}
+
 /* ===== TABLES ===== */
 .table-container {
     background: var(--card-bg);
@@ -2772,5 +2794,364 @@ body.sidebar-open {
     
     .stat-info h3 {
         font-size: 11px;
+    }
+}
+
+/* ============================================================ */
+/* ===== RECIPE VIDEO FEATURE STYLES ========================= */
+/* ============================================================ */
+
+/* --- Recipe Video Modal --- */
+.recipe-video-modal-content {
+    max-width: 720px;
+    width: 94vw;
+    max-height: 92vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: clamp(20px, 4vw, 36px);
+    position: relative;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.recipe-video-modal-content h2 {
+    font-size: clamp(18px, 3vw, 22px);
+    color: #1a1a2e;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.recipe-video-modal-content h2 i {
+    color: #8e44ad;
+    font-size: 22px;
+}
+
+/* --- Product Picker --- */
+.recipe-product-picker {
+    background: linear-gradient(135deg, rgba(142,68,173,0.06), rgba(155,89,182,0.04));
+    border: 1.5px solid rgba(142,68,173,0.2);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 4px;
+}
+
+.recipe-product-picker label {
+    font-weight: 700;
+    color: #6c3483;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.recipe-product-picker input[type="text"] {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid rgba(142,68,173,0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+
+.recipe-product-picker input[type="text"]:focus {
+    outline: none;
+    border-color: #8e44ad;
+    box-shadow: 0 0 0 3px rgba(142,68,173,0.12);
+}
+
+.recipe-product-picker input[type="text"]:disabled {
+    background: #f8f0ff;
+    color: #6c3483;
+    cursor: not-allowed;
+}
+
+/* --- Selected Product Badge --- */
+.selected-product-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 9px 14px;
+    background: linear-gradient(135deg, #f3e5f5, #e8d5f5);
+    border: 1.5px solid #ce93d8;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a148c;
+}
+
+.selected-product-badge i {
+    color: #8e44ad;
+}
+
+/* --- Autocomplete Product Dropdown --- */
+.recipe-product-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1.5px solid rgba(142,68,173,0.25);
+    border-radius: 10px;
+    z-index: 2000;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+    max-height: 220px;
+    overflow-y: auto;
+    margin-top: 4px;
+}
+
+.recipe-dropdown-item {
+    padding: 11px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #f5f0ff;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+}
+
+.recipe-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.recipe-dropdown-item:hover {
+    background: #f3e5f5;
+    color: #6c3483;
+}
+
+/* --- Upload Progress Bar --- */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8e44ad, #2ecc71);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* --- Video Source Tabs --- */
+.video-source-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 8px 18px;
+    border: 1.5px solid #ddd;
+    border-radius: 20px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 3px 12px rgba(142,68,173,0.3);
+}
+
+.tab-btn:hover:not(.active) {
+    border-color: #8e44ad;
+    color: #8e44ad;
+}
+
+/* --- Recipe Tab Content --- */
+.recipe-tab-content {
+    transition: opacity 0.2s;
+}
+
+/* --- Recipe Form Actions --- */
+.recipe-form-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 8px;
+}
+
+/* --- Recipe Videos Table Section --- */
+#recipevideos .videos-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+/* Status Badges (for recipe table) */
+.status-badge.status-active {
+    background: rgba(46,204,113,0.12);
+    color: #27ae60;
+    border: 1px solid rgba(46,204,113,0.3);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge.status-inactive {
+    background: rgba(231,76,60,0.1);
+    color: #e74c3c;
+    border: 1px solid rgba(231,76,60,0.25);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* --- Product Row Video Button --- */
+.btn-film {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+
+.btn-film:hover {
+    background: linear-gradient(135deg, #7d3c98, #8e44ad);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(142,68,173,0.35);
+}
+
+/* ============================================================ */
+/* ===== RECIPE VIDEO RESPONSIVE STYLES ====================== */
+/* ============================================================ */
+
+/* Tablet (768px – 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .recipe-video-modal-content {
+        max-width: 90vw;
+    }
+
+    #recipevideos .videos-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Mobile (≤ 768px) */
+@media (max-width: 768px) {
+    /* Modal takes full width */
+    .recipe-video-modal-content {
+        width: 100vw;
+        max-width: 100vw;
+        max-height: 100dvh;
+        border-radius: 16px 16px 0 0;
+        padding: 20px 16px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        overflow-y: auto;
+    }
+
+    /* Center the modal vertically on smaller screens */
+    #recipeVideoModal.modal.show {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .recipe-form-actions {
+        flex-direction: column;
+    }
+
+    .recipe-form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .video-source-tabs {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        width: 100%;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    /* Product picker full width */
+    .recipe-product-picker {
+        padding: 12px;
+    }
+
+    /* Recipe videos stats grid stacks */
+    #recipevideos .videos-stats {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* Recipe video filters stack */
+    .recipe-video-filters {
+        flex-direction: column !important;
+    }
+
+    .recipe-video-filters input,
+    .recipe-video-filters select {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    /* Product row video button - shorter label */
+    .btn-film span.btn-label {
+        display: none;
+    }
+
+    /* Selected product badge wraps */
+    .selected-product-badge {
+        flex-wrap: wrap;
+    }
+}
+
+/* Extra small (≤ 480px) */
+@media (max-width: 480px) {
+    .recipe-video-modal-content h2 {
+        font-size: 16px;
+    }
+
+    .recipe-product-dropdown {
+        max-height: 160px;
+    }
+
+    .recipe-dropdown-item {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* Action buttons in recipe table wrap */
+    #recipevideos .action-buttons {
+        flex-wrap: wrap;
+        gap: 6px;
     }
 }

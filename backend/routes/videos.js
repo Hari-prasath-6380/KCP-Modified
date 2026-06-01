@@ -52,6 +52,25 @@ router.get('/admin/all', async (req, res) => {
     }
 });
 
+// Get video by product ID (for recipe videos linked to products)
+router.get('/product/:productId', async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const video = await Video.findOne({
+            productId: productId,
+            category: 'recipe'
+        });
+
+        if (!video) {
+            return res.status(200).json({ success: true, data: null, message: 'No recipe video found for this product' });
+        }
+
+        res.status(200).json({ success: true, data: video });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // Get single video
 router.get('/:id', async (req, res) => {
     try {

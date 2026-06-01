@@ -261,9 +261,18 @@
       </div>
     </div>
   </section>
-
-  <!-- Shop by Videos Section -->
-  <!-- Shop by Videos section removed -->
+  <!-- ========== RECIPE VIDEOS SECTION ========== -->
+  <section class="recipe-videos-section" id="recipeVideosSection" style="display: none;">
+    <div class="organic-container">
+      <div class="section-header-products">
+        <h2>📹 Delicious Recipe Videos</h2>
+        <p>Learn how to make healthy, wholesome dishes using our organic ingredients. Click to view the product!</p>
+      </div>
+      <div class="recipe-videos-grid" id="recipeVideosGrid">
+        <!-- Dynamically loaded recipe videos will go here -->
+      </div>
+    </div>
+  </section>
 
 
 
@@ -1214,6 +1223,86 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
+    async function loadRecipeVideos() {
+      const container = document.getElementById('recipeVideosGrid');
+      const section = document.getElementById('recipeVideosSection');
+      if (!container || !section) return;
+
+      try {
+        const baseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
+        const response = await fetch(`${baseUrl}/api/videos?category=recipe&active=true`);
+        const data = await response.json();
+
+        if (data.success && data.data && data.data.length > 0) {
+          section.style.display = 'block';
+          displayRecipeVideos(data.data);
+        } else {
+          section.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading recipe videos:', error);
+        section.style.display = 'none';
+      }
+    }
+
+    function displayRecipeVideos(videos) {
+      const container = document.getElementById('recipeVideosGrid');
+      if (!container) return;
+
+      container.innerHTML = videos.map(video => {
+        // Safe values
+        const escapedTitle = escapeHtmlHome(video.title);
+        const escapedDesc = escapeHtmlHome(video.description || '');
+        const escapedProdName = escapeHtmlHome(video.productName || 'Organic Product');
+        const productId = video.productId;
+
+        // Check if there is a thumbnailUrl, otherwise use standard youtube thumb or fallback placeholder
+        let thumbUrl = video.thumbnailUrl;
+        if (!thumbUrl) {
+          if (video.videoUrl && (video.videoUrl.includes('youtube.com') || video.videoUrl.includes('youtu.be'))) {
+            const ytid = extractYoutubeIdHome(video.videoUrl);
+            thumbUrl = `https://img.youtube.com/vi/${ytid}/hqdefault.jpg`;
+          } else {
+            thumbUrl = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22320%22 height=%22180%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22%23999%22%3ERecipe Video%3C/text%3E%3C/svg%3E';
+          }
+        } else {
+          // If relative URL, prefix it with the server url
+          if (!thumbUrl.startsWith('http') && !thumbUrl.startsWith('data:')) {
+            const baseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
+            thumbUrl = baseUrl + thumbUrl;
+          }
+        }
+
+        return `
+          <div class="recipe-video-card" onclick="viewProductDetails('${productId}')">
+            <div class="recipe-video-thumb-wrapper">
+              <img src="${thumbUrl}" alt="${escapedTitle}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22320%22 height=%22180%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22%23999%22%3ERecipe Video%3C/text%3E%3C/svg%3E'">
+              <div class="recipe-play-overlay">
+                <div class="recipe-play-button">
+                  <i class="fas fa-play"></i>
+                </div>
+              </div>
+              <span class="recipe-product-badge">🌾 ${escapedProdName}</span>
+            </div>
+            <div class="recipe-video-details">
+              <h3>${escapedTitle}</h3>
+              <p>${escapedDesc.substring(0, 120)}${escapedDesc.length > 120 ? '...' : ''}</p>
+              <div class="recipe-card-footer">
+                <span class="view-recipe-btn">View Recipe & Shop <i class="fas fa-arrow-right"></i></span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function extractYoutubeIdHome(url) {
+      if (!url) return '';
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : url;
+    }
+
     // Load products on page load
     document.addEventListener('DOMContentLoaded', function () {
       console.log('🌿 KCP Organics Home - Initializing...');
@@ -1222,10 +1311,10 @@
       checkUserSession();
       updateCartBadge();
 
-      // Load videos directly without API check
+      // Load recipe videos
       setTimeout(() => {
-        console.log('Loading videos...');
-        loadVideos();
+        console.log('Loading recipe videos...');
+        loadRecipeVideos();
       }, 100);
     });
 

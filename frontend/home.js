@@ -74,6 +74,11 @@ function displayHomeVideos(videos) {
     const videosGrid = document.getElementById('homeVideosGrid');
     const noVideosMessage = document.getElementById('noHomeVideosMessage');
     
+    if (!videosGrid) {
+        console.warn('homeVideosGrid element not found, skipping rendering');
+        return;
+    }
+    
     // Clear existing videos
     videosGrid.innerHTML = '';
     
