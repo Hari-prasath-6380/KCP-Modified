@@ -46,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupProductForm();
     setupUserForm();
     setupImageUpload();
+    setupVideoUpload();
+    setupRecipeVideoUpload();
     setupDocxImport();
     initializeAnalytics();
     loadReviewsBadge();
@@ -331,7 +333,8 @@ async function quickUpdateStock(productId, currentStock) {
 // ===== IMAGE UPLOAD SETUP =====
 function setupImageUpload() {
     const fileInput = document.getElementById('productImage');
-    const fileLabel = document.querySelector('.file-input-label');
+    const fileLabel = document.querySelector('#productModal .file-input-label');
+    if (!fileInput || !fileLabel) return;
     const imagePreview = document.getElementById('imagePreview');
 
     // Prevent any form submission from file input
@@ -1721,8 +1724,6 @@ function openVideoModal() {
     document.getElementById('videoUploadStatus').style.display = 'none';
     document.getElementById('videoFile').value = '';
     document.getElementById('videoModal').classList.add('show');
-    
-    setupVideoUpload();
 }
 
 function closeVideoModal() {
@@ -1731,15 +1732,11 @@ function closeVideoModal() {
 
 function setupVideoUpload() {
     const fileInput = document.getElementById('videoFile');
-    const fileLabel = document.querySelector('.video-label');
+    const fileLabel = document.querySelector('#videoModal .file-input-label');
     
     if (!fileInput || !fileLabel) return;
 
-    // Remove old listeners by cloning
-    const newInput = fileInput.cloneNode(true);
-    fileInput.parentNode.replaceChild(newInput, fileInput);
-    
-    newInput.addEventListener('change', (e) => {
+    fileInput.addEventListener('change', (e) => {
         e.preventDefault();
         e.stopPropagation();
         handleVideoSelect();
@@ -1748,7 +1745,7 @@ function setupVideoUpload() {
     fileLabel.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        document.getElementById('videoFile').click();
+        fileInput.click();
     });
 
     fileLabel.addEventListener('dragover', (e) => {
@@ -1770,8 +1767,42 @@ function setupVideoUpload() {
         
         const files = e.dataTransfer.files;
         if (files.length > 0) {
-            document.getElementById('videoFile').files = files;
+            fileInput.files = files;
             handleVideoSelect();
+        }
+    });
+}
+
+// ===== RECIPE VIDEO UPLOAD SETUP =====
+function setupRecipeVideoUpload() {
+    const fileInput = document.getElementById('recipeVideoFile');
+    const fileLabel = document.getElementById('recipeVideoDropArea');
+    
+    if (!fileInput || !fileLabel) return;
+
+    fileLabel.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileLabel.style.backgroundColor = 'rgba(46, 204, 113, 0.2)';
+    });
+
+    fileLabel.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileLabel.style.backgroundColor = 'rgba(46, 204, 113, 0.05)';
+    });
+
+    fileLabel.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileLabel.style.backgroundColor = 'rgba(46, 204, 113, 0.05)';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            // Trigger the change event manually to call handleRecipeVideoSelect()
+            const event = new Event('change', { bubbles: true });
+            fileInput.dispatchEvent(event);
         }
     });
 }
@@ -1957,7 +1988,6 @@ async function editVideo(videoId) {
             }
             
             document.getElementById('videoModal').classList.add('show');
-            setupVideoUpload();
         }
     } catch (error) {
         console.error('Error loading video:', error);
