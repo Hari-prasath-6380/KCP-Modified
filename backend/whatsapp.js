@@ -37,9 +37,9 @@ const client = new Client({
         // On Render, we might need to let puppeteer find the path itself
         // or use the one from the buildpack
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || CHROME_PATH,
-        
+
         timeout: 60000, // 60 seconds timeout
-        
+
         args: [
             "--no-sandbox",
             "--disable-setuid-sandbox",
@@ -74,12 +74,12 @@ client.on("qr", async (qr) => {
     console.log("");
     qrcode.generate(qr, { small: true });
     console.log("");
-    
+
     // SAVE QR CODE AS IMAGE FOR RENDER USERS
     try {
         const uploadsDir = path.join(__dirname, "uploads");
         if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-        
+
         const qrPath = path.join(uploadsDir, "last_qr.png");
         await QRCodeFile.toFile(qrPath, qr);
         console.log("🖼️  QR code saved to: backend/uploads/last_qr.png");
@@ -165,7 +165,7 @@ async function sendOrderNotification(orderData) {
     // ── RETRY LOGIC: Wait up to 10 seconds if client is initializing ──
     let attempts = 0;
     let maxAttempts = 10; // 10 attempts × 1 second = 10 seconds max wait
-    
+
     while (!isClientReady && attempts < maxAttempts) {
         attempts++;
         if (attempts === 1) {
@@ -173,7 +173,7 @@ async function sendOrderNotification(orderData) {
         }
         await new Promise(r => setTimeout(r, 1000)); // Wait 1 second
     }
-    
+
     if (!isClientReady) {
         console.warn('❌ [WhatsApp] Client still not ready after 10-second wait.');
         console.warn('💡 [Suggestions]:');
@@ -196,7 +196,7 @@ async function sendOrderNotification(orderData) {
 
     // ── MESSAGE FOR ADMIN ──────────────────────────────────────
     const adminMessage =
-`🛒 *New Order — KCP Organics*
+        `🛒 *New Order — KCP Organics*
 
 👤 *Customer:* ${customerName}
 📞 *Phone:* ${phone}
@@ -214,7 +214,7 @@ ${itemList}
 
     // ── MESSAGE FOR CUSTOMER ───────────────────────────────────
     const customerMessage =
-`✅ *Order Confirmed — KCP Organics*
+        `✅ *Order Confirmed — KCP Organics*
 
 Thank you for your order, ${customerName}! 🎉
 
@@ -244,17 +244,17 @@ Thank you for shopping with KCP Organics! 🙏`;
         try {
             const cleanPhone = phone.replace(/\D/g, ""); // Remove all non-digits
             const last10Digits = cleanPhone.slice(-10); // Get last 10 digits
-            
+
             // Validate phone number
             if (!last10Digits || last10Digits.length !== 10) {
                 console.error(`❌ [WhatsApp] Invalid customer phone format: ${phone}`);
                 console.error(`❌ [WhatsApp] Phone must be 10 digits. Got: ${cleanPhone}`);
                 return; // Skip customer notification if invalid
             }
-            
+
             const fullCustomerNumber = `91${last10Digits}@c.us`;
             console.log(`📱 [WhatsApp] Sending order confirmation to customer: +91${last10Digits}`);
-            
+
             await client.sendMessage(fullCustomerNumber, customerMessage);
             console.log(`✅ [WhatsApp] Order confirmation sent to customer (+91${last10Digits})`);
         } catch (customerError) {
@@ -281,7 +281,7 @@ async function sendUserMessage(senderName, senderPhone, messageText) {
     // ── RETRY LOGIC: Wait up to 10 seconds if client is initializing ──
     let attempts = 0;
     let maxAttempts = 10;
-    
+
     while (!isClientReady && attempts < maxAttempts) {
         attempts++;
         if (attempts === 1) {
@@ -289,7 +289,7 @@ async function sendUserMessage(senderName, senderPhone, messageText) {
         }
         await new Promise(r => setTimeout(r, 1000));
     }
-    
+
     if (!isClientReady) {
         console.warn("⚠️  [WhatsApp] Client not ready — user message not sent.");
         console.warn('💡 Please restart server and scan QR code to enable WhatsApp');
@@ -297,7 +297,7 @@ async function sendUserMessage(senderName, senderPhone, messageText) {
     }
 
     const message =
-`💬 *New Message from KCP Organics Website*
+        `💬 *New Message from KCP Organics Website*
 
 👤 *Name:* ${senderName}
 📞 *Phone:* ${senderPhone}
@@ -344,12 +344,12 @@ client.initialize()
         clearTimeout(initTimeout);
         isClientReady = false;
         console.error("\n❌ [WhatsApp] Initialization failed:", error.message);
-        
+
         // Check if it's a Puppeteer/protocol error
         if (error.message && error.message.includes("Protocol error")) {
             console.warn("⚠️  [WhatsApp] Puppeteer protocol error — disabling WhatsApp");
         }
-        
+
         console.warn("⚠️  [WhatsApp] Server will continue without WhatsApp notifications");
         console.warn("💡 [Tip] Try manually scanning QR codes later or restarting the server\n");
     });

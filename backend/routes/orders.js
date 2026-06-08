@@ -218,7 +218,7 @@ router.post('/', async (req, res) => {
             customerPhone: phone,
             address: `${address}, ${city}, ${state} ${zipcode}`,
             amount: totalAmount,
-            items: products.length,
+            items: products,
             products: products,
             paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : paymentMethod.toUpperCase()
         };

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const isTouchDevice = () => {
     return (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
   };
-  
+
   if (isTouchDevice()) {
     document.documentElement.classList.add('touch');
   }
@@ -51,37 +51,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Navigation: activate sections and auto-hide sidebar on small screens
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(item => {
-    item.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      const target = item.getAttribute('data-section');
-      if (!target) return;
-
-      // mark active nav item
-      navItems.forEach(n => n.classList.remove('active'));
-      item.classList.add('active');
-
-      // show corresponding section
-      const sections = document.querySelectorAll('.section-content');
-      sections.forEach(s => s.classList.remove('active'));
-      const targetSection = document.getElementById(target);
-      if (targetSection) targetSection.classList.add('active');
-
-      // update header title
-      const title = document.getElementById('sectionTitle');
-      if (title) title.textContent = item.textContent.trim();
-
-      // On small screens, hide the sidebar after selecting a section
-      if (window.innerWidth <= 992) {
-        sidebar.classList.add('collapsed');
-        sidebar.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-        removeOverlay();
-        document.body.classList.remove('sidebar-open');
-      }
-    });
+  // NOTE: Navigation click handling is now managed by admin-script.js (setupNavigation)
+  // to avoid duplicate handlers and conflicting title/section updates.
+  // We only need to auto-hide the sidebar on small screens after a section change.
+  document.addEventListener('click', (e) => {
+    const clickedNav = e.target.closest && e.target.closest('.nav-item');
+    if (clickedNav && window.innerWidth <= 992) {
+      sidebar.classList.add('collapsed');
+      sidebar.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      removeOverlay();
+      document.body.classList.remove('sidebar-open');
+    }
   });
 
   // Ensure sidebar is visible on large screens after resize
@@ -95,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
       removeOverlay();
     }
   });
-  
+
   // Overlay helpers to dim page when sidebar is open on mobile
   function showOverlay() {
     let ov = document.querySelector('.admin-overlay');

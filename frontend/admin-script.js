@@ -3,9 +3,14 @@ const API_URL = isLocalhost ? `http://${window.location.hostname}:5000/api` : wi
 const IMAGE_BASE_URL = isLocalhost ? `http://${window.location.hostname}:5000` : window.location.origin;
 let uploadedImageUrl = ''; // Store uploaded image URL
 let isImageUploading = false; // Track if image is currently uploading
- 
+
+// Log that script is loaded
+console.log('✅ admin-script.js loaded successfully');
+console.log('🔗 API_URL:', API_URL);
+console.log('🔗 IMAGE_BASE_URL:', IMAGE_BASE_URL);
+
 // ===== IMAGE ERROR HANDLER =====
-window.handleAdminImageError = function(img) {
+window.handleAdminImageError = function (img) {
     img.style.display = 'none';
     const container = img.parentElement;
     if (container) {
@@ -13,24 +18,30 @@ window.handleAdminImageError = function(img) {
     }
 };
 
+// ===== TEST FUNCTION FOR DEBUGGING =====
+window.testClickHandler = function () {
+    console.log('🧪 Test function called successfully! Buttons and click handlers are working.');
+};
+console.log('✅ Test function registered as window.testClickHandler()');
+
 // ===== LOCAL STORAGE HELPER =====
 const AdminStorage = {
     // Dashboard Analytics
     setDashboardMetrics: (metrics) => localStorage.setItem('dashboardMetrics', JSON.stringify(metrics)),
     getDashboardMetrics: () => JSON.parse(localStorage.getItem('dashboardMetrics') || '{}'),
-    
+
     // Sales Data
     setSalesData: (data) => localStorage.setItem('salesData', JSON.stringify(data)),
     getSalesData: () => JSON.parse(localStorage.getItem('salesData') || '[]'),
-    
+
     // User Actions Log
     setUserLog: (log) => localStorage.setItem('userActivityLog', JSON.stringify(log)),
     getUserLog: () => JSON.parse(localStorage.getItem('userActivityLog') || '[]'),
-    
+
     // Analytics Cache
     setAnalytics: (analytics) => localStorage.setItem('adminAnalytics', JSON.stringify(analytics)),
     getAnalytics: () => JSON.parse(localStorage.getItem('adminAnalytics') || '{}'),
-    
+
     // Add activity to log
     addActivity: (activity) => {
         const log = AdminStorage.getUserLog();
@@ -41,6 +52,7 @@ const AdminStorage = {
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Admin Dashboard DOMContentLoaded triggered');
     loadDashboardData();
     setupNavigation();
     setupProductForm();
@@ -52,13 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAnalytics();
     loadReviewsBadge();
     loadVideosBadge();
-    
+    console.log('✅ All setup functions called');
+
     // Setup About Us Video Form
     const aboutUsVideoForm = document.getElementById('aboutUsVideoForm');
     if (aboutUsVideoForm) {
         aboutUsVideoForm.addEventListener('submit', saveAboutUsVideo);
     }
-    
+
     // Load orders on page load with a small delay to ensure DOM is ready
     setTimeout(() => {
         if (document.getElementById('ordersTable')) {
@@ -75,11 +88,11 @@ function setupNavigation() {
             e.preventDefault();
             const section = item.dataset.section;
             showSection(section);
-            
+
             // Update active state
             navItems.forEach(nav => nav.classList.remove('active'));
             item.classList.add('active');
-            
+
             // Load section data
             if (section === 'products') loadProducts();
             if (section === 'users') loadUsers();
@@ -134,16 +147,16 @@ async function loadDashboardData() {
         document.getElementById('totalMessages').textContent = messagesData.data?.length || 0;
         document.getElementById('unreadMessages').textContent = unreadData.unreadCount || 0;
         document.getElementById('messageBadge').textContent = unreadData.unreadCount || 0;
-        
+
         // Count pending orders
         const pendingOrders = ordersData.data?.filter(o => o.orderStatus === 'pending').length || 0;
         document.getElementById('orderBadge').textContent = pendingOrders;
-        
+
         // Update analytics
         updateAnalyticsDisplay();
         displayCustomerAnalytics();
         displayRevenueAnalytics();
-        
+
         AdminStorage.addActivity({
             type: 'dashboard_loaded',
             action: 'Dashboard data refreshed'
@@ -163,16 +176,16 @@ async function loadProducts() {
         const response = await fetch(`${API_URL}/products?limit=1000&t=${Date.now()}`, {
             cache: 'no-store'
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log('Products response:', data);
 
         const container = document.getElementById('productsTableContent');
-        
+
         // Check if data has products
         if (!data.data || data.data.length === 0) {
             container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No products found. Click "Add Product" to create one.</p>';
@@ -213,23 +226,23 @@ async function loadProducts() {
                         </thead>
                         <tbody>
                             ${groupedProducts[category].map(product => {
-                                // Construct image URL with cache-busting using product's updatedAt
-                                let imageUrl = product.image;
-                                if (!imageUrl.startsWith('http')) {
-                                    if (imageUrl.startsWith('/uploads')) {
-                                        imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
-                                    } else {
-                                        imageUrl = `${IMAGE_BASE_URL}/uploads/products/${imageUrl}`;
-                                    }
-                                }
-                                // Use product's updatedAt time for cache-busting (unique per update)
-                                const cacheKey = product.updatedAt ? new Date(product.updatedAt).getTime() : product._id;
-                                imageUrl += `?cache=${cacheKey}`;
-                                
-                                // Escape product name for HTML
-                                const escapedName = product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-                                
-                                return `
+                // Construct image URL with cache-busting using product's updatedAt
+                let imageUrl = product.image;
+                if (!imageUrl.startsWith('http')) {
+                    if (imageUrl.startsWith('/uploads')) {
+                        imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
+                    } else {
+                        imageUrl = `${IMAGE_BASE_URL}/uploads/products/${imageUrl}`;
+                    }
+                }
+                // Use product's updatedAt time for cache-busting (unique per update)
+                const cacheKey = product.updatedAt ? new Date(product.updatedAt).getTime() : product._id;
+                imageUrl += `?cache=${cacheKey}`;
+
+                // Escape product name for HTML
+                const escapedName = product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+                return `
                                 <tr class="product-row">
                                     <td data-label="Image" class="td-image">
                                         <div class="product-image-box" onclick="window.open('${imageUrl.replace(/'/g, "\\'")}', '_blank')">
@@ -368,11 +381,11 @@ function setupImageUpload() {
         e.preventDefault();
         e.stopPropagation();
         fileLabel.style.backgroundColor = 'rgba(46, 204, 113, 0.05)';
-        
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             const file = files[0];
-            
+
             // Validate file type
             if (!file.type.startsWith('image/')) {
                 alert('Please select a valid image file');
@@ -394,7 +407,7 @@ function setupImageUpload() {
                 // Fallback for browsers that don't support DataTransfer
                 console.log('DataTransfer not supported, using direct file handling');
             }
-            
+
             handleImageSelect();
         }
     });
@@ -496,7 +509,7 @@ async function handleImageSelect() {
 
     // Show upload status
     document.getElementById('uploadStatus').style.display = 'block';
-    
+
     // Upload image and wait for completion
     await uploadImage(file);
 }
@@ -504,18 +517,18 @@ async function handleImageSelect() {
 async function uploadImage(file) {
     const formData = new FormData();
     formData.append('image', file);
-    
+
     isImageUploading = true; // Set upload flag
 
     try {
-        console.log('📤 Uploading image:', file.name, `(${(file.size/1024/1024).toFixed(2)}MB)`);
+        console.log('📤 Uploading image:', file.name, `(${(file.size / 1024 / 1024).toFixed(2)}MB)`);
         const response = await fetch(`${API_URL}/uploads/upload`, {
             method: 'POST',
             body: formData
         });
 
         console.log('📦 Upload response status:', response.status);
-        
+
         // Check response is OK
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -528,13 +541,13 @@ async function uploadImage(file) {
         if (result.success && result.imageUrl) {
             uploadedImageUrl = result.imageUrl;
             console.log('✅ Image URL stored:', uploadedImageUrl);
-            
+
             // Show success message
             const uploadStatus = document.getElementById('uploadStatus');
             uploadStatus.innerHTML = '<i class="fas fa-check-circle" style="color:green;"></i> Image uploaded successfully!';
             uploadStatus.style.color = '#2ecc71';
             uploadStatus.style.display = 'block';
-            
+
             // Auto-hide after 3 seconds
             setTimeout(() => {
                 uploadStatus.style.display = 'none';
@@ -555,7 +568,7 @@ function removeImage() {
     const fileInput = document.getElementById('productImage');
     const imagePreview = document.getElementById('imagePreview');
     const uploadStatus = document.getElementById('uploadStatus');
-    
+
     fileInput.value = '';
     imagePreview.style.display = 'none';
     uploadStatus.style.display = 'none';
@@ -564,42 +577,42 @@ function removeImage() {
 
 function setupProductForm() {
     const form = document.getElementById('productForm');
-    
+
     // Prevent enter key from submitting form except on submit button
     form.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
             e.preventDefault();
         }
     });
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         // Check if image is still uploading
         if (isImageUploading) {
             alert('⏳ Please wait for the image to finish uploading before submitting the form.');
             return;
         }
-        
+
         const productId = document.getElementById('productId').value;
-        
+
         // Validate required fields
         const name = document.getElementById('productName').value.trim();
         const category = document.getElementById('productCategory').value;
         const description = document.getElementById('productDescription').value.trim();
-        
+
         if (!name || !category || !description) {
             alert('❌ Please fill in all required fields marked with *');
             return;
         }
-        
+
         // Get units - REQUIRED
         const units = getUnitsFromForm();
         if (units.length === 0) {
             alert('❌ Please add at least one product unit with price');
             return;
         }
-        
+
         // Determine image URL
         let imageUrl = 'product.jpg'; // default image
         if (uploadedImageUrl) {
@@ -620,16 +633,16 @@ function setupProductForm() {
                 console.log('📸 Preserving existing image:', imageUrl);
             }
         }
-        
+
         // Calculate base price from first unit (for backward compatibility)
         const basePrice = units[0].price;
-        
+
         // Validate price
         if (!basePrice || isNaN(basePrice) || basePrice <= 0) {
             alert('❌ First unit must have a valid price greater than 0');
             return;
         }
-        
+
         // Read stock from the form input
         const stockInput = document.getElementById('productStock');
         const stockValue = stockInput ? (parseInt(stockInput.value) || 0) : 0;
@@ -659,7 +672,7 @@ function setupProductForm() {
             });
 
             console.log('📬 Response status:', response.status);
-            
+
             const result = await response.json();
             console.log('📬 Response data:', result);
 
@@ -685,22 +698,30 @@ function setupProductForm() {
 }
 
 async function editProduct(productId) {
+    console.log('✏️ editProduct called with ID:', productId);
     try {
         // Add cache-busting parameter to ensure fresh product data
-        const response = await fetch(`${API_URL}/products/${productId}?t=${Date.now()}`, {
+        const url = `${API_URL}/products/${productId}?t=${Date.now()}`;
+        console.log(`🔗 Fetching from: ${url}`);
+
+        const response = await fetch(url, {
             cache: 'no-store'
         });
         const data = await response.json();
 
+        console.log('📥 Product fetch response:', data);
+
         if (data.success) {
             const product = data.data;
+            console.log('📦 Product data:', product);
+
             document.getElementById('productId').value = product._id;
             document.getElementById('productName').value = product.name;
             document.getElementById('productCategory').value = product.category;
             document.getElementById('productPrice').value = product.price;
             document.getElementById('productStock').value = product.stock;
             document.getElementById('productDescription').value = product.description;
-            
+
             // Clear and populate units
             clearUnitsForm();
             if (product.units && product.units.length > 0) {
@@ -708,7 +729,7 @@ async function editProduct(productId) {
                     addUnitField();
                     const unitDivs = document.querySelectorAll('[id^="unit-"]');
                     const lastUnitDiv = unitDivs[unitDivs.length - 1];
-                    
+
                     lastUnitDiv.querySelector('.unit-type-select').value = unit.unit;
                     lastUnitDiv.querySelector('.unit-quantity-input').value = unit.quantity;
                     lastUnitDiv.querySelector('.unit-price-input').value = unit.price;
@@ -716,10 +737,10 @@ async function editProduct(productId) {
             } else {
                 addUnitField(); // Add empty unit field if none exist
             }
-            
+
             // Store the existing image URL for reference
             uploadedImageUrl = product.image;
-            
+
             // Show preview if image exists and is not default
             if (product.image && product.image !== 'product.jpg') {
                 let imageUrl = product.image;
@@ -740,13 +761,22 @@ async function editProduct(productId) {
             } else {
                 document.getElementById('imagePreview').style.display = 'none';
             }
-            
+
             document.getElementById('modalTitle').textContent = 'Edit Product';
-            document.getElementById('productModal').classList.add('show');
+            const productModal = document.getElementById('productModal');
+            if (productModal) {
+                productModal.classList.add('show');
+                console.log('✅ Product modal opened');
+            } else {
+                console.error('❌ Product modal not found!');
+            }
+        } else {
+            console.error('❌ Error response:', data);
+            alert('Error loading product: ' + (data.message || 'Unknown error'));
         }
     } catch (error) {
-        console.error('Error loading product:', error);
-        alert('Error loading product');
+        console.error('❌ Error loading product:', error);
+        alert('Error loading product: ' + error.message);
     }
 }
 
@@ -812,14 +842,30 @@ function closeUserModal() {
 }
 
 function setupUserForm() {
-    document.getElementById('userForm').addEventListener('submit', async (e) => {
+    const userForm = document.getElementById('userForm');
+    console.log('📋 setupUserForm called - userForm element:', userForm);
+
+    if (!userForm) {
+        console.error('❌ User form not found!');
+        return;
+    }
+
+    userForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        console.log('📝 User form submitted');
 
         const userId = document.getElementById('userId').value;
+        if (!userId) {
+            alert('No user selected');
+            return;
+        }
+
         const userData = {
             number: document.getElementById('userNumber').value,
             role: document.getElementById('userRole').value
         };
+
+        console.log('📤 Sending user update:', userData);
 
         try {
             const response = await fetch(`${API_URL}/users/${userId}`, {
@@ -829,6 +875,7 @@ function setupUserForm() {
             });
 
             const result = await response.json();
+            console.log('📥 User update response:', result);
 
             if (result.success) {
                 alert('User updated successfully!');
@@ -839,29 +886,48 @@ function setupUserForm() {
                 alert('Error: ' + (result.message || 'Unknown error'));
             }
         } catch (error) {
-            console.error('Error updating user:', error);
-            alert('Error updating user');
+            console.error('❌ Error updating user:', error);
+            alert('Error updating user: ' + error.message);
         }
     });
+    console.log('✅ User form event listener attached');
 }
 
 async function editUser(userId) {
+    console.log('✏️ editUser called with ID:', userId);
     try {
+        console.log(`🔗 Fetching from: ${API_URL}/users/${userId}`);
         const response = await fetch(`${API_URL}/users/${userId}`);
         const data = await response.json();
 
+        console.log('📥 User fetch response:', data);
+
         if (data.success) {
             const user = data.data;
+            console.log('👤 User data:', user);
+
             document.getElementById('userId').value = user._id;
             document.getElementById('userName').value = user.name;
             document.getElementById('userEmail').value = user.email;
-            document.getElementById('userNumber').value = user.number;
-            document.getElementById('userRole').value = user.role;
-            document.getElementById('userModal').classList.add('show');
+            document.getElementById('userNumber').value = user.number || '';
+            document.getElementById('userRole').value = user.role || 'user';
+
+            const userModal = document.getElementById('userModal');
+            console.log('🔍 User modal element:', userModal);
+
+            if (userModal) {
+                userModal.classList.add('show');
+                console.log('✅ User modal opened');
+            } else {
+                console.error('❌ User modal not found!');
+                alert('Error: User modal not found');
+            }
+        } else {
+            alert('Error loading user: ' + (data.message || 'Unknown error'));
         }
     } catch (error) {
-        console.error('Error loading user:', error);
-        alert('Error loading user');
+        console.error('❌ Error loading user:', error);
+        alert('Error loading user: ' + error.message);
     }
 }
 
@@ -929,7 +995,7 @@ async function viewMessage(messageId) {
         if (data.success) {
             const message = data.data;
             const detail = document.getElementById('messageDetail');
-            
+
             detail.innerHTML = `
                 <h3>Message Details</h3>
                 <p><strong>From:</strong> ${message.name}</p>
@@ -951,14 +1017,14 @@ async function viewMessage(messageId) {
             // Mark as read and update badge
             if (message.status === 'unread') {
                 await fetch(`${API_URL}/messages/${messageId}/read`, { method: 'PUT' });
-                
+
                 // Decrement badge count immediately
                 const messageBadge = document.getElementById('messageBadge');
                 const currentBadgeCount = parseInt(messageBadge.textContent) || 0;
                 if (currentBadgeCount > 0) {
                     messageBadge.textContent = currentBadgeCount - 1;
                 }
-                
+
                 loadMessages();
                 loadDashboardData();
             }
@@ -1020,16 +1086,16 @@ async function loadOrders() {
     try {
         console.log('Loading orders from:', `${API_URL}/orders`);
         const response = await fetch(`${API_URL}/orders`);
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log('Orders response:', data);
 
         const table = document.getElementById('ordersTable');
-        
+
         if (!data.data || data.data.length === 0) {
             table.innerHTML = '<tr><td colspan="9" class="text-center">No orders found. Customers will see orders here.</td></tr>';
             return;
@@ -1042,13 +1108,13 @@ async function loadOrders() {
             const customerPhone = order.customerPhone || 'N/A';
             const orderStatus = order.orderStatus || 'pending';
             const createdAt = order.createdAt || new Date().toISOString();
-            
+
             // Extract product names from products array
             let productNames = 'N/A';
             if (order.products && Array.isArray(order.products) && order.products.length > 0) {
                 productNames = order.products.map(p => p.name || p.productName || 'Unknown').join(', ');
             }
-            
+
             // Format date and time
             const dateTime = new Date(createdAt).toLocaleString('en-US', {
                 year: 'numeric',
@@ -1058,7 +1124,7 @@ async function loadOrders() {
                 minute: '2-digit',
                 second: '2-digit'
             });
-            
+
             return `
             <tr>
                 <td data-label="Order ID"><strong>${order._id.substring(0, 8)}</strong></td>
@@ -1096,14 +1162,19 @@ async function viewOrder(orderId) {
 
         if (data.success) {
             const order = data.data;
-            let productsHtml = order.products.map(p => `
-                <tr>
-                    <td>${p.productName}</td>
-                    <td>${p.quantity}</td>
-                    <td>$${p.price.toFixed(2)}</td>
-                    <td>$${p.total.toFixed(2)}</td>
-                </tr>
-            `).join('');
+            let productsHtml = '';
+            if (order.products && Array.isArray(order.products) && order.products.length > 0) {
+                productsHtml = order.products.map(p => `
+                    <tr>
+                        <td>${p.productName}</td>
+                        <td>${p.quantity}</td>
+                        <td>$${p.price.toFixed(2)}</td>
+                        <td>$${p.total.toFixed(2)}</td>
+                    </tr>
+                `).join('');
+            } else {
+                productsHtml = '<tr><td colspan="4" class="text-center">No products in this order</td></tr>';
+            }
 
             const detailHTML = `
                 <div class="order-detail-content">
@@ -1151,7 +1222,7 @@ async function viewOrder(orderId) {
 
             document.getElementById('orderDetail').innerHTML = detailHTML;
             document.getElementById('orderModal').classList.add('show');
-            
+
             // If order is pending, refresh dashboard to update badge count
             if (order.orderStatus === 'pending') {
                 loadDashboardData();
@@ -1166,21 +1237,21 @@ async function viewOrder(orderId) {
 async function updateOrderStatus(orderId) {
     // Store the order ID globally for the modal
     window.currentOrderId = orderId;
-    
+
     // Fetch current order details
     try {
         const response = await fetch(`${API_URL}/orders/${orderId}`);
         const data = await response.json();
-        
+
         if (data.success) {
             const order = data.data;
             // Set the current status in the modal
             document.getElementById('statusSelect').value = order.orderStatus || 'pending';
             document.getElementById('trackingNumber').value = order.trackingNumber || '';
             document.getElementById('statusNotes').value = '';
-            
+
             // Show the modal
-            document.getElementById('statusModal').style.display = 'block';
+            document.getElementById('statusModal').classList.add('show');
         } else {
             alert('Error loading order: ' + data.message);
         }
@@ -1191,7 +1262,7 @@ async function updateOrderStatus(orderId) {
 }
 
 function closeStatusModal() {
-    document.getElementById('statusModal').style.display = 'none';
+    document.getElementById('statusModal').classList.remove('show');
     window.currentOrderId = null;
 }
 
@@ -1283,13 +1354,13 @@ function loadAnalyticsCharts() {
     if (salesCtx) {
         displaySalesAnalytics();
     }
-    
+
     // Revenue trend chart
     const revenueCtx = document.getElementById('revenueChart');
     if (revenueCtx) {
         displayRevenueAnalytics();
     }
-    
+
     // Customer analytics
     displayCustomerAnalytics();
     updateAnalyticsDisplay();
@@ -1298,26 +1369,26 @@ function loadAnalyticsCharts() {
 function updateAnalyticsDisplay() {
     const metrics = AdminStorage.getDashboardMetrics();
     const analytics = AdminStorage.getAnalytics();
-    
+
     // Update page views
     const pageViewsEl = document.getElementById('pageViews');
     if (pageViewsEl) {
         pageViewsEl.textContent = metrics.pageViewCount || 0;
     }
-    
+
     // Update admin actions
     const adminActionsEl = document.getElementById('adminActions');
     if (adminActionsEl) {
         adminActionsEl.textContent = metrics.totalAdminActions || 0;
     }
-    
+
     // Update total revenue
     const totalRevenueEl = document.getElementById('totalRevenue');
     if (totalRevenueEl) {
         const revenue = analytics.totalRevenue || 0;
         totalRevenueEl.textContent = '$' + revenue.toFixed(2);
     }
-    
+
     // Update active users
     const activeUsersEl = document.getElementById('activeUsers');
     if (activeUsersEl) {
@@ -1325,177 +1396,406 @@ function updateAnalyticsDisplay() {
     }
 }
 
+// Refresh sales / category analytics. Returns a promise that resolves with the analytics object.
 async function displaySalesAnalytics() {
     try {
-        const response = await fetch(`${API_URL}/products`);
+        const response = await fetch(`${API_URL}/products?limit=1000&t=${Date.now()}`, { cache: 'no-store' });
         const data = await response.json();
-        
-        if (data.data && data.data.length > 0) {
-            const categories = {};
-            
-            data.data.forEach(product => {
-                const cat = product.category || 'Uncategorized';
-                categories[cat] = (categories[cat] || 0) + (product.stock || 0);
-            });
-            
-            AdminStorage.addActivity({
-                type: 'analytics_viewed',
-                action: 'Viewed sales analytics',
-                user: 'admin'
-            });
-        }
+        const products = data.data || [];
+
+        const categoryStock = {};
+        const categoryProductCount = {};
+        let totalStock = 0;
+
+        products.forEach(p => {
+            const cat = p.category || 'Uncategorized';
+            const stock = p.stock || 0;
+            categoryStock[cat] = (categoryStock[cat] || 0) + stock;
+            categoryProductCount[cat] = (categoryProductCount[cat] || 0) + 1;
+            totalStock += stock;
+        });
+
+        const analytics = AdminStorage.getAnalytics();
+        analytics.categoryStock = categoryStock;
+        analytics.categoryProductCount = categoryProductCount;
+        analytics.totalStock = totalStock;
+        analytics.productCount = products.length;
+        AdminStorage.setAnalytics(analytics);
+
+        AdminStorage.addActivity({
+            type: 'analytics_viewed',
+            action: 'Refreshed sales analytics',
+            productCount: products.length
+        });
+
+        return analytics;
     } catch (error) {
         console.error('Error displaying sales analytics:', error);
+        return AdminStorage.getAnalytics();
     }
 }
 
+// Refresh revenue / order analytics. Returns a promise that resolves with the analytics object.
 async function displayRevenueAnalytics() {
     try {
-        const response = await fetch(`${API_URL}/orders`);
+        const response = await fetch(`${API_URL}/orders?t=${Date.now()}`, { cache: 'no-store' });
         const data = await response.json();
-        
-        if (data.data && data.data.length > 0) {
-            let totalRevenue = 0;
-            const dailyRevenue = {};
-            
-            data.data.forEach(order => {
-                totalRevenue += order.totalAmount || 0;
-                const date = new Date(order.createdAt).toLocaleDateString();
-                dailyRevenue[date] = (dailyRevenue[date] || 0) + (order.totalAmount || 0);
-            });
-            
-            const analytics = AdminStorage.getAnalytics();
-            analytics.totalRevenue = totalRevenue;
-            analytics.dailyRevenue = dailyRevenue;
-            analytics.totalOrders = data.data.length;
-            AdminStorage.setAnalytics(analytics);
-        }
+        const orders = data.data || [];
+
+        let totalRevenue = 0;
+        const dailyRevenue = {};
+        const statusBreakdown = {};
+
+        orders.forEach(order => {
+            const amt = order.totalAmount || 0;
+            totalRevenue += amt;
+            const date = new Date(order.createdAt).toLocaleDateString();
+            dailyRevenue[date] = (dailyRevenue[date] || 0) + amt;
+            const status = order.orderStatus || 'unknown';
+            statusBreakdown[status] = (statusBreakdown[status] || 0) + 1;
+        });
+
+        const analytics = AdminStorage.getAnalytics();
+        analytics.totalRevenue = Math.round(totalRevenue * 100) / 100;
+        analytics.dailyRevenue = dailyRevenue;
+        analytics.totalOrders = orders.length;
+        analytics.orderStatusBreakdown = statusBreakdown;
+        AdminStorage.setAnalytics(analytics);
+
+        AdminStorage.addActivity({
+            type: 'analytics_updated',
+            action: 'Refreshed revenue analytics',
+            totalRevenue: analytics.totalRevenue,
+            totalOrders: orders.length
+        });
+
+        return analytics;
     } catch (error) {
         console.error('Error displaying revenue analytics:', error);
+        return AdminStorage.getAnalytics();
     }
 }
 
+// Refresh customer analytics. Returns a promise that resolves with the analytics object.
 async function displayCustomerAnalytics() {
     try {
-        const response = await fetch(`${API_URL}/users`);
+        const response = await fetch(`${API_URL}/users?t=${Date.now()}`, { cache: 'no-store' });
         const data = await response.json();
-        
-        if (data.data && data.data.length > 0) {
-            const analytics = AdminStorage.getAnalytics();
-            analytics.totalCustomers = data.data.length;
-            analytics.activeUsers = data.data.filter(u => u.lastLogin).length;
-            analytics.newUsers = data.data.filter(u => {
-                const created = new Date(u.createdAt);
-                const today = new Date();
-                return created.toDateString() === today.toDateString();
-            }).length;
-            
-            AdminStorage.setAnalytics(analytics);
-            
-            AdminStorage.addActivity({
-                type: 'analytics_updated',
-                action: 'Updated customer analytics',
-                customers: analytics.totalCustomers
-            });
-        }
+        const users = data.data || [];
+
+        const now = new Date();
+        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        let newToday = 0;
+        let newThisWeek = 0;
+        let activeUsers = 0;
+        const customerEmails = [];
+
+        users.forEach(u => {
+            const created = new Date(u.createdAt);
+            if (created >= todayStart) newToday += 1;
+            if (created >= oneWeekAgo) newThisWeek += 1;
+            if (u.lastLogin) {
+                const last = new Date(u.lastLogin);
+                if (last >= oneWeekAgo) activeUsers += 1;
+            }
+            if (u.email) customerEmails.push(u.email);
+        });
+
+        const analytics = AdminStorage.getAnalytics();
+        analytics.totalCustomers = users.length;
+        analytics.activeUsers = activeUsers;
+        analytics.newUsers = newToday;
+        analytics.newUsersThisWeek = newThisWeek;
+        analytics.customerEmails = customerEmails;
+        AdminStorage.setAnalytics(analytics);
+
+        AdminStorage.addActivity({
+            type: 'analytics_updated',
+            action: 'Refreshed customer analytics',
+            totalCustomers: users.length,
+            activeUsers,
+            newToday
+        });
+
+        return analytics;
     } catch (error) {
         console.error('Error displaying customer analytics:', error);
+        return AdminStorage.getAnalytics();
+    }
+}
+
+// ===================== ROBUST DOWNLOAD HELPER =====================
+// Uses iframe for guaranteed cross-browser downloads + setTimeout cleanup
+function triggerBrowserDownload(blob, fileName) {
+    try {
+        // 1) Preferred: anchor with blob URL (with delayed removal to give the browser time to start the download)
+        if (window.URL && URL.createObjectURL) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.style.display = 'none';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            // Delay removal so the browser can start the download
+            setTimeout(() => {
+                try { document.body.removeChild(a); } catch (e) { /* ignore */ }
+                URL.revokeObjectURL(url);
+            }, 1500);
+            return true;
+        }
+
+        // 2) Fallback: open blob in a new tab (browser will offer to save it)
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const win = window.open();
+            if (win) {
+                win.document.write('<iframe src="' + e.target.result + '" frameborder="0" style="border:0;width:100%;height:100%;"></iframe>');
+            } else {
+                alert('Pop-up blocked! Please allow pop-ups for this site to download reports.');
+            }
+        };
+        reader.readAsDataURL(blob);
+        return true;
+    } catch (err) {
+        console.error('Download failed:', err);
+        return false;
+    }
+}
+
+// Download a JSON report
+function downloadReport(reportData, reportName) {
+    try {
+        const json = JSON.stringify(reportData, null, 2);
+        const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+        const fileName = `${reportName}_${new Date().getTime()}.json`;
+        const ok = triggerBrowserDownload(blob, fileName);
+
+        AdminStorage.addActivity({
+            type: 'report_generated',
+            action: `Generated ${reportName}`,
+            reportSize: blob.size,
+            success: ok
+        });
+
+        if (ok) {
+            console.log(`✅ Report downloaded: ${fileName} (${blob.size} bytes)`);
+        } else {
+            alert('❌ Report download failed. Please check the console for details.');
+        }
+    } catch (err) {
+        console.error('Error generating report:', err);
+        alert('❌ Error generating report: ' + err.message);
+    }
+}
+
+// Download a CSV report
+function downloadCSV(csv, fileName) {
+    try {
+        // Add BOM so Excel opens it with UTF-8
+        const bom = '\uFEFF';
+        const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
+        const ok = triggerBrowserDownload(blob, fileName);
+
+        AdminStorage.addActivity({
+            type: 'export',
+            action: `Exported ${fileName}`,
+            success: ok
+        });
+
+        if (ok) {
+            console.log(`✅ CSV downloaded: ${fileName} (${blob.size} bytes)`);
+        } else {
+            alert('❌ CSV download failed. Please check the console for details.');
+        }
+    } catch (err) {
+        console.error('Error exporting CSV:', err);
+        alert('❌ Error exporting CSV: ' + err.message);
     }
 }
 
 // Generate reports
 function generateSalesReport() {
-    const analytics = AdminStorage.getAnalytics();
-    const metrics = AdminStorage.getDashboardMetrics();
-    
-    const report = {
-        generatedAt: new Date().toISOString(),
-        period: 'Current Session',
-        metrics: metrics,
-        sales: analytics,
-        activities: AdminStorage.getUserLog()
-    };
-    
-    downloadReport(report, 'sales_report');
+    // Refresh analytics first so the report has the latest data
+    Promise.all([displaySalesAnalytics(), displayRevenueAnalytics(), displayCustomerAnalytics()])
+        .then(() => {
+            const analytics = AdminStorage.getAnalytics();
+            const metrics = AdminStorage.getDashboardMetrics();
+
+            const report = {
+                generatedAt: new Date().toISOString(),
+                period: 'Current Session',
+                metrics: metrics,
+                sales: analytics,
+                activities: AdminStorage.getUserLog()
+            };
+
+            downloadReport(report, 'sales_report');
+        })
+        .catch(err => {
+            console.error('Error building sales report:', err);
+            alert('❌ Could not build sales report: ' + err.message);
+        });
 }
 
 function generateCustomerReport() {
-    const analytics = AdminStorage.getAnalytics();
-    
-    const report = {
-        generatedAt: new Date().toISOString(),
-        totalCustomers: analytics.totalCustomers || 0,
-        activeUsers: analytics.activeUsers || 0,
-        newUsersToday: analytics.newUsers || 0,
-        generatedBy: 'Admin Dashboard'
-    };
-    
-    downloadReport(report, 'customer_report');
+    displayCustomerAnalytics()
+        .then(() => {
+            const analytics = AdminStorage.getAnalytics();
+
+            const report = {
+                generatedAt: new Date().toISOString(),
+                totalCustomers: analytics.totalCustomers || 0,
+                activeUsers: analytics.activeUsers || 0,
+                newUsersToday: analytics.newUsers || 0,
+                newUsersThisWeek: analytics.newUsersThisWeek || 0,
+                customerEmails: analytics.customerEmails || [],
+                generatedBy: 'Admin Dashboard'
+            };
+
+            downloadReport(report, 'customer_report');
+        })
+        .catch(err => {
+            console.error('Error building customer report:', err);
+            alert('❌ Could not build customer report: ' + err.message);
+        });
 }
 
-function generateInventoryReport() {
-    const report = {
-        generatedAt: new Date().toISOString(),
-        status: 'Inventory checked',
-        exportedAt: new Date().toLocaleString(),
-        generatedBy: 'Admin Dashboard'
-    };
-    
-    downloadReport(report, 'inventory_report');
-}
+async function generateInventoryReport() {
+    try {
+        // Pull REAL inventory data from the products API
+        const response = await fetch(`${API_URL}/products?limit=1000&t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const products = data.data || [];
 
-function downloadReport(reportData, reportName) {
-    const element = document.createElement('a');
-    const file = new Blob([JSON.stringify(reportData, null, 2)], {type: 'application/json'});
-    element.href = URL.createObjectURL(file);
-    element.download = `${reportName}_${new Date().getTime()}.json`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    
-    AdminStorage.addActivity({
-        type: 'report_generated',
-        action: `Generated ${reportName}`,
-        reportSize: file.size
-    });
+        // Build per-category stock summary + per-product detail
+        const categorySummary = {};
+        const productRows = products.map(p => {
+            const cat = p.category || 'Uncategorized';
+            const stock = p.stock || 0;
+            const price = p.price || 0;
+            const value = stock * price;
+            if (!categorySummary[cat]) {
+                categorySummary[cat] = { productCount: 0, totalStock: 0, totalValue: 0 };
+            }
+            categorySummary[cat].productCount += 1;
+            categorySummary[cat].totalStock += stock;
+            categorySummary[cat].totalValue += value;
+            return {
+                id: p._id,
+                name: p.name,
+                category: cat,
+                stock,
+                price,
+                stockValue: Math.round(value * 100) / 100,
+                inStock: stock > 0
+            };
+        });
+
+        const report = {
+            generatedAt: new Date().toISOString(),
+            generatedBy: 'Admin Dashboard',
+            summary: {
+                totalProducts: products.length,
+                totalStockUnits: products.reduce((s, p) => s + (p.stock || 0), 0),
+                totalInventoryValue: Math.round(products.reduce((s, p) => s + (p.stock || 0) * (p.price || 0), 0) * 100) / 100,
+                inStockProducts: products.filter(p => (p.stock || 0) > 0).length,
+                outOfStockProducts: products.filter(p => (p.stock || 0) === 0).length
+            },
+            categorySummary,
+            products: productRows
+        };
+
+        downloadReport(report, 'inventory_report');
+    } catch (err) {
+        console.error('Error generating inventory report:', err);
+        alert('❌ Could not build inventory report: ' + err.message);
+    }
 }
 
 // Export analytics to CSV
 function exportAnalyticsToCSV() {
-    const analytics = AdminStorage.getAnalytics();
-    const metrics = AdminStorage.getDashboardMetrics();
-    
-    let csv = 'Analytics Report\n';
-    csv += `Generated: ${new Date().toLocaleString()}\n\n`;
-    csv += 'Metrics\n';
-    csv += Object.entries(metrics).map(([k, v]) => `${k},${v}`).join('\n');
-    csv += '\n\nSales Analytics\n';
-    csv += Object.entries(analytics).map(([k, v]) => `${k},${typeof v === 'object' ? JSON.stringify(v) : v}`).join('\n');
-    
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
-    element.setAttribute('download', `analytics_${new Date().getTime()}.csv`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    
-    AdminStorage.addActivity({
-        type: 'export',
-        action: 'Exported analytics to CSV'
-    });
+    // Refresh all analytics first
+    Promise.all([displaySalesAnalytics(), displayRevenueAnalytics(), displayCustomerAnalytics()])
+        .then(() => {
+            const analytics = AdminStorage.getAnalytics();
+            const metrics = AdminStorage.getDashboardMetrics();
+
+            // Properly escape CSV values (wrap in quotes, escape internal quotes)
+            const esc = v => {
+                if (v === null || v === undefined) return '';
+                const s = typeof v === 'object' ? JSON.stringify(v) : String(v);
+                return '"' + s.replace(/"/g, '""') + '"';
+            };
+
+            let csv = 'Analytics Report\n';
+            csv += `Generated,${esc(new Date().toLocaleString())}\n\n`;
+
+            csv += 'Section,Key,Value\n';
+            csv += `Metrics,Page Views,${esc(metrics.pageViewCount || 0)}\n`;
+            csv += `Metrics,Admin Actions,${esc(metrics.totalAdminActions || 0)}\n`;
+            csv += `Metrics,Session Start,${esc(metrics.sessionStartTime || '')}\n\n`;
+
+            csv += `Analytics,Total Customers,${esc(analytics.totalCustomers || 0)}\n`;
+            csv += `Analytics,Active Users,${esc(analytics.activeUsers || 0)}\n`;
+            csv += `Analytics,New Users Today,${esc(analytics.newUsers || 0)}\n`;
+            csv += `Analytics,New Users This Week,${esc(analytics.newUsersThisWeek || 0)}\n`;
+            csv += `Analytics,Total Revenue,${esc(analytics.totalRevenue || 0)}\n`;
+            csv += `Analytics,Total Orders,${esc(analytics.totalOrders || 0)}\n`;
+            csv += `Analytics,Total Stock,${esc(analytics.totalStock || 0)}\n`;
+            csv += `Analytics,Product Count,${esc(analytics.productCount || 0)}\n\n`;
+
+            csv += 'Category,Total Stock Units,Product Count\n';
+            if (analytics.categoryStock) {
+                Object.entries(analytics.categoryStock).forEach(([cat, stock]) => {
+                    csv += `${esc(cat)},${esc(stock)},${esc((analytics.categoryProductCount || {})[cat] || 0)}\n`;
+                });
+            }
+            csv += '\n';
+
+            csv += 'Date,Daily Revenue\n';
+            if (analytics.dailyRevenue) {
+                Object.entries(analytics.dailyRevenue).forEach(([d, r]) => {
+                    csv += `${esc(d)},${esc(r)}\n`;
+                });
+            }
+            csv += '\n';
+
+            csv += 'Timestamp,Activity Type,Action\n';
+            const log = AdminStorage.getUserLog();
+            log.slice(-50).forEach(a => {
+                csv += `${esc(new Date(a.timestamp).toLocaleString())},${esc(a.type || '')},${esc(a.action || '')}\n`;
+            });
+
+            downloadCSV(csv, `analytics_${new Date().getTime()}.csv`);
+        })
+        .catch(err => {
+            console.error('Error exporting analytics:', err);
+            alert('❌ Could not export analytics: ' + err.message);
+        });
 }
 
-// View activity log
+// View activity log (improved: show in a modal-like alert with full list)
 function viewActivityLog() {
     const log = AdminStorage.getUserLog();
-    console.log('Activity Log:', log);
-    alert(`Total Activities: ${log.length}\n\nLast 5 Activities:\n${log.slice(-5).map(a => `${new Date(a.timestamp).toLocaleString()}: ${a.action}`).join('\n')}`);
+    console.log('📋 Activity Log:', log);
+    if (log.length === 0) {
+        alert('No activities recorded yet. Activity log tracks admin actions during this session.');
+        return;
+    }
+    const last10 = log.slice(-10).reverse()
+        .map(a => `• ${new Date(a.timestamp).toLocaleString()}\n   ${a.action}`)
+        .join('\n\n');
+    alert(`Total Activities: ${log.length}\n\nLast 10 Activities:\n\n${last10}`);
 }
 
 // ===== LOGOUT =====
 // Expose logout on window so inline onclick handlers can call it reliably
-window.logout = function() {
+window.logout = function () {
     // Save final metrics before logout
     AdminStorage.addActivity({
         type: 'logout',
@@ -1524,32 +1824,32 @@ function loadReviewsBadge() {
 function loadReviews() {
     const reviews = getStoredReviews();
     const container = document.getElementById('reviewsList');
-    
+
     // Update stats
     const totalCount = document.getElementById('totalReviewsCount');
     const avgRatingEl = document.getElementById('avgRating');
     const fiveStarEl = document.getElementById('fiveStarCount');
-    
+
     if (totalCount) totalCount.textContent = reviews.length;
-    
+
     if (reviews.length > 0) {
         const avgRating = (reviews.reduce((sum, r) => sum + parseInt(r.rating), 0) / reviews.length).toFixed(1);
         const fiveStarCount = reviews.filter(r => parseInt(r.rating) === 5).length;
-        
+
         if (avgRatingEl) avgRatingEl.textContent = avgRating;
         if (fiveStarEl) fiveStarEl.textContent = fiveStarCount;
     } else {
         if (avgRatingEl) avgRatingEl.textContent = '0.0';
         if (fiveStarEl) fiveStarEl.textContent = '0';
     }
-    
+
     if (!container) return;
-    
+
     if (reviews.length === 0) {
         container.innerHTML = '<div class="text-center" style="padding: 40px; color: #888;">No reviews yet. Reviews from customers will appear here.</div>';
         return;
     }
-    
+
     container.innerHTML = reviews.map((review, index) => {
         const stars = generateStars(parseInt(review.rating));
         return `
@@ -1598,34 +1898,34 @@ function escapeHtml(text) {
 
 function deleteReview(index) {
     if (!confirm('Are you sure you want to delete this review?')) return;
-    
+
     const reviews = getStoredReviews();
     reviews.splice(index, 1);
     localStorage.setItem('kcpReviews', JSON.stringify(reviews));
-    
+
     loadReviews();
     loadReviewsBadge();
-    
+
     AdminStorage.addActivity({
         type: 'review_deleted',
         action: 'Deleted a customer review'
     });
-    
+
     alert('Review deleted successfully!');
 }
 
 function clearAllReviews() {
     if (!confirm('Are you sure you want to delete ALL reviews? This action cannot be undone.')) return;
-    
+
     localStorage.removeItem('kcpReviews');
     loadReviews();
     loadReviewsBadge();
-    
+
     AdminStorage.addActivity({
         type: 'reviews_cleared',
         action: 'Cleared all customer reviews'
     });
-    
+
     alert('All reviews have been cleared!');
 }
 
@@ -1654,13 +1954,13 @@ async function loadVideos() {
         const data = await response.json();
 
         const table = document.getElementById('videosTable');
-        
+
         // Update stats
         if (data.data) {
             const totalCount = document.getElementById('totalVideosCount');
             const activeCount = document.getElementById('activeVideosCount');
             const totalViews = document.getElementById('totalVideoViews');
-            
+
             if (totalCount) totalCount.textContent = data.data.length;
             if (activeCount) activeCount.textContent = data.data.filter(v => v.isActive).length;
             if (totalViews) totalViews.textContent = data.data.reduce((sum, v) => sum + (v.views || 0), 0);
@@ -1733,7 +2033,7 @@ function closeVideoModal() {
 function setupVideoUpload() {
     const fileInput = document.getElementById('videoFile');
     const fileLabel = document.querySelector('#videoModal .file-input-label');
-    
+
     if (!fileInput || !fileLabel) return;
 
     fileInput.addEventListener('change', (e) => {
@@ -1764,7 +2064,7 @@ function setupVideoUpload() {
         e.preventDefault();
         e.stopPropagation();
         fileLabel.style.backgroundColor = 'rgba(46, 204, 113, 0.05)';
-        
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             fileInput.files = files;
@@ -1777,7 +2077,7 @@ function setupVideoUpload() {
 function setupRecipeVideoUpload() {
     const fileInput = document.getElementById('recipeVideoFile');
     const fileLabel = document.getElementById('recipeVideoDropArea');
-    
+
     if (!fileInput || !fileLabel) return;
 
     fileLabel.addEventListener('dragover', (e) => {
@@ -1796,7 +2096,7 @@ function setupRecipeVideoUpload() {
         e.preventDefault();
         e.stopPropagation();
         fileLabel.style.backgroundColor = 'rgba(46, 204, 113, 0.05)';
-        
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             fileInput.files = files;
@@ -1832,14 +2132,14 @@ async function handleVideoSelect() {
     preview.style.display = 'block';
 
     document.getElementById('videoUploadStatus').style.display = 'block';
-    
+
     await uploadVideoFile(file);
 }
 
 async function uploadVideoFile(file) {
     const formData = new FormData();
     formData.append('video', file);
-    
+
     isVideoUploading = true;
 
     try {
@@ -1877,7 +2177,7 @@ function removeVideo() {
     const fileInput = document.getElementById('videoFile');
     const videoPreview = document.getElementById('videoPreview');
     const uploadStatus = document.getElementById('videoUploadStatus');
-    
+
     if (fileInput) fileInput.value = '';
     if (videoPreview) videoPreview.style.display = 'none';
     if (uploadStatus) uploadStatus.style.display = 'none';
@@ -1894,29 +2194,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
             }
         });
-        
+
         videoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             if (isVideoUploading) {
                 alert('Please wait for the video to finish uploading.');
                 return;
             }
-            
+
             const videoId = document.getElementById('videoId').value;
             const title = document.getElementById('videoTitle').value.trim();
             const productName = document.getElementById('videoProductName').value.trim();
-            
+
             if (!title || !productName) {
                 alert('Please fill in all required fields');
                 return;
             }
-            
+
             if (!videoId && !uploadedVideoUrl) {
                 alert('Please upload a video');
                 return;
             }
-            
+
             const videoData = {
                 title,
                 productName,
@@ -1926,7 +2226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayOrder: parseInt(document.getElementById('videoDisplayOrder').value) || 0,
                 isActive: document.getElementById('videoIsActive').checked
             };
-            
+
             if (uploadedVideoUrl) {
                 videoData.videoUrl = uploadedVideoUrl;
             }
@@ -1975,9 +2275,9 @@ async function editVideo(videoId) {
             document.getElementById('videoDescription').value = video.description || '';
             document.getElementById('videoDisplayOrder').value = video.displayOrder || 0;
             document.getElementById('videoIsActive').checked = video.isActive;
-            
+
             document.getElementById('videoModalTitle').textContent = 'Edit Video';
-            
+
             // Show existing video
             if (video.videoUrl) {
                 const preview = document.getElementById('videoPreview');
@@ -1986,7 +2286,7 @@ async function editVideo(videoId) {
                 preview.style.display = 'block';
                 uploadedVideoUrl = video.videoUrl;
             }
-            
+
             document.getElementById('videoModal').classList.add('show');
         }
     } catch (error) {
@@ -2026,7 +2326,7 @@ async function deleteVideo(videoId) {
             alert('Video deleted successfully!');
             loadVideos();
             loadVideosBadge();
-            
+
             AdminStorage.addActivity({
                 type: 'video_deleted',
                 action: 'Deleted a video'
@@ -2060,7 +2360,7 @@ async function loadAboutUsVideos() {
 
 function displayAboutUsVideos(videos) {
     const tableBody = document.getElementById('aboutUsVideosTable');
-    
+
     if (!videos || videos.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No videos found. <button class="btn btn-sm btn-primary" onclick="openAboutUsVideoModal()">Add First Video</button></td></tr>';
         return;
@@ -2121,28 +2421,30 @@ function closeAboutUsVideoModal() {
 }
 
 // Switch between video source tabs for About Us
-function switchAboutUsSourceTab(tabName) {
+function switchAboutUsSourceTab(tabName, e) {
     // Hide all tabs
     const tabs = document.querySelectorAll('#aboutUsVideoModal .tab-content');
     tabs.forEach(tab => {
         tab.classList.remove('active');
     });
-    
+
     // Remove active class from all buttons
     const buttons = document.querySelectorAll('#aboutUsVideoModal .tab-btn');
     buttons.forEach(btn => {
         btn.classList.remove('active');
     });
-    
+
     // Show selected tab
     const selectedTab = document.getElementById(tabName);
     if (selectedTab) {
         selectedTab.classList.add('active');
     }
-    
+
     // Add active class to clicked button
-    event.target.classList.add('active');
-    
+    if (e && e.target) {
+        e.target.classList.add('active');
+    }
+
     // Update required attribute based on selected tab
     if (tabName === 'about-upload-tab') {
         document.getElementById('aboutUsVideoFile').required = true;
@@ -2182,35 +2484,35 @@ async function saveAboutUsVideo(e) {
     const videoId = document.getElementById('aboutUsVideoId').value;
     const uploadTab = document.getElementById('about-upload-tab');
     const isUploadTab = uploadTab.classList.contains('active');
-    
+
     const title = document.getElementById('aboutUsVideoTitle').value;
-    
+
     if (isUploadTab) {
         // Handle file upload
         const videoFile = document.getElementById('aboutUsVideoFile').files[0];
-        
+
         if (!title || !videoFile) {
             alert('Please fill in required fields');
             return;
         }
-        
+
         // Check file size (100MB limit)
         const maxSize = 100 * 1024 * 1024;
         if (videoFile.size > maxSize) {
             alert('File size exceeds 100MB limit');
             return;
         }
-        
+
         uploadAboutUsVideoFile(videoFile, title, videoId);
     } else {
         // Handle URL upload
         const videoUrl = document.getElementById('aboutUsVideoUrl').value;
-        
+
         if (!title || !videoUrl) {
             alert('Please fill in required fields');
             return;
         }
-        
+
         saveAboutUsVideoUrl(videoUrl, title, videoId);
     }
 }
@@ -2219,13 +2521,13 @@ async function saveAboutUsVideo(e) {
 function uploadAboutUsVideoFile(file, title, videoId) {
     const formData = new FormData();
     formData.append('video', file);
-    
+
     // Show progress
     const uploadProgress = document.getElementById('aboutUsUploadProgress');
     uploadProgress.style.display = 'block';
-    
+
     const xhr = new XMLHttpRequest();
-    
+
     // Track upload progress
     xhr.upload.addEventListener('progress', (e) => {
         if (e.lengthComputable) {
@@ -2234,13 +2536,13 @@ function uploadAboutUsVideoFile(file, title, videoId) {
             document.getElementById('aboutUsProgressText').textContent = Math.round(percentComplete) + '% Uploading...';
         }
     });
-    
+
     xhr.addEventListener('load', () => {
         uploadProgress.style.display = 'none';
-        
+
         try {
             const response = JSON.parse(xhr.responseText);
-            
+
             if (xhr.status === 200 && response.success) {
                 const videoUrl = response.videoUrl || (response.data && response.data.videoUrl);
                 if (videoUrl) {
@@ -2257,26 +2559,26 @@ function uploadAboutUsVideoFile(file, title, videoId) {
             alert('Error processing upload response: ' + e.message);
         }
     });
-    
+
     xhr.addEventListener('error', (event) => {
         uploadProgress.style.display = 'none';
         console.error('Upload error:', event);
         alert('Error uploading file. Please check your connection and try again.');
     });
-    
+
     xhr.addEventListener('abort', () => {
         uploadProgress.style.display = 'none';
         alert('Upload cancelled');
     });
-    
+
     const token = localStorage.getItem('token');
     xhr.open('POST', `${API_URL}/uploads/upload-video`);
-    
+
     // Don't set Content-Type header - let the browser set it for FormData
     if (token) {
         xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     }
-    
+
     xhr.send(formData);
 }
 
@@ -2308,7 +2610,7 @@ async function saveAboutUsVideoUrl(videoUrl, title, videoId) {
             alert(videoId ? 'Video updated successfully!' : 'Video added successfully!');
             closeAboutUsVideoModal();
             loadAboutUsVideos();
-            
+
             AdminStorage.addActivity({
                 type: videoId ? 'about_us_video_updated' : 'about_us_video_added',
                 action: videoId ? 'Updated an About Us video' : 'Added a new About Us video'
@@ -2351,7 +2653,7 @@ async function deleteAboutUsVideo(videoId) {
         if (result.success) {
             alert('Video deleted successfully!');
             loadAboutUsVideos();
-            
+
             AdminStorage.addActivity({
                 type: 'about_us_video_deleted',
                 action: 'Deleted an About Us video'
@@ -2371,11 +2673,11 @@ function addUnitField() {
     unitsCount++;
     const unitId = `unit-${unitsCount}`;
     const unitsList = document.getElementById('unitsList');
-    
+
     const unitDiv = document.createElement('div');
     unitDiv.id = unitId;
     unitDiv.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px; border: 1px solid #e0e0e0;';
-    
+
     unitDiv.innerHTML = `
         <div>
             <select class="unit-type-select" required>
@@ -2397,7 +2699,7 @@ function addUnitField() {
             <i class="fas fa-trash"></i>
         </button>
     `;
-    
+
     unitsList.appendChild(unitDiv);
 }
 
@@ -2411,12 +2713,12 @@ function removeUnitField(unitId) {
 function getUnitsFromForm() {
     const unitsList = document.getElementById('unitsList');
     const units = [];
-    
+
     unitsList.querySelectorAll('[id^="unit-"]').forEach(unitDiv => {
         const unitType = unitDiv.querySelector('.unit-type-select').value;
         const quantity = unitDiv.querySelector('.unit-quantity-input').value;
         const price = unitDiv.querySelector('.unit-price-input').value;
-        
+
         if (unitType && quantity && price) {
             units.push({
                 unit: unitType,
@@ -2425,7 +2727,7 @@ function getUnitsFromForm() {
             });
         }
     });
-    
+
     return units;
 }
 
@@ -2619,7 +2921,7 @@ async function searchProductsForRecipeVideo(query) {
                 return;
             }
             dropdown.innerHTML = products.map(p => `
-                <div class="recipe-dropdown-item" onclick="selectRecipeProduct('${p._id}', '${escapeHtml(p.name).replace(/'/g,"&apos;")}')">
+                <div class="recipe-dropdown-item" onclick="selectRecipeProduct('${p._id}', '${escapeHtml(p.name).replace(/'/g, "&apos;")}')">
                     <i class="fas fa-box" style="color:#2ecc71; margin-right:8px;"></i>
                     ${escapeHtml(p.name)}
                     <small style="color:#aaa; margin-left:8px;">${p.category || ''}</small>
@@ -2851,7 +3153,7 @@ async function saveRecipeVideo(e) {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ recipeVideoUrl: videoUrl })
-                }).catch(() => {});
+                }).catch(() => { });
             }
 
             alert(recipeVideoId ? '✅ Recipe video updated!' : '✅ Recipe video added!');
@@ -2969,5 +3271,114 @@ document.addEventListener('DOMContentLoaded', () => {
             const recipeVids = (data.data || []).filter(v => v.category === 'recipe');
             updateRecipeVideoBadge(recipeVids.length);
         })
-        .catch(() => {});
+        .catch(() => { });
 });
+
+// =====================================================================
+// ===== CATEGORY MODAL FUNCTIONS (added for completeness) ===========
+// =====================================================================
+
+function openCategoryModal(categoryId) {
+    const form = document.getElementById('categoryForm');
+    if (form) form.reset();
+    document.getElementById('categoryId').value = categoryId || '';
+    const title = document.getElementById('categoryModalTitle');
+    if (title) title.textContent = categoryId ? 'Edit Category' : 'Add New Category';
+    const modal = document.getElementById('categoryModal');
+    if (modal) modal.classList.add('show');
+}
+
+function closeCategoryModal() {
+    const modal = document.getElementById('categoryModal');
+    if (modal) modal.classList.remove('show');
+}
+
+// =====================================================================
+// ===== EXPOSE ALL CLICK-HANDLER FUNCTIONS ON WINDOW ================
+// This ensures inline onclick handlers in the HTML always work
+// even in edge-case scope situations (e.g. CSP, certain bundlers).
+// =====================================================================
+
+window.loadProducts = loadProducts;
+window.loadUsers = loadUsers;
+window.loadMessages = loadMessages;
+window.loadOrders = loadOrders;
+window.loadReviews = loadReviews;
+window.loadVideos = loadVideos;
+window.loadRecipeVideos = loadRecipeVideos;
+window.loadAboutUsVideos = loadAboutUsVideos;
+window.loadDashboardData = loadDashboardData;
+window.filterRecipeVideos = filterRecipeVideos;
+
+window.openProductModal = openProductModal;
+window.closeProductModal = closeProductModal;
+window.editProduct = editProduct;
+window.deleteProduct = deleteProduct;
+window.quickUpdateStock = quickUpdateStock;
+window.addUnitField = addUnitField;
+window.removeUnitField = removeUnitField;
+window.removeImage = removeImage;
+
+window.openCategoryModal = openCategoryModal;
+window.closeCategoryModal = closeCategoryModal;
+
+window.editUser = editUser;
+window.deleteUser = deleteUser;
+window.closeUserModal = closeUserModal;
+
+window.viewMessage = viewMessage;
+window.closeMessageModal = closeMessageModal;
+window.markAsRead = markAsRead;
+window.deleteMessage = deleteMessage;
+
+window.viewOrder = viewOrder;
+window.updateOrderStatus = updateOrderStatus;
+window.closeOrderModal = closeOrderModal;
+window.closeStatusModal = closeStatusModal;
+window.confirmStatusUpdate = confirmStatusUpdate;
+window.deleteOrder = deleteOrder;
+
+window.openVideoModal = openVideoModal;
+window.closeVideoModal = closeVideoModal;
+window.editVideo = editVideo;
+window.toggleVideoStatus = toggleVideoStatus;
+window.deleteVideo = deleteVideo;
+window.removeVideo = removeVideo;
+
+window.openAboutUsVideoModal = openAboutUsVideoModal;
+window.closeAboutUsVideoModal = closeAboutUsVideoModal;
+window.editAboutUsVideo = editAboutUsVideo;
+window.saveAboutUsVideo = saveAboutUsVideo;
+window.toggleAboutUsVideoStatus = toggleAboutUsVideoStatus;
+window.deleteAboutUsVideo = deleteAboutUsVideo;
+window.switchAboutUsSourceTab = switchAboutUsSourceTab;
+
+window.openRecipeVideoModal = openRecipeVideoModal;
+window.closeRecipeVideoModal = closeRecipeVideoModal;
+window.editRecipeVideo = editRecipeVideo;
+window.deleteRecipeVideo = deleteRecipeVideo;
+window.toggleRecipeVideoStatus = toggleRecipeVideoStatus;
+window.saveRecipeVideo = saveRecipeVideo;
+window.handleRecipeVideoSelect = handleRecipeVideoSelect;
+window.clearRecipeVideoFile = clearRecipeVideoFile;
+window.searchProductsForRecipeVideo = searchProductsForRecipeVideo;
+window.selectRecipeProduct = selectRecipeProduct;
+window.clearRecipeProductSelection = clearRecipeProductSelection;
+window.switchRecipeTab = switchRecipeTab;
+
+window.clearAllReviews = clearAllReviews;
+window.deleteReview = deleteReview;
+
+window.generateSalesReport = generateSalesReport;
+window.generateCustomerReport = generateCustomerReport;
+window.generateInventoryReport = generateInventoryReport;
+window.exportAnalyticsToCSV = exportAnalyticsToCSV;
+window.viewActivityLog = viewActivityLog;
+
+window.waRefreshStatus = waRefreshStatus;
+window.waSendTest = waSendTest;
+window.waClearSession = waClearSession;
+
+// logout was already exposed on window in the file
+
+console.log('✅ All click-handler functions exposed on window for inline onclick safety');

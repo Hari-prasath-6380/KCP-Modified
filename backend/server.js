@@ -17,7 +17,14 @@ app.use("/uploads", (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Cache-Control', 'public, max-age=31536000'); // 1 year cache for static images
+  // QR code image must never cache — it changes every ~20 seconds
+  if (req.path === '/last_qr.png') {
+    res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.header('Pragma', 'no-cache');
+    res.header('Expires', '0');
+  } else {
+    res.header('Cache-Control', 'public, max-age=31536000'); // 1 year cache for static images
+  }
   next();
 }, express.static(path.join(__dirname, "uploads")));
 
@@ -40,23 +47,23 @@ console.log("╚═════════════════════�
 console.log("");
 
 try {
-    const whatsappModule = require("./whatsapp");
-    console.log("✅ WhatsApp module loaded - Check above for QR code if device not linked");
-    console.log("📝 Note: WhatsApp may take 20-30 seconds to initialize");
-    console.log("");
+  const whatsappModule = require("./whatsapp");
+  console.log("✅ WhatsApp module loaded - Check above for QR code if device not linked");
+  console.log("📝 Note: WhatsApp may take 20-30 seconds to initialize");
+  console.log("");
 } catch (error) {
-    console.error("❌ WhatsApp module error:", error.message);
-    console.error("📋 Details:", error);
-    console.warn("⚠️  WhatsApp notifications disabled - Only Telegram will work");
-    console.log("");
+  console.error("❌ WhatsApp module error:", error.message);
+  console.error("📋 Details:", error);
+  console.warn("⚠️  WhatsApp notifications disabled - Only Telegram will work");
+  console.log("");
 }
 
 // Also initialize the notification service to ensure dependencies are loaded
 try {
-    require("./services/notificationService");
-    console.log("✅ Notification services initialized (Telegram + WhatsApp)");
+  require("./services/notificationService");
+  console.log("✅ Notification services initialized (Telegram + WhatsApp)");
 } catch (error) {
-    console.error("❌ Notification service error:", error.message);
+  console.error("❌ Notification service error:", error.message);
 }
 
 console.log("════════════════════════════════════════════════════════\n");

@@ -107,6 +107,21 @@ router.get('/whatsapp', async (req, res) => {
     res.json(diagnostics);
 });
 
+// ── GET /api/diagnostics/qr ────────────────────────────────
+// Returns whether a QR code image is available and its URL
+router.get('/qr', (req, res) => {
+    const qrPath = path.join(__dirname, '../uploads/last_qr.png');
+    const qrExists = fs.existsSync(qrPath);
+    const isReady = whatsappModule ? whatsappModule.isClientReady() : false;
+
+    res.json({
+        ready: isReady,
+        qrAvailable: qrExists && !isReady, // QR only relevant when not ready
+        qrUrl: qrExists ? '/uploads/last_qr.png' : null,
+        timestamp: new Date().toISOString()
+    });
+});
+
 // ── GET /api/diagnostics/health ────────────────────────────
 // Quick health check
 router.get('/health', async (req, res) => {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -57,6 +59,11 @@
                     <i class="fas fa-info-circle"></i>
                     <span>About Us</span>
                     <span class="badge" id="aboutUsBadge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-section="whatsapp" id="whatsappNavItem">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                    <span class="badge" id="whatsappBadge" style="background:#dc3545;display:none;">!</span>
                 </a>
             </nav>
             <div class="logout-section">
@@ -184,7 +191,9 @@
                             <button class="btn btn-secondary" id="importDocxBtn">
                                 <i class="fas fa-file-word"></i> Import from Word
                             </button>
-                            <button class="btn btn-info" onclick='loadProducts(); alert("Products refreshed! New images will now display.");' title="Refresh to see updated product images">
+                            <button class="btn btn-info"
+                                onclick='loadProducts(); alert("Products refreshed! New images will now display.");'
+                                title="Refresh to see updated product images">
                                 <i class="fas fa-sync-alt"></i> Refresh Products
                             </button>
                             <input type="file" id="docxInput" accept=".docx" style="display:none">
@@ -195,31 +204,7 @@
                     </div>
                 </section>
 
-                <!-- Users Section -->
-                <section id="users" class="section-content">
-                    <div class="section-header">
-                        <h2>User Management</h2>
-                    </div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Role</th>
-                                    <th>Joined</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTable">
-                                <tr>
-                                    <td colspan="6" class="text-center">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+
 
                 <!-- Messages Section -->
                 <section id="messages" class="section-content">
@@ -256,6 +241,32 @@
                             <tbody id="ordersTable">
                                 <tr>
                                     <td colspan="9" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Users Section -->
+                <section id="users" class="section-content">
+                    <div class="section-header">
+                        <h2>User Management</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <tr>
+                                    <td colspan="6" class="text-center">Loading...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -438,9 +449,13 @@
                         </div>
                     </div>
                     <!-- Search/Filter -->
-                    <div class="recipe-video-filters" style="margin-bottom:16px; display:flex; gap:12px; flex-wrap:wrap;">
-                        <input type="text" id="recipeVideoSearch" placeholder="🔍 Search by product name or title..." style="flex:1; min-width:200px; padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:14px;" oninput="filterRecipeVideos()">
-                        <select id="recipeVideoStatusFilter" onchange="filterRecipeVideos()" style="padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+                    <div class="recipe-video-filters"
+                        style="margin-bottom:16px; display:flex; gap:12px; flex-wrap:wrap;">
+                        <input type="text" id="recipeVideoSearch" placeholder="🔍 Search by product name or title..."
+                            style="flex:1; min-width:200px; padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:14px;"
+                            oninput="filterRecipeVideos()">
+                        <select id="recipeVideoStatusFilter" onchange="filterRecipeVideos()"
+                            style="padding:10px 14px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
                             <option value="all">All Status</option>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
@@ -481,8 +496,8 @@
                 <div class="form-group">
                     <label for="recipeVideoProductSearch">Search &amp; Select Product *</label>
                     <div style="position:relative;">
-                        <input type="text" id="recipeVideoProductSearch" placeholder="Type product name to search..." autocomplete="off"
-                            oninput="searchProductsForRecipeVideo(this.value)">
+                        <input type="text" id="recipeVideoProductSearch" placeholder="Type product name to search..."
+                            autocomplete="off" oninput="searchProductsForRecipeVideo(this.value)">
                         <div id="recipeProductDropdown" class="recipe-product-dropdown" style="display:none;"></div>
                     </div>
                     <input type="hidden" id="recipeVideoProductId">
@@ -490,7 +505,9 @@
                     <div id="selectedProductBadge" class="selected-product-badge" style="display:none;">
                         <i class="fas fa-box"></i>
                         <span id="selectedProductLabel"></span>
-                        <button type="button" onclick="clearRecipeProductSelection()" style="background:none;border:none;cursor:pointer;color:#e74c3c;margin-left:8px;" title="Clear selection"><i class="fas fa-times"></i></button>
+                        <button type="button" onclick="clearRecipeProductSelection()"
+                            style="background:none;border:none;cursor:pointer;color:#e74c3c;margin-left:8px;"
+                            title="Clear selection"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
             </div>
@@ -508,15 +525,18 @@
                     <div class="form-group full-width">
                         <label>Video Source *</label>
                         <div class="video-source-tabs">
-                            <button type="button" class="tab-btn active" id="recipeUploadTabBtn" onclick="switchRecipeTab('upload')">Upload File</button>
-                            <button type="button" class="tab-btn" id="recipeUrlTabBtn" onclick="switchRecipeTab('url')">Video URL</button>
+                            <button type="button" class="tab-btn active" id="recipeUploadTabBtn"
+                                onclick="switchRecipeTab('upload')">Upload File</button>
+                            <button type="button" class="tab-btn" id="recipeUrlTabBtn"
+                                onclick="switchRecipeTab('url')">Video URL</button>
                         </div>
                     </div>
 
                     <!-- Upload Tab -->
                     <div id="recipeUploadTab" class="form-group full-width recipe-tab-content active">
                         <label for="recipeVideoFile">Select Video File (MP4, WebM)</label>
-                        <input type="file" id="recipeVideoFile" accept="video/mp4,video/webm,video/ogg,.mp4,.webm,.ogg" class="file-input" onchange="handleRecipeVideoSelect()">
+                        <input type="file" id="recipeVideoFile" accept="video/mp4,video/webm,video/ogg,.mp4,.webm,.ogg"
+                            class="file-input" onchange="handleRecipeVideoSelect()">
                         <label for="recipeVideoFile" class="file-input-label video-label" id="recipeVideoDropArea">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Click or drag &amp; drop video here</span>
@@ -527,25 +547,31 @@
                             <div class="progress-bar">
                                 <div id="recipeProgressFill" class="progress-fill" style="width:0%"></div>
                             </div>
-                            <p id="recipeProgressText" style="font-size:12px; color:#666; margin-top:4px;">Uploading... 0%</p>
+                            <p id="recipeProgressText" style="font-size:12px; color:#666; margin-top:4px;">Uploading...
+                                0%</p>
                         </div>
                         <!-- Preview -->
                         <div id="recipeVideoPreviewBox" style="display:none; margin-top:10px; position:relative;">
-                            <video id="recipeVideoPreview" controls style="width:100%; max-height:200px; border-radius:8px;"></video>
-                            <button type="button" onclick="clearRecipeVideoFile()" class="btn-remove-image" style="position:absolute;top:6px;right:6px;">✕</button>
+                            <video id="recipeVideoPreview" controls
+                                style="width:100%; max-height:200px; border-radius:8px;"></video>
+                            <button type="button" onclick="clearRecipeVideoFile()" class="btn-remove-image"
+                                style="position:absolute;top:6px;right:6px;">✕</button>
                         </div>
                     </div>
 
                     <!-- URL Tab -->
                     <div id="recipeUrlTab" class="form-group full-width recipe-tab-content" style="display:none;">
                         <label for="recipeVideoUrlInput">Video URL (YouTube embed, Vimeo, or direct URL)</label>
-                        <input type="url" id="recipeVideoUrlInput" placeholder="https://www.youtube.com/embed/... or direct mp4 URL">
-                        <small style="color:#666; margin-top:4px;">For YouTube: use the embed URL (https://www.youtube.com/embed/VIDEO_ID)</small>
+                        <input type="url" id="recipeVideoUrlInput"
+                            placeholder="https://www.youtube.com/embed/... or direct mp4 URL">
+                        <small style="color:#666; margin-top:4px;">For YouTube: use the embed URL
+                            (https://www.youtube.com/embed/VIDEO_ID)</small>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="recipeVideoDescription">Description</label>
-                        <textarea id="recipeVideoDescription" rows="3" placeholder="Brief description of this recipe video"></textarea>
+                        <textarea id="recipeVideoDescription" rows="3"
+                            placeholder="Brief description of this recipe video"></textarea>
                     </div>
 
                     <div class="form-group">
@@ -582,8 +608,10 @@
                 <div class="form-group full-width">
                     <label>Video Source *</label>
                     <div class="video-source-tabs">
-                        <button type="button" class="tab-btn active" data-tab="about-upload-tab" onclick="switchAboutUsSourceTab('about-upload-tab')">Upload from Computer</button>
-                        <button type="button" class="tab-btn" data-tab="about-url-tab" onclick="switchAboutUsSourceTab('about-url-tab')">Video URL</button>
+                        <button type="button" class="tab-btn active" data-tab="about-upload-tab"
+                            onclick="switchAboutUsSourceTab('about-upload-tab', event)">Upload from Computer</button>
+                        <button type="button" class="tab-btn" data-tab="about-url-tab"
+                            onclick="switchAboutUsSourceTab('about-url-tab', event)">Video URL</button>
                     </div>
                 </div>
                 <div id="about-upload-tab" class="form-group full-width tab-content active">
@@ -641,7 +669,9 @@
                 </div>
                 <div class="form-group">
                     <label for="productCategory">Category Name *</label>
-                    <input type="text" id="productCategory" placeholder="e.g. Honey, Oils, Rice, Vegetables" required>
+                    <select id="productCategory" required>
+                        <option value="">-- Select Category --</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="productPrice">Base Price (₹)</label>
@@ -657,7 +687,8 @@
                 </div>
                 <div class="form-group full-width">
                     <label>Product Units (kg/litre pricing) *</label>
-                    <div id="unitsContainer" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
+                    <div id="unitsContainer"
+                        style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;">
                         <div id="unitsList" style="margin-bottom: 15px;"></div>
                         <button type="button" class="btn btn-secondary" onclick="addUnitField()" style="width: 100%;">
                             <i class="fas fa-plus"></i> Add Unit
@@ -673,7 +704,8 @@
                             <span>Click to upload image or drag and drop</span>
                             <small>PNG, JPG, GIF up to 5MB</small>
                         </div>
-                        <div id="uploadStatus" style="display: none; text-align: center; padding: 10px; color: #2ecc71;">
+                        <div id="uploadStatus"
+                            style="display: none; text-align: center; padding: 10px; color: #2ecc71;">
                             <i class="fas fa-spinner fa-spin"></i> Uploading image...
                         </div>
                         <div id="imagePreview" class="image-preview" style="display: none;">
@@ -685,6 +717,39 @@
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Save Product</button>
                     <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCategoryModal()">&times;</span>
+            <h2 id="categoryModalTitle">Add New Category</h2>
+            <form id="categoryForm" class="form-grid">
+                <input type="hidden" id="categoryId">
+                <div class="form-group">
+                    <label for="categoryName">Category Name *</label>
+                    <input type="text" id="categoryName" required placeholder="e.g. Vegetables, Oils">
+                </div>
+                <div class="form-group">
+                    <label for="categorySlug">Slug (Optional)</label>
+                    <input type="text" id="categorySlug" placeholder="e.g. vegetables, oils">
+                </div>
+                <div class="form-group">
+                    <label for="categoryImage">Image Filename / Link *</label>
+                    <input type="text" id="categoryImage" required placeholder="e.g. vege.png, rice.png, oil.png">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="categoryActive" checked>
+                        Active (Visible on Homepage/Dropdowns)
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Category</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -822,7 +887,8 @@
                             <span>Click to upload video or drag and drop</span>
                             <small>MP4, WebM, OGG up to 100MB</small>
                         </div>
-                        <div id="videoUploadStatus" style="display: none; text-align: center; padding: 10px; color: #2ecc71;">
+                        <div id="videoUploadStatus"
+                            style="display: none; text-align: center; padding: 10px; color: #2ecc71;">
                             <i class="fas fa-spinner fa-spin"></i> Uploading video...
                         </div>
                         <div id="videoPreview" class="video-preview" style="display: none;">
@@ -848,8 +914,394 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- WhatsApp Status Section -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <style>
+        #whatsapp.section-content {
+            display: none;
+        }
+
+        #whatsapp.section-content.active {
+            display: block;
+        }
+
+        .wa-status-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 560px;
+            margin: 0 auto 28px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .wa-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .wa-status-badge.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .wa-status-badge.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .wa-status-badge.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .wa-status-badge .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 1.4s infinite;
+        }
+
+        .wa-status-badge.connected .dot {
+            background: #28a745;
+        }
+
+        .wa-status-badge.disconnected .dot {
+            background: #dc3545;
+            animation: none;
+        }
+
+        .wa-status-badge.loading .dot {
+            background: #ffc107;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.3);
+            }
+        }
+
+        .wa-qr-wrapper {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 16px;
+            padding: 28px;
+            margin: 20px 0;
+        }
+
+        .wa-qr-wrapper img {
+            width: 220px;
+            height: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            display: block;
+            margin: 0 auto 16px;
+        }
+
+        .wa-qr-steps {
+            text-align: left;
+            display: inline-block;
+            margin-top: 12px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .wa-qr-steps ol {
+            margin: 0;
+            padding-left: 20px;
+            color: #495057;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .wa-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .wa-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .wa-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .wa-btn-green {
+            background: #25D366;
+            color: #fff;
+        }
+
+        .wa-btn-red {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .wa-btn-gray {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .wa-last-refresh {
+            font-size: 0.78rem;
+            color: #adb5bd;
+            margin-top: 10px;
+        }
+
+        .wa-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .wa-info-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            text-align: left;
+        }
+
+        .wa-info-card h4 {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #adb5bd;
+            margin: 0 0 6px;
+        }
+
+        .wa-info-card p {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #343a40;
+            margin: 0;
+        }
+    </style>
+
+    <!-- WhatsApp section injected into main content -->
+    <script>
+        // Inject WhatsApp section into content-wrapper before scripts run
+        document.addEventListener('DOMContentLoaded', function () {
+            // Find the last section-content before scripts
+            const wrapper = document.querySelector('.main-content .content-wrapper') ||
+                document.querySelector('main');
+            if (!wrapper) return;
+
+            const waSection = document.createElement('section');
+            waSection.id = 'whatsapp';
+            waSection.className = 'section-content';
+            waSection.innerHTML = `
+                <div class="section-header" style="margin-bottom:28px;">
+                    <h2><i class="fab fa-whatsapp" style="color:#25D366;margin-right:10px;"></i>WhatsApp Notifications</h2>
+                </div>
+
+                <!-- Status Card -->
+                <div class="wa-status-card">
+                    <div id="waStatusBadge" class="wa-status-badge loading">
+                        <span class="dot"></span>
+                        <span id="waStatusText">Checking status...</span>
+                    </div>
+
+                    <!-- QR Code area -->
+                    <div id="waQrWrapper" class="wa-qr-wrapper" style="display:none;">
+                        <p style="font-weight:600;color:#343a40;margin:0 0 16px;">📱 Scan this QR code to link WhatsApp</p>
+                        <img id="waQrImg" src="" alt="WhatsApp QR Code">
+                        <div class="wa-qr-steps">
+                            <ol>
+                                <li>Open WhatsApp on your phone</li>
+                                <li>Tap <strong>⋮ Menu → Linked Devices → Link a Device</strong></li>
+                                <li>Point your camera at the QR code above</li>
+                            </ol>
+                        </div>
+                        <p style="font-size:0.82rem;color:#adb5bd;margin-top:12px;">⚠️ QR code expires every ~20 seconds. Restart server if it's too old.</p>
+                    </div>
+
+                    <!-- Connected state message -->
+                    <div id="waConnectedMsg" style="display:none; padding:20px; color:#155724;">
+                        <i class="fas fa-check-circle" style="font-size:3rem;color:#28a745;display:block;margin-bottom:12px;"></i>
+                        <p style="font-size:1rem;font-weight:600;margin:0;">WhatsApp is connected and ready!</p>
+                        <p style="font-size:0.85rem;color:#6c757d;margin:6px 0 0;">Order notifications will be sent automatically.</p>
+                    </div>
+
+                    <div class="wa-actions">
+                        <button class="wa-btn wa-btn-green" onclick="waRefreshStatus()">
+                            <i class="fas fa-sync-alt"></i> Refresh Status
+                        </button>
+                        <button class="wa-btn wa-btn-green" id="waTestBtn" onclick="waSendTest()" style="display:none;">
+                            <i class="fas fa-paper-plane"></i> Send Test Message
+                        </button>
+                        <button class="wa-btn wa-btn-red" onclick="waClearSession()">
+                            <i class="fas fa-trash"></i> Clear Session
+                        </button>
+                    </div>
+                    <p class="wa-last-refresh">Last refreshed: <span id="waLastRefresh">—</span></p>
+                </div>
+
+                <!-- Info Grid -->
+                <div class="wa-info-grid">
+                    <div class="wa-info-card">
+                        <h4>Admin Number</h4>
+                        <p><i class="fab fa-whatsapp" style="color:#25D366;"></i> +91 6380442089</p>
+                    </div>
+                    <div class="wa-info-card">
+                        <h4>Module Status</h4>
+                        <p id="waModuleStatus">Loading...</p>
+                    </div>
+                    <div class="wa-info-card">
+                        <h4>Session Directory</h4>
+                        <p id="waSessionStatus">Checking...</p>
+                    </div>
+                    <div class="wa-info-card">
+                        <h4>Auto-Refresh</h4>
+                        <p>Every 15 seconds</p>
+                    </div>
+                </div>
+            `;
+            wrapper.appendChild(waSection);
+
+            // Start polling
+            waRefreshStatus();
+            setInterval(waRefreshStatus, 15000);
+        });
+
+        // ── WhatsApp Status Polling ────────────────────────────────────────
+        async function waRefreshStatus() {
+            const badge = document.getElementById('waStatusBadge');
+            const text = document.getElementById('waStatusText');
+            if (!badge || !text) return;
+
+            badge.className = 'wa-status-badge loading';
+            text.textContent = 'Checking...';
+
+            try {
+                // Fetch quick status + QR info in parallel
+                const [qrRes, diagRes] = await Promise.all([
+                    fetch('/api/diagnostics/qr'),
+                    fetch('/api/diagnostics/whatsapp')
+                ]);
+                const qr = await qrRes.json();
+                const diag = await diagRes.json();
+
+                const ready = qr.ready;
+                const now = new Date().toLocaleTimeString('en-IN');
+                document.getElementById('waLastRefresh').textContent = now;
+
+                // Update main badge
+                if (ready) {
+                    badge.className = 'wa-status-badge connected';
+                    text.textContent = '✅ Connected & Ready';
+                    document.getElementById('waQrWrapper').style.display = 'none';
+                    document.getElementById('waConnectedMsg').style.display = 'block';
+                    document.getElementById('waTestBtn').style.display = 'inline-flex';
+                    // Nav badge — hide alert
+                    const navBadge = document.getElementById('whatsappBadge');
+                    if (navBadge) navBadge.style.display = 'none';
+                } else {
+                    badge.className = 'wa-status-badge disconnected';
+                    text.textContent = '⚠️ Not Connected — Scan QR Code';
+                    document.getElementById('waConnectedMsg').style.display = 'none';
+                    document.getElementById('waTestBtn').style.display = 'none';
+                    // Nav badge — show alert
+                    const navBadge = document.getElementById('whatsappBadge');
+                    if (navBadge) navBadge.style.display = 'inline-block';
+
+                    // Show QR if available
+                    const qrWrapper = document.getElementById('waQrWrapper');
+                    const qrImg = document.getElementById('waQrImg');
+                    if (qr.qrAvailable && qr.qrUrl) {
+                        qrImg.src = qr.qrUrl + '?t=' + Date.now(); // bust cache
+                        qrWrapper.style.display = 'block';
+                    } else {
+                        qrWrapper.style.display = 'none';
+                    }
+                }
+
+                // Module & session info
+                const modEl = document.getElementById('waModuleStatus');
+                const sesEl = document.getElementById('waSessionStatus');
+                if (modEl) modEl.textContent = diag.whatsappModule?.loaded ? '✅ Loaded' : '❌ Not Loaded';
+                if (sesEl) sesEl.textContent = diag.sessionDirectory?.exists
+                    ? '✅ Exists (' + Math.round((diag.sessionDirectory.size || 0) / 1024) + ' KB)'
+                    : '⚠️ No session yet';
+
+            } catch (err) {
+                badge.className = 'wa-status-badge disconnected';
+                text.textContent = '❌ Cannot reach server';
+            }
+        }
+
+        async function waSendTest() {
+            if (!confirm('Send a test WhatsApp message to +91 6380442089?')) return;
+            const btn = document.getElementById('waTestBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            try {
+                const res = await fetch('/api/diagnostics/test-whatsapp', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ Test message sent! Check WhatsApp on +91 6380442089.');
+                } else {
+                    alert('❌ Failed: ' + data.message);
+                }
+            } catch (e) {
+                alert('❌ Error: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Test Message';
+            }
+        }
+
+        async function waClearSession() {
+            if (!confirm('⚠️ Clear the WhatsApp session?\n\nYou will need to scan the QR code again to reconnect.')) return;
+            try {
+                const res = await fetch('/api/diagnostics/clear-session', { method: 'POST' });
+                const data = await res.json();
+                alert(data.success
+                    ? '✅ Session cleared. Please restart the server and scan the QR code.'
+                    : '❌ Failed: ' + data.message);
+                waRefreshStatus();
+            } catch (e) {
+                alert('❌ Error: ' + e.message);
+            }
+        }
+    </script>
+
     <script src="admin-site.js"></script>
     <script src="admin-script.js"></script>
 </body>
+
 </html>
- 

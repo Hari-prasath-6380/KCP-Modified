@@ -135,13 +135,11 @@ async function sendOrderWhatsApp(orderDetails) {
         // Check if client is ready
         const isReady = whatsappModule.isClientReady ? whatsappModule.isClientReady() : false;
         if (!isReady) {
-            console.warn('⚠️  WhatsApp client not ready yet - notification will be skipped');
+            console.warn('⚠️  WhatsApp client not ready yet - will attempt send with retry logic');
             console.warn('💡 WhatsApp: Waiting for QR code scan or device link');
             console.warn('💡 Check server logs for QR code. It may take 20-30 seconds to initialize.');
-            return false;
         }
 
-        // Validate required fields
         if (!orderDetails.phone) {
             console.error('❌ WhatsApp Error: Customer phone number is missing');
             return false;
@@ -169,7 +167,7 @@ async function sendOrderWhatsApp(orderDetails) {
         console.log('📱 [WhatsApp] Customer: ' + whatsappData.customerName);
         console.log('📱 [WhatsApp] Phone: +91' + whatsappData.phone.replace(/\D/g, '').slice(-10));
         console.log('📱 [WhatsApp] Items: ' + whatsappData.items.length);
-        
+
         await whatsappModule.sendOrderNotification(whatsappData);
         console.log('✅ WhatsApp order notification sent successfully');
         return true;

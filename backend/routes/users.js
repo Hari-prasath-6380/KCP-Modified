@@ -46,11 +46,11 @@ router.post('/signup', async (req, res) => {
 /* GET ALL USERS */
 router.get('/', async (req, res) => {
     try {
-        const users = await User.find({}, { password: 0 }); // Exclude passwords
-        res.json(users);
+        const users = await User.find({}, { password: 0 });
+        res.json({ success: true, data: users });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Error fetching users" });
+        res.status(500).json({ success: false, message: "Error fetching users" });
     }
 });
 
