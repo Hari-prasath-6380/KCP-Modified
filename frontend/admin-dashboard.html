@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - KCP Organics</title>
     <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="admin-modern.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -669,9 +670,19 @@
                 </div>
                 <div class="form-group">
                     <label for="productCategory">Category Name *</label>
-                    <select id="productCategory" required>
-                        <option value="">-- Select Category --</option>
-                    </select>
+                    <input type="text" id="productCategory" list="productCategoryList" required
+                        placeholder="Select existing or type a new category..." autocomplete="off"
+                        style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                    <datalist id="productCategoryList">
+                        <!-- Populated dynamically from /api/search/categories -->
+                    </datalist>
+                    <small style="color:#666; display:block; margin-top:4px;">
+                        <i class="fas fa-info-circle"></i>
+                        Pick from the list or type a new category name. Use the
+                        <a href="#" onclick="closeProductModal(); setTimeout(openCategoryModal, 250); return false;">Add
+                            Category</a>
+                        dialog for richer options (image, slug, etc.).
+                    </small>
                 </div>
                 <div class="form-group">
                     <label for="productPrice">Base Price (₹)</label>
@@ -1302,6 +1313,7 @@
 
     <script src="admin-site.js"></script>
     <script src="admin-script.js"></script>
+    <script src="navbar-enhancements.js"></script>
 </body>
 
 </html>

@@ -7,258 +7,9 @@
     <title>Sign Up - KCP Organics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background-image: url("bg_img.webp");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-            padding-top: 85px;
-            padding-bottom: 20px;
-        }
-
-        /* Back Button fixed below navbar */
-        .back-btn {
-            position: fixed;
-            top: 100px; /* just below navbar */
-            left: 20px;
-            padding: 10px 16px;
-            background-color: #a8e063;
-            color: #2e7d32;
-            font-weight: 600;
-            border: none;
-            border-radius: 20px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: 0.3s;
-            z-index: 999;
-            min-height: 44px;
-            font-size: 14px;
-        }
-
-        .back-btn:hover {
-            background-color: #56ab2f;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Signup Box */
-        .signup-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 120px);
-            padding: 20px;
-        }
-
-        .signup-container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 22px;
-            padding: 30px 25px;
-            width: 100%;
-            max-width: 340px;
-            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        .signup-container h1 {
-            color: #2e7d32;
-            margin-bottom: 18px;
-            font-size: 24px;
-        }
-
-        .signup-container label {
-            display: block;
-            text-align: left;
-            margin: 8px 0 4px;
-            font-weight: 600;
-            color: #2e7d32;
-            font-size: 13px;
-        }
-
-        .signup-container input {
-            width: 100%;
-            padding: 12px 14px;
-            margin-bottom: 12px;
-            border: 1px solid #c8e6c9;
-            border-radius: 22px;
-            font-size: 16px;
-            background: #f1f8e9;
-            outline: none;
-            min-height: 44px;
-            box-sizing: border-box;
-        }
-
-        .signup-container input:focus {
-            border-color: #66bb6a;
-            box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
-        }
-
-        .role-options {
-            display: flex;
-            gap: 20px;
-            margin: 6px 0 15px;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .role-options div {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: #2e7d32;
-            font-weight: 600;
-        }
-
-        .role-options input {
-            cursor: pointer;
-            min-width: 18px;
-            min-height: 18px;
-        }
-
-        .signup-container button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 22px;
-            background-color: #2e7d32;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            min-height: 48px;
-        }
-
-        .signup-container button:hover {
-            background-color: #1b5e20;
-        }
-
-        .login-link {
-            margin-top: 14px;
-            font-size: 13px;
-            color: #2e7d32;
-        }
-
-        .login-link a {
-            color: #2e7d32;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        #message {
-            margin-bottom: 12px;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        /* Mobile */
-        @media (max-width: 600px) {
-            body {
-                padding-top: 64px;
-            }
-
-            .back-btn {
-                top: 75px;
-                left: 10px;
-                padding: 8px 12px;
-                font-size: 13px;
-                position: static;
-                margin-bottom: 20px;
-                margin-left: 0;
-                width: fit-content;
-            }
-
-            .signup-wrapper {
-                min-height: auto;
-                padding: 15px 10px;
-                flex-direction: column;
-            }
-
-            .signup-container {
-                padding: 25px 20px;
-                border-radius: 18px;
-            }
-
-            .signup-container h1 {
-                font-size: 22px;
-                margin-bottom: 16px;
-            }
-
-            .signup-container label {
-                font-size: 12px;
-                margin: 6px 0 3px;
-            }
-
-            .signup-container input {
-                padding: 11px 12px;
-                margin-bottom: 10px;
-                font-size: 16px;
-            }
-
-            .role-options {
-                gap: 15px;
-                margin: 5px 0 12px;
-            }
-
-            .role-options div {
-                font-size: 12px;
-                gap: 4px;
-            }
-
-            .signup-container button {
-                padding: 11px;
-                font-size: 15px;
-            }
-
-            .login-link {
-                font-size: 12px;
-                margin-top: 12px;
-            }
-
-            .section1,
-            .section2 {
-                gap: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .back-btn {
-                position: static;
-                margin-bottom: 15px;
-                margin-left: 0;
-            }
-
-            .signup-wrapper {
-                padding: 10px;
-                flex-direction: column;
-            }
-
-            .signup-container {
-                padding: 20px 15px;
-            }
-
-            .signup-container h1 {
-                font-size: 20px;
-            }
-
-            .signup-container input,
-            .signup-container button {
-                font-size: 16px;
-            }
-    </style>
+    <link rel="stylesheet" href="auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -274,22 +25,22 @@
             <a href="products.html">Products</a>
             <a href="contact.html">Contact us</a>
             <a href="admin-dashboard.html">Admin</a>
-            <!-- <a href="track-order.html">Track Order</a> -->
         </div>
         <div class="section2" id="authSection">
-            <div class="navbar-cart" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cartBadge">0</span>
-            </div>
             <a href="login.html" id="loginLink">Login</a>
             <a href="signup.html" id="signupLink" class="active">Sign up</a>
             <div class="user-dropdown" id="userDropdown" style="display: none;">
                 <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
-                  <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
-                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                    <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+                    <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
                 </div>
+            </div>
+            <div class="navbar-cart" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartBadge">0</span>
             </div>
         </div>
         <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
@@ -298,56 +49,129 @@
     </nav>
 
     <!-- Back Button -->
-    <a href="home.html" class="back-btn">← Back to Home</a>
+    <a href="home.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
 
-    <!-- Signup Box -->
-    <div class="signup-wrapper">
-        <div class="signup-container">
-            <h1>Create Your Account</h1>
+    <!-- Signup Card -->
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-icon"><i class="fas fa-user-plus"></i></div>
+            <h1>Create Account</h1>
+            <p class="subtitle">Join KCP Organics and start your organic journey</p>
+
             <div id="message"></div>
 
             <form id="signupForm">
-                <label>Full Name</label>
-                <input type="text" name="name" required>
-
-                <label>Email</label>
-                <input type="email" name="email" required>
-
-                <label>Mobile</label>
-                <input type="number" name="number" required>
-
-                <label>Password</label>
-            <input type="password" name="password" required>
-
-            <label>Select Role</label>
-            <div class="role-options">
-                <div>
-                    <input type="radio" name="role" value="farmer" required>
-                    Farmer
+                <div class="input-group">
+                    <label for="signupName">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="signupName" name="name" class="has-icon" placeholder="Your full name"
+                            required>
+                    </div>
                 </div>
-                <div>
-                    <input type="radio" name="role" value="citizen">
-                    Citizen
+
+                <div class="input-group">
+                    <label for="signupEmail">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="signupEmail" name="email" class="has-icon" placeholder="you@example.com"
+                            required>
+                    </div>
                 </div>
-            </div>
 
-            <button type="submit">Sign Up</button>
+                <div class="input-group">
+                    <label for="signupPhone">Mobile Number</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone input-icon"></i>
+                        <input type="number" id="signupPhone" name="number" class="has-icon"
+                            placeholder="+91 XXXXX XXXXX" required>
+                    </div>
+                </div>
 
-            <div class="login-link">
-                Already have an account? <a href="login.html">Login</a>
+                <div class="input-group">
+                    <label for="signupPassword">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="signupPassword" name="password" class="has-icon"
+                            placeholder="Create a strong password" required oninput="checkPasswordStrength(this)">
+                        <button type="button" class="eye-toggle" onclick="togglePassword('signupPassword', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="bar" id="passwordBar"></div>
+                    </div>
+                </div>
+
+                <div class="role-group">
+                    <label class="group-label">Select Your Role</label>
+                    <div class="role-options">
+                        <div class="role-option">
+                            <input type="radio" name="role" value="farmer" id="roleFarmer" required>
+                            <label for="roleFarmer"><i class="fas fa-tractor"></i> Farmer</label>
+                        </div>
+                        <div class="role-option">
+                            <input type="radio" name="role" value="citizen" id="roleCitizen">
+                            <label for="roleCitizen"><i class="fas fa-house-user"></i> Citizen</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit" id="signupBtn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer-link">
+                Already have an account? <a href="login.html">Sign In</a>
             </div>
-        </form>
         </div>
     </div>
 
     <script>
-        const form = document.getElementById('signupForm');
-        const messageDiv = document.getElementById('message');
+        // Toggle password visibility
+        function togglePassword(inputId, btn) {
+            var input = document.getElementById(inputId);
+            var icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Password strength indicator
+        function checkPasswordStrength(input) {
+            var val = input.value;
+            var bar = document.getElementById('passwordBar');
+            var strength = 0;
+            if (val.length >= 6) strength++;
+            if (val.length >= 10) strength++;
+            if (/[A-Z]/.test(val) && /[a-z]/.test(val)) strength++;
+            if (/[0-9]/.test(val)) strength++;
+            if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+            var pct = (strength / 5) * 100;
+            bar.style.width = pct + '%';
+            if (strength <= 1) bar.style.background = '#e74c3c';
+            else if (strength <= 2) bar.style.background = '#f39c12';
+            else if (strength <= 3) bar.style.background = '#f1c40f';
+            else bar.style.background = '#2e7d32';
+        }
+
+        // Signup form submission
+        var form = document.getElementById('signupForm');
+        var messageDiv = document.getElementById('message');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            var btn = document.getElementById('signupBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
 
-            const formData = {
+            var formData = {
                 name: form.name.value,
                 email: form.email.value,
                 number: form.number.value,
@@ -356,43 +180,44 @@
             };
 
             try {
-                const signupUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/user/signup';
-                const response = await fetch(signupUrl, {
+                var signupUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/user/signup';
+                var response = await fetch(signupUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
 
-                const data = await response.json();
+                var data = await response.json();
 
                 if (response.ok) {
-                    messageDiv.innerText = data.message + ' Redirecting...';
-                    messageDiv.style.color = 'green';
-                    // Store user info and token, then redirect
+                    messageDiv.innerHTML = '<div class="auth-message success"><i class="fas fa-check-circle"></i> ' + data.message + ' Redirecting...</div>';
                     if (data.data) {
                         localStorage.setItem('userName', data.data.name);
-                        // server returns `id` field — use it if available, otherwise fallback to _id
                         localStorage.setItem('userId', data.data.id || data.data._id || 'guest');
                         localStorage.setItem('userRole', data.data.role);
-                        try { if (typeof migrateGuestCartToUser === 'function') migrateGuestCartToUser(); } catch(e) {}
+                        try { if (typeof migrateGuestCartToUser === 'function') migrateGuestCartToUser(); } catch (e) { }
                     }
                     if (data.token) {
                         localStorage.setItem('token', data.token);
                     }
                     form.reset();
+                    document.getElementById('passwordBar').style.width = '0%';
                     setTimeout(() => {
                         window.location.href = 'home.html';
                     }, 1500);
                 } else {
-                    messageDiv.innerText = data.message || 'Signup failed';
-                    messageDiv.style.color = 'red';
+                    messageDiv.innerHTML = '<div class="auth-message error"><i class="fas fa-exclamation-circle"></i> ' + (data.message || 'Signup failed. Please try again.') + '</div>';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
                 }
-            } catch {
-                messageDiv.innerText = 'Server error';
-                messageDiv.style.color = 'red';
+            } catch (err) {
+                messageDiv.innerHTML = '<div class="auth-message error"><i class="fas fa-exclamation-circle"></i> Server error. Please try again later.</div>';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
             }
         });
     </script>
+
     <script>
         function toggleCart() { window.location.href = 'cart.html'; }
         function logoutUser(event) {
@@ -419,12 +244,14 @@
                 }
             }
         }
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             checkUserSession();
             var cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            document.getElementById('cartBadge').textContent = cart.reduce(function(s, i) { return s + (i.quantity || 0); }, 0);
+            document.getElementById('cartBadge').textContent = cart.reduce(function (s, i) { return s + (i.quantity || 0); }, 0);
         });
     </script>
     <script src="site.js"></script>
+    <script src="navbar-enhancements.js"></script>
 </body>
+
 </html>

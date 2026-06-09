@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,443 +11,645 @@
         body {
             font-family: 'Poppins', sans-serif;
             padding-top: 85px;
+            background: linear-gradient(135deg, #dcf1d8 0%, #e8f5e9 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .navbar-cart {
-            cursor: pointer;
+        /* ---- HERO BANNER ---- */
+        .contact-hero {
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #4CAF50 100%);
+            color: white;
+            padding: 70px 20px 60px;
+            text-align: center;
             position: relative;
-            font-size: 24px;
-            color: #dd610e;
-            transition: all 0.3s;
+            overflow: hidden;
+            margin-bottom: 0;
         }
 
-        .navbar-cart:hover {
-            color: #2e7d32;
-            transform: scale(1.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
+        .contact-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 235, 59, 0.06) 0%, transparent 50%);
+            pointer-events: none;
         }
 
+        .contact-hero h1 {
+            font-size: clamp(32px, 7vw, 52px);
+            font-weight: 800;
+            margin: 0 0 12px;
+            letter-spacing: -1px;
+            animation: heroReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .contact-hero p {
+            font-size: clamp(14px, 3vw, 18px);
+            opacity: 0.92;
+            max-width: 640px;
+            margin: 0 auto;
+            animation: heroReveal 0.9s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes heroReveal {
+            from {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- CONTENT CONTAINER ---- */
         .contact-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 50px 20px 60px;
         }
 
-        .contact-header {
-            text-align: center;
+        /* ---- CONTACT GRID ---- */
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
             margin-bottom: 50px;
         }
 
-        .contact-header h1 {
-            font-size: 48px;
-            color: #dd610e;
-            margin-bottom: 15px;
-        }
-
-        .contact-header p {
-            font-size: 18px;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .contact-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
+        /* ---- INFO CARDS ---- */
         .contact-info {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 20px;
         }
 
         .info-card {
             display: flex;
-            gap: 20px;
+            gap: 18px;
             align-items: flex-start;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
         }
 
-        .info-card i {
-            font-size: 28px;
-            color: #dd610e;
-            width: 50px;
-            text-align: center;
-            margin-top: 5px;
+        .info-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.09);
+        }
+
+        .info-card .icon-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dd610e, #c25208);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(221, 97, 14, 0.25);
+            transition: transform 0.4s ease;
+        }
+
+        .info-card:hover .icon-circle {
+            transform: scale(1.1) rotate(-8deg);
         }
 
         .info-card h3 {
             color: #333;
-            margin-bottom: 8px;
-            font-size: 18px;
+            margin: 0 0 6px;
+            font-size: 17px;
+            font-weight: 700;
         }
 
         .info-card p {
             color: #666;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-size: 14px;
+            margin: 0;
         }
 
+        /* ---- FORM ---- */
         .contact-form {
-            background: #f9f9f9;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            padding: 36px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
         }
 
         .contact-form h2 {
-            color: #dd610e;
-            margin-bottom: 30px;
-            font-size: 28px;
+            color: #166534;
+            margin: 0 0 24px;
+            font-size: 26px;
+            font-weight: 800;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             color: #333;
             font-weight: 600;
+            font-size: 14px;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border: 1.5px solid #ddd;
+            border-radius: 10px;
             font-family: inherit;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            font-size: 15px;
+            background: #f8faf7;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #dd610e;
-            box-shadow: 0 0 0 3px rgba(221, 97, 14, 0.1);
+            border-color: #2ecc71;
+            box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.12);
+            transform: translateY(-1px);
+            background: white;
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 150px;
+            min-height: 140px;
         }
 
         .submit-btn {
-            background: #dd610e;
+            background: linear-gradient(135deg, #dd610e, #c25208);
             color: white;
             padding: 14px 40px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            box-shadow: 0 6px 18px rgba(221, 97, 14, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .submit-btn:hover {
-            background: #c55009;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(221, 97, 14, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(221, 97, 14, 0.42);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
         }
 
         .submit-btn:disabled {
             background: #ccc;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
+        /* Messages / alerts */
         .success-message {
             background: #d4edda;
             border: 1px solid #c3e6cb;
             color: #155724;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 18px;
             display: none;
+            font-weight: 500;
         }
 
         .error-message {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
             color: #721c24;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 18px;
             display: none;
+            font-weight: 500;
         }
 
+        /* ---- MAP ---- */
+        .map-section {
+            margin-bottom: 50px;
+        }
+
+        .map-section h2 {
+            color: #166534;
+            font-size: 26px;
+            text-align: center;
+            margin: 0 0 20px;
+            font-weight: 800;
+        }
+
+        .map-container {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+            height: 380px;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* ---- WHY CHOOSE US SECTION ---- */
+        .why-section {
+            background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%);
+            border-radius: 20px;
+            padding: 48px 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .why-section h2 {
+            text-align: center;
+            color: #166534;
+            font-size: 28px;
+            margin: 0 0 32px;
+            font-weight: 800;
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .why-card {
+            text-align: center;
+            padding: 28px 20px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+        }
+
+        .why-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.09);
+        }
+
+        .why-card .why-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.12), rgba(46, 204, 113, 0.05));
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 14px;
+            transition: transform 0.4s ease;
+        }
+
+        .why-card:hover .why-icon {
+            transform: scale(1.12) rotate(8deg);
+        }
+
+        .why-card h3 {
+            font-size: 16px;
+            color: #166534;
+            margin: 0 0 8px;
+            font-weight: 700;
+        }
+
+        .why-card p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ---- TESTIMONIALS ---- */
+        .testimonial-section {
+            margin-bottom: 50px;
+        }
+
+        .testimonial-section h2 {
+            text-align: center;
+            color: #166534;
+            font-size: 28px;
+            margin: 0 0 28px;
+            font-weight: 800;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.04);
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.09);
+        }
+
+        .testimonial-card .stars {
+            color: #f39c12;
+            margin-bottom: 14px;
+            font-size: 18px;
+        }
+
+        .testimonial-card .quote {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.7;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-card .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2e7d32, #1B5E20);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .testimonial-card .author-info .name {
+            font-weight: 700;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .testimonial-card .author-info .role {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* ---- FAQ ---- */
         .faq-section {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(14px);
             padding: 40px;
-            border-radius: 12px;
-            margin-top: 60px;
+            border-radius: 20px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         .faq-section h2 {
-            color: #dd610e;
-            margin-bottom: 30px;
+            color: #166534;
+            margin: 0 0 28px;
             font-size: 28px;
             text-align: center;
+            font-weight: 800;
         }
 
         .faq-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 20px;
         }
 
         .faq-item {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 16px;
         }
 
         .faq-item h4 {
             color: #333;
-            margin-bottom: 10px;
+            margin: 0 0 10px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+            transition: color 0.3s;
         }
 
         .faq-item h4:hover {
             color: #dd610e;
         }
 
+        .faq-item h4 i {
+            transition: transform 0.3s ease;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .faq-item.active h4 i {
+            transform: rotate(180deg);
+            color: #dd610e;
+        }
+
         .faq-item p {
             color: #666;
-            line-height: 1.6;
+            line-height: 1.7;
             display: none;
+            font-size: 14px;
+            padding-top: 4px;
         }
 
         .faq-item.active p {
             display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- YOUR MESSAGES ---- */
+        .messages-list-section {
+            margin-top: 40px;
+        }
+
+        .messages-list-section h2 {
+            color: #166534;
+            font-size: 22px;
+            margin: 0 0 16px;
+            font-weight: 700;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 992px) {
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .contact-content {
-                grid-template-columns: 1fr;
+            .contact-hero {
+                padding: 50px 16px 40px;
+            }
+
+            .contact-hero h1 {
+                font-size: 28px;
+            }
+
+            .contact-hero p {
+                font-size: 14px;
+            }
+
+            .contact-container {
+                padding: 30px 14px 40px;
             }
 
             .faq-grid {
                 grid-template-columns: 1fr;
             }
 
-            .contact-header h1 {
-                font-size: 32px;
+            .contact-form {
+                padding: 24px;
             }
 
-            .submit-btn {
-                padding: 12px 20px;
+            .map-container {
+                height: 280px;
             }
 
-            .contact-info {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .info-card {
-                padding: 20px;
+            .why-section {
+                padding: 30px 20px;
             }
 
             input[type="text"],
             input[type="email"],
-            textarea,
-            select {
+            textarea {
                 font-size: 16px !important;
-                padding: 10px;
             }
         }
 
         @media (max-width: 600px) {
-            .contact-container {
-                padding: 20px 10px;
-            }
-
-            .contact-header {
-                margin-bottom: 30px;
-            }
-
-            .contact-header h1 {
-                font-size: 24px;
-                margin-bottom: 10px;
-            }
-
-            .contact-header p {
-                font-size: 14px;
-            }
-
             .contact-info {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                margin-bottom: 30px;
+                gap: 14px;
             }
 
             .info-card {
-                padding: 15px;
-                border-radius: 8px;
+                padding: 16px;
+                gap: 14px;
             }
 
-            .form-section {
-                padding: 20px;
+            .info-card .icon-circle {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
             }
 
-            .form-group {
-                margin-bottom: 12px;
+            .info-card h3 {
+                font-size: 15px;
             }
 
-            input[type="text"],
-            input[type="email"],
-            textarea {
-                font-size: 16px !important;
-                padding: 9px;
-                width: 100%;
+            .info-card p {
+                font-size: 13px;
             }
 
             .submit-btn {
-                padding: 12px 16px;
-                font-size: 14px;
-                width: 100%;
-                min-height: 44px;
-            }
-
-            .faq-grid {
-                gap: 12px;
-            }
-
-            .faq-item {
-                padding: 15px;
-            }
-
-            .faq-item-header {
+                padding: 13px 20px;
                 font-size: 14px;
             }
 
-            .faq-item p {
-                font-size: 13px;
+            .contact-form {
+                padding: 20px;
+            }
+
+            .faq-section {
+                padding: 24px;
+            }
+
+            .why-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
         @media (max-width: 480px) {
-            .contact-container {
-                padding: 15px 8px;
+            .contact-hero h1 {
+                font-size: 22px;
             }
 
-            .contact-header h1 {
-                font-size: 20px;
+            .contact-hero p {
+                font-size: 13px;
             }
 
-            .contact-header p {
-                font-size: 12px;
-            }
-
-            .info-card {
-                padding: 12px;
-                gap: 10px;
-            }
-
-            .info-card i {
-                font-size: 24px;
+            .info-card .icon-circle {
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
             }
 
             .info-card h3 {
                 font-size: 14px;
-                margin-bottom: 5px;
             }
 
             .info-card p {
                 font-size: 12px;
             }
 
-            .form-section {
-                padding: 15px;
+            .why-grid {
+                grid-template-columns: 1fr;
             }
 
-            input[type="text"],
-            input[type="email"],
-            textarea {
-                font-size: 15px !important;
-                padding: 8px;
+            .testimonial-grid {
+                grid-template-columns: 1fr;
             }
 
-            .submit-btn {
-                padding: 11px 12px;
-                font-size: 13px;
+            .contact-form {
+                padding: 16px;
+                border-radius: 14px;
             }
-
-            .map-container {
-                height: 250px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .contact-header h1 {
-                font-size: 18px;
-            }
-
-            .contact-header p {
-                font-size: 11px;
-            }
-
-            .info-card {
-                padding: 10px;
-            }
-
-            .info-card h3 {
-                font-size: 12px;
-            }
-
-            .info-card p {
-                font-size: 11px;
-            }
-
-            input[type="text"],
-            input[type="email"],
-            textarea {
-                font-size: 14px !important;
-            }
-
-            .submit-btn {
-                font-size: 12px;
-                padding: 10px 8px;
-            }
-        }
-
-        .message-item {
-            border: 1px solid #eee;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            background: #f9f9f9;
-        }
-
-        .message-item h4 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .message-item .message-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #999;
-            margin-bottom: 10px;
-        }
-
-        .message-item p {
-            color: #666;
-            line-height: 1.6;
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -459,7 +662,6 @@
             <a href="products.html">Products</a>
             <a href="contact.html" class="active">Contact us</a>
             <a href="admin-dashboard.html">Admin</a>
-            <!-- <a href="track-order.html">Track Order</a> -->
         </div>
         <div class="section2" id="authSection">
             <a href="login.html" id="loginLink">Login</a>
@@ -467,8 +669,9 @@
             <div class="user-dropdown" id="userDropdown" style="display: none;">
                 <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
-                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                    <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
                 </div>
             </div>
             <div class="navbar-cart" onclick="toggleCart()">
@@ -481,79 +684,94 @@
         </button>
     </nav>
 
-    <!-- Contact Header -->
-    <div class="contact-container">
-        <div class="contact-header">
-            <h1>Get In Touch</h1>
-            <p>Have questions about our organic products? We'd love to hear from you! Send us a message and we'll respond as soon as possible.</p>
-        </div>
+    <!-- Hero Banner -->
+    <div class="contact-hero">
+        <h1>Get In Touch</h1>
+        <p>Have questions about our organic products? We'd love to hear from you! Send us a message and we'll respond
+            within 24 hours.</p>
+    </div>
 
-        <!-- Contact Content -->
+    <!-- Main Content -->
+    <div class="contact-container">
+
+        <!-- Contact Content: Info + Form -->
         <div class="contact-content">
-            <!-- Contact Info -->
+            <!-- Left: Contact Info Cards -->
             <div class="contact-info">
                 <div class="info-card">
-                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="icon-circle"><i class="fas fa-map-marker-alt"></i></div>
                     <div>
                         <h3>Visit Us</h3>
-                        <p>KCP Organics<br>Perundurai, Tamil Nadu<br>India</p>
+                        <p>KCP Organics<br>123 Organic Lane, Green Valley<br>Perundurai, Tamil Nadu, India - 600001</p>
                     </div>
                 </div>
 
                 <div class="info-card">
-                    <i class="fas fa-phone"></i>
+                    <div class="icon-circle"><i class="fas fa-phone"></i></div>
                     <div>
                         <h3>Call Us</h3>
-                        <p>+91 XXXXX XXXXX<br>Mon - Fri: 9:00 AM - 6:00 PM<br>Sat - Sun: 10:00 AM - 4:00 PM</p>
+                        <p>+91 8883566777<br>+91 98765 43210<br>Mon – Sat: 9:00 AM – 6:00 PM</p>
                     </div>
                 </div>
 
                 <div class="info-card">
-                    <i class="fas fa-envelope"></i>
+                    <div class="icon-circle"><i class="fas fa-envelope"></i></div>
                     <div>
                         <h3>Email Us</h3>
-                        <p>support@kcporganics.com<br>orders@kcporganics.com<br>info@kcporganics.com</p>
+                        <p>kcporganicsonlinestore@gmail.com<br>support@kcporganics.com<br>orders@kcporganics.com</p>
                     </div>
                 </div>
 
                 <div class="info-card">
-                    <i class="fas fa-clock"></i>
+                    <div class="icon-circle"><i class="fas fa-clock"></i></div>
                     <div>
                         <h3>Business Hours</h3>
-                        <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM<br>Sunday: Closed</p>
+                        <p>Mon – Fri: 9:00 AM – 6:00 PM<br>Saturday: 10:00 AM – 4:00 PM<br>Sunday: Closed</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon-circle"><i class="fab fa-whatsapp"></i></div>
+                    <div>
+                        <h3>WhatsApp</h3>
+                        <p>Chat with us directly on WhatsApp for instant replies to your queries.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Contact Form -->
+            <!-- Right: Contact Form -->
             <div class="contact-form">
-                <h2>Send us a Message</h2>
+                <h2><i class="fas fa-paper-plane" style="color:#2e7d32; margin-right:8px;"></i>Send us a Message</h2>
                 <div class="success-message" id="successMessage">
-                    <i class="fas fa-check-circle"></i> Thank you! Your message has been sent successfully. We'll get back to you soon.
+                    <i class="fas fa-check-circle"></i> Thank you! Your message has been sent successfully. We'll get
+                    back to you soon.
                 </div>
                 <div class="error-message" id="errorMessage">
-                    <i class="fas fa-exclamation-circle"></i> <span id="errorText">Error sending message. Please try again.</span>
+                    <i class="fas fa-exclamation-circle"></i> <span id="errorText">Error sending message. Please try
+                        again.</span>
                 </div>
 
                 <form id="contactForm">
                     <div class="form-group">
                         <label for="name">Your Name *</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" placeholder="e.g., Ravi Kumar" required>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
                     </div>
 
                     <div class="form-group">
                         <label for="subject">Subject *</label>
-                        <input type="text" id="subject" name="subject" placeholder="e.g., Product Question, Order Inquiry, Partnership" required>
+                        <input type="text" id="subject" name="subject"
+                            placeholder="e.g., Product Inquiry, Partnership, Order Help" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="message">Message *</label>
-                        <textarea id="message" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+                        <label for="message">Your Message *</label>
+                        <textarea id="message" name="message" rows="6"
+                            placeholder="Tell us how we can help you today..." required></textarea>
                     </div>
 
                     <button type="submit" class="submit-btn">
@@ -563,24 +781,99 @@
             </div>
         </div>
 
+        <!-- Why Choose Us Section -->
+        <div class="why-section">
+            <h2><i class="fas fa-leaf" style="color:#2e7d32; margin-right:8px;"></i>Why Choose KCP Organics?</h2>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-seedling"></i></div>
+                    <h3>100% Organic</h3>
+                    <p>Every product is certified organic, free from harmful chemicals and pesticides.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-truck-fast"></i></div>
+                    <h3>Free Delivery</h3>
+                    <p>We deliver fresh organic goodness straight from our farms to your doorstep.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-shield-halved"></i></div>
+                    <h3>Quality Assured</h3>
+                    <p>Strict quality checks at every step ensure you receive only the best products.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h3>Direct from Farmers</h3>
+                    <p>We partner directly with farmers — no middlemen, fresher produce, fair prices.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Map Section -->
         <div class="map-section">
-            <h2>Find Us On The Map</h2>
+            <h2><i class="fas fa-map-pin" style="color:#dd610e; margin-right:8px;"></i>Find Us On The Map</h2>
             <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3900.1234567890!2d77.5800375!3d11.2795909!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba96d9b599e94fd%3A0x89bf9fc542194e84!2sKCP%20Organic!5e0!3m2!1sen!2sin!4v1711859400000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3900.1234567890!2d77.5800375!3d11.2795909!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba96d9b599e94fd%3A0x89bf9fc542194e84!2sKCP%20Organic!5e0!3m2!1sen!2sin!4v1711859400000"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="testimonial-section">
+            <h2><i class="fas fa-comment-dots" style="color:#dd610e; margin-right:8px;"></i>What Our Customers Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="quote">"KCP Organics delivers the freshest vegetables I've ever received. The quality is
+                        outstanding and delivery is always on time!"</p>
+                    <div class="author">
+                        <div class="avatar">R</div>
+                        <div class="author-info">
+                            <div class="name">Ravi Kumar</div>
+                            <div class="role">Regular Customer, Chennai</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="quote">"The organic honey from KCP is pure and delicious. My whole family has switched to
+                        their products. Highly recommend!"</p>
+                    <div class="author">
+                        <div class="avatar">P</div>
+                        <div class="author-info">
+                            <div name="author-info" class="name">Priya Sharma</div>
+                            <div class="role">Loyal Customer, Coimbatore</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+                    <p class="quote">"Amazing range of organic spices and groceries. The customer support team is very
+                        responsive and helpful."</p>
+                    <div class="author">
+                        <div class="avatar">S</div>
+                        <div class="author-info">
+                            <div class="name">Suresh Babu</div>
+                            <div class="role">New Customer, Bangalore</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- FAQ Section -->
         <div class="faq-section">
-            <h2>Frequently Asked Questions</h2>
+            <h2><i class="fas fa-circle-question" style="color:#dd610e; margin-right:8px;"></i>Frequently Asked
+                Questions</h2>
             <div class="faq-grid">
                 <div class="faq-item active">
                     <h4>
                         <span>What makes your products organic?</span>
                         <i class="fas fa-chevron-down"></i>
                     </h4>
-                    <p>All our products are certified organic, grown without synthetic pesticides, fertilizers, or GMOs. We follow strict organic farming standards and conduct regular testing to ensure quality and purity.</p>
+                    <p>All our products are certified organic, grown without synthetic pesticides, fertilizers, or GMOs.
+                        We follow strict organic farming standards and conduct regular testing to ensure quality and
+                        purity.</p>
                 </div>
 
                 <div class="faq-item">
@@ -588,15 +881,8 @@
                         <span>How long does shipping take?</span>
                         <i class="fas fa-chevron-down"></i>
                     </h4>
-                    <p>We offer fast and reliable shipping. Standard shipping takes 3-5 business days, while express shipping takes 1-2 business days. All orders include tracking information.</p>
-                </div>
-
-                <div class="faq-item">
-                    <h4>
-                        <span>Do you offer international shipping?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </h4>
-                    <p>Yes, we ship to most countries worldwide. International shipping times vary by location, typically 7-15 business days. Visit our shipping page for detailed information.</p>
+                    <p>We offer fast and reliable shipping across India. Standard shipping takes 3–5 business days,
+                        while express shipping takes 1–2 business days. All orders include tracking.</p>
                 </div>
 
                 <div class="faq-item">
@@ -604,7 +890,8 @@
                         <span>What is your return policy?</span>
                         <i class="fas fa-chevron-down"></i>
                     </h4>
-                    <p>We offer a 30-day money-back guarantee. If you're not completely satisfied with your purchase, contact our support team for a full refund or replacement.</p>
+                    <p>We offer a 30-day satisfaction guarantee. If you're not happy with a product, contact our support
+                        team for a full refund or replacement — no questions asked.</p>
                 </div>
 
                 <div class="faq-item">
@@ -612,7 +899,8 @@
                         <span>Are your products vegan?</span>
                         <i class="fas fa-chevron-down"></i>
                     </h4>
-                    <p>Most of our products are vegan. Each product page clearly indicates if it's vegan or contains any animal-derived ingredients. We also offer a dedicated vegan section in our shop.</p>
+                    <p>Most of our products are vegan. Each product page clearly indicates whether it's vegan or
+                        contains animal-derived ingredients. We also have a dedicated vegan section.</p>
                 </div>
 
                 <div class="faq-item">
@@ -620,102 +908,94 @@
                         <span>How can I track my order?</span>
                         <i class="fas fa-chevron-down"></i>
                     </h4>
-                    <p>You'll receive a tracking number via email as soon as your order ships. You can use this number to track your package in real-time on our website or with the carrier.</p>
+                    <p>You'll receive a tracking number via email as soon as your order ships. Use it to track your
+                        package in real-time on our Track Order page.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>
+                        <span>Can I place bulk or corporate orders?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </h4>
+                    <p>Yes! We offer special pricing for bulk, corporate, and event orders. Contact us directly for a
+                        custom quote tailored to your needs.</p>
                 </div>
             </div>
         </div>
 
-        <!-- My Messages Section (for users) -->
-        <div class="messages-list-section" id="messagesListSection">
-            <h2>Your Messages</h2>
-            <div id="myMessagesList"></div>
-        </div>
-    </div>
 
-    <footer style="background: #1a1a1a; color: white; padding: 40px 20px; text-align: center; margin-top: 60px;">
-        <p>&copy; 2024 KCP Organics. All rights reserved. Bringing organic goodness to your doorstep.</p>
-    </footer>
 
-    <script>
-        const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : window.location.origin + '/api');
 
-        // Setup on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Setup FAQ
-            setupFAQ();
+        <!-- Scripts -->
+        <script>
+            const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/api' : window.location.origin + '/api');
 
-            // Setup contact form
-            setupContactForm();
+            // Setup on page load
+            document.addEventListener('DOMContentLoaded', () => {
+                setupFAQ();
+                setupContactForm();
 
-            // Note: Auth visibility and cart badge are handled by site.js
-            if (typeof updateAuthVisibility === 'function') {
-                updateAuthVisibility();
-            }
-            
-            if (typeof updateCartBadge === 'function') {
-                updateCartBadge();
-            }
-        });
-
-        function setupFAQ() {
-            const faqItems = document.querySelectorAll('.faq-item h4');
-            faqItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const parent = item.parentElement;
-                    parent.classList.toggle('active');
-                });
-            });
-        }
-
-        function setupContactForm() {
-            const form = document.getElementById('contactForm');
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const formData = {
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    subject: document.getElementById('subject').value,
-                    message: document.getElementById('message').value
-                };
-
-                try {
-                    const response = await fetch(`${API_URL}/messages`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData)
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        // Show success message
-                        document.getElementById('successMessage').style.display = 'block';
-                        document.getElementById('errorMessage').style.display = 'none';
-
-                        // Clear form
-                        form.reset();
-
-                        // Hide success message after 5 seconds
-                        setTimeout(() => {
-                            document.getElementById('successMessage').style.display = 'none';
-                        }, 5000);
-                    } else {
-                        throw new Error(data.message || 'Error sending message');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    document.getElementById('errorMessage').style.display = 'block';
-                    document.getElementById('successMessage').style.display = 'none';
-                    document.getElementById('errorText').textContent = error.message;
-
-                    setTimeout(() => {
-                        document.getElementById('errorMessage').style.display = 'none';
-                    }, 5000);
+                if (typeof updateAuthVisibility === 'function') {
+                    updateAuthVisibility();
+                }
+                if (typeof updateCartBadge === 'function') {
+                    updateCartBadge();
                 }
             });
-        }
-    </script>
-    <script src="site.js"></script>
+
+            function setupFAQ() {
+                const faqItems = document.querySelectorAll('.faq-item h4');
+                faqItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const parent = item.parentElement;
+                        parent.classList.toggle('active');
+                    });
+                });
+            }
+
+            function setupContactForm() {
+                const form = document.getElementById('contactForm');
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        subject: document.getElementById('subject').value,
+                        message: document.getElementById('message').value
+                    };
+
+                    try {
+                        const response = await fetch(`${API_URL}/messages`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(formData)
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            document.getElementById('successMessage').style.display = 'block';
+                            document.getElementById('errorMessage').style.display = 'none';
+                            form.reset();
+                            setTimeout(() => {
+                                document.getElementById('successMessage').style.display = 'none';
+                            }, 5000);
+                        } else {
+                            throw new Error(data.message || 'Error sending message');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        document.getElementById('errorMessage').style.display = 'block';
+                        document.getElementById('successMessage').style.display = 'none';
+                        document.getElementById('errorText').textContent = error.message;
+                        setTimeout(() => {
+                            document.getElementById('errorMessage').style.display = 'none';
+                        }, 5000);
+                    }
+                });
+            }
+        </script>
+        <script src="site.js"></script>
+        <script src="navbar-enhancements.js"></script>
 </body>
+
 </html>

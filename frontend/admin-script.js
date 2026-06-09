@@ -64,6 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAnalytics();
     loadReviewsBadge();
     loadVideosBadge();
+    // Pre-load the category autocomplete so it's ready when the user opens the product form
+    loadCategoriesForSelect();
     console.log('✅ All setup functions called');
 
     // Setup About Us Video Form
@@ -286,6 +288,59 @@ async function loadProducts() {
     }
 }
 
+// ===== CATEGORY AUTOCOMPLETE FOR PRODUCT FORM =====
+let _cachedCategories = [];
+let _lastCategoriesFetch = 0;
+const CATEGORIES_CACHE_TTL = 60_000; // 1 minute
+
+// Fallback categories (used if the API call fails or returns empty)
+const DEFAULT_CATEGORIES = [
+    'Vegetables', 'Fruits', 'Grocery', 'Oils', 'Honey', 'Rice',
+    'Lentils', 'Masala', 'Millets', 'Snacks', 'Sweetener', 'Soaps',
+    'Pickle', 'Dairy', 'Dry Fruits', 'Spices', 'Tea & Coffee', 'Herbs'
+];
+
+// Fetch categories from the backend and populate the productCategoryList <datalist>
+async function loadCategoriesForSelect(forceRefresh = false) {
+    const now = Date.now();
+    if (!forceRefresh && _cachedCategories.length && (now - _lastCategoriesFetch) < CATEGORIES_CACHE_TTL) {
+        populateCategoryDatalist(_cachedCategories);
+        return _cachedCategories;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/search/categories?t=${now}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const list = (data.data || []).map(c => (typeof c === 'string' ? c : c.name)).filter(Boolean);
+        _cachedCategories = list;
+        _lastCategoriesFetch = now;
+        populateCategoryDatalist(list);
+        console.log(`✅ Loaded ${list.length} categories into the product form`);
+        return list;
+    } catch (err) {
+        console.warn('⚠️ Could not load categories from API, using defaults:', err.message);
+        _cachedCategories = DEFAULT_CATEGORIES.slice();
+        _lastCategoriesFetch = now;
+        populateCategoryDatalist(_cachedCategories);
+        return _cachedCategories;
+    }
+}
+
+// Inject the given list of category names as <option> elements inside the datalist
+function populateCategoryDatalist(categories) {
+    const datalist = document.getElementById('productCategoryList');
+    if (!datalist) return;
+    // Clear existing options
+    while (datalist.firstChild) datalist.removeChild(datalist.firstChild);
+    // Add each category as an option
+    categories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        datalist.appendChild(opt);
+    });
+}
+
 function openProductModal() {
     document.getElementById('productId').value = '';
     document.getElementById('modalTitle').textContent = 'Add New Product';
@@ -298,6 +353,8 @@ function openProductModal() {
     document.getElementById('productImage').value = ''; // Clear file input
     clearUnitsForm(); // Clear units form
     addUnitField(); // Add one empty unit field
+    // Always refresh the category list so newly added categories appear
+    loadCategoriesForSelect(true);
     document.getElementById('productModal').classList.add('show');
 }
 
@@ -1051,6 +1108,7 @@ async function markAsRead(messageId) {
             closeMessageModal();
             loadMessages();
             loadDashboardData();
+            refreshAllBadges(); // <-- update sidebar badges
             alert('Message marked as read!');
         }
     } catch (error) {
@@ -1072,6 +1130,7 @@ async function deleteMessage(messageId) {
             alert('Message deleted successfully!');
             loadMessages();
             loadDashboardData();
+            refreshAllBadges(); // <-- update sidebar badges
         } else {
             alert('Error: ' + (result.message || 'Unknown error'));
         }
@@ -1295,6 +1354,7 @@ async function confirmStatusUpdate() {
             closeStatusModal();
             loadOrders();
             loadDashboardData();
+            refreshAllBadges(); // <-- update sidebar badges
         } else {
             alert('Error: ' + result.message);
         }
@@ -1318,6 +1378,7 @@ async function deleteOrder(orderId) {
             alert('Order deleted successfully!');
             loadOrders();
             loadDashboardData();
+            refreshAllBadges(); // <-- update sidebar badges
         } else {
             alert('Error: ' + result.message);
         }
@@ -1905,6 +1966,7 @@ function deleteReview(index) {
 
     loadReviews();
     loadReviewsBadge();
+    refreshAllBadges(); // <-- update sidebar badges
 
     AdminStorage.addActivity({
         type: 'review_deleted',
@@ -1920,6 +1982,7 @@ function clearAllReviews() {
     localStorage.removeItem('kcpReviews');
     loadReviews();
     loadReviewsBadge();
+    refreshAllBadges(); // <-- update sidebar badges
 
     AdminStorage.addActivity({
         type: 'reviews_cleared',
@@ -1929,8 +1992,87 @@ function clearAllReviews() {
     alert('All reviews have been cleared!');
 }
 
+// ===== UNIFIED BADGE REFRESH =====
+// Refreshes ALL sidebar badges (Orders, Messages, Reviews, Videos, Recipe Videos, About Us)
+// in one shot. Called on page load, after every CRUD, and on a periodic interval.
+async function refreshAllBadges() {
+    // 1) Orders badge — pending orders count from dedicated endpoint
+    try {
+        const res = await fetch(`${API_URL}/orders/count/pending?t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            const count = (data && (data.count ?? data.pendingCount ?? data.data?.count)) || 0;
+            setBadge('orderBadge', count);
+        }
+    } catch (_) { /* keep previous value on error */ }
+
+    // 2) Messages badge — unread count from dedicated endpoint
+    try {
+        const res = await fetch(`${API_URL}/messages/count/unread?t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            const count = (data && (data.unreadCount ?? data.count ?? data.data?.count)) || 0;
+            setBadge('messageBadge', count);
+        }
+    } catch (_) { /* keep previous value on error */ }
+
+    // 3) Reviews badge — from localStorage (reviews are local-only)
+    const reviews = getStoredReviews ? getStoredReviews() : JSON.parse(localStorage.getItem('kcpReviews') || '[]');
+    setBadge('reviewBadge', reviews.length);
+
+    // 4) Videos badge — total videos count
+    try {
+        const res = await fetch(`${API_URL}/videos/admin/all?t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            const count = (data.data || []).length;
+            setBadge('videoBadge', count);
+        }
+    } catch (_) { /* keep previous value on error */ }
+
+    // 5) Recipe Videos badge — only videos with category=recipe
+    try {
+        const res = await fetch(`${API_URL}/videos/admin/all?category=recipe&t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            const count = (data.data || []).filter(v => v.category === 'recipe').length;
+            setBadge('recipeVideoBadge', count);
+        }
+    } catch (_) { /* keep previous value on error */ }
+
+    // 6) About Us Videos badge — only videos with category=about-us
+    try {
+        const res = await fetch(`${API_URL}/videos?category=about-us&t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            const count = (data.data || []).length;
+            setBadge('aboutUsBadge', count);
+        }
+    } catch (_) { /* keep previous value on error */ }
+}
+
+// Helper: safely set a badge value, hiding it if count is 0
+function setBadge(id, count) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const n = Number(count) || 0;
+    el.textContent = n;
+    // Show or hide the badge based on count (cleaner sidebar)
+    if (n === 0) {
+        el.style.display = 'none';
+    } else {
+        el.style.display = '';
+    }
+}
+
 // ===== AUTO REFRESH =====
-setInterval(loadDashboardData, 30000); // Refresh every 30 seconds
+setInterval(loadDashboardData, 30000); // Refresh dashboard metrics every 30s
+setInterval(refreshAllBadges, 20000); // Refresh sidebar badges every 20s
+
+// Initial badge population (in addition to loadDashboardData)
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(refreshAllBadges, 500);
+});
 
 // ===== VIDEOS MANAGEMENT =====
 let uploadedVideoUrl = '';
@@ -2326,6 +2468,7 @@ async function deleteVideo(videoId) {
             alert('Video deleted successfully!');
             loadVideos();
             loadVideosBadge();
+            refreshAllBadges(); // <-- update sidebar badges
 
             AdminStorage.addActivity({
                 type: 'video_deleted',
@@ -3318,6 +3461,8 @@ window.quickUpdateStock = quickUpdateStock;
 window.addUnitField = addUnitField;
 window.removeUnitField = removeUnitField;
 window.removeImage = removeImage;
+window.loadCategoriesForSelect = loadCategoriesForSelect;
+window.populateCategoryDatalist = populateCategoryDatalist;
 
 window.openCategoryModal = openCategoryModal;
 window.closeCategoryModal = closeCategoryModal;
@@ -3378,6 +3523,13 @@ window.viewActivityLog = viewActivityLog;
 window.waRefreshStatus = waRefreshStatus;
 window.waSendTest = waSendTest;
 window.waClearSession = waClearSession;
+
+// Expose the unified badge refresh on window so it's always available
+window.refreshAllBadges = refreshAllBadges;
+window.setBadge = setBadge;
+window._cachedCategories = _cachedCategories; // for debugging
+window._lastCategoriesFetch = _lastCategoriesFetch;
+window.DEFAULT_CATEGORIES = DEFAULT_CATEGORIES;
 
 // logout was already exposed on window in the file
 

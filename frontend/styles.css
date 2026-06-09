@@ -1,4 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap');
+/* Modern navbar + page-wide animations.
+   Imported here so EVERY page that links styles.css gets the
+   glassmorphism navbar, scroll progress, reveal-on-scroll, etc.
+   without needing to touch each HTML file. */
+@import url('home-animations.css');
 
 html {
   overflow-x: hidden;
@@ -2194,3 +2199,4 @@ video {
     justify-content: flex-end;
     margin-top: 8px;
   }
+}

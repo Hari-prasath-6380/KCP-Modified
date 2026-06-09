@@ -7,6 +7,7 @@
     <title>Products - KCP Organics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="products-modern.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -436,7 +437,7 @@
         .product-card:hover .product-image {
             transform: scale(1.1);
         }
-        
+
         .product-overlay {
             position: absolute;
             top: 0;
@@ -456,7 +457,7 @@
         .product-card:hover .product-overlay {
             opacity: 1;
         }
-        
+
         .quick-view-btn {
             background: white;
             color: #1B5E20;
@@ -468,16 +469,16 @@
             cursor: pointer;
             transform: translateY(20px);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
+
         .product-card:hover .quick-view-btn {
             transform: translateY(0);
         }
-        
+
         .quick-view-btn:hover {
             background: #1B5E20;
             color: white;
@@ -567,7 +568,7 @@
             color: #7f8c8d;
             font-weight: 500;
         }
-        
+
         .price-container {
             display: flex;
             align-items: baseline;
@@ -595,7 +596,7 @@
             align-items: center;
             margin-top: auto;
             padding-top: 15px;
-            border-top: 1px solid rgba(0,0,0,0.05);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .add-to-cart-modern {
@@ -872,7 +873,7 @@
                 font-size: 12px;
                 margin: 8px 0 6px 0;
             }
-            
+
             .modal-stock {
                 margin-bottom: 20px;
                 font-size: 15px;
@@ -886,7 +887,7 @@
                 margin: 7px 0 5px 0;
                 border-radius: 5px;
             }
-            
+
             .modal-stock {
                 margin-bottom: 16px;
                 font-size: 14px;
@@ -900,7 +901,7 @@
                 margin: 6px 0 4px 0;
                 border-radius: 4px;
             }
-            
+
             .modal-stock {
                 margin-bottom: 12px;
                 font-size: 13px;
@@ -914,7 +915,7 @@
                 margin: 5px 0 3px 0;
                 border-radius: 4px;
             }
-            
+
             .modal-stock {
                 margin-bottom: 10px;
                 font-size: 12px;
@@ -1500,9 +1501,10 @@
             <div class="user-dropdown" id="userDropdown" style="display: none;">
                 <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
-                  <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
-                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                    <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+                    <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
                 </div>
             </div>
             <div class="navbar-cart" onclick="toggleCart()">
@@ -1532,7 +1534,8 @@
         <div class="products-wrapper">
             <!-- Sidebar Filters -->
             <aside class="sidebar-filters">
-                <h3 style="font-size: 16px; color: #333; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px;">
+                <h3
+                    style="font-size: 16px; color: #333; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-filter" style="color: #dd610e;"></i> Filters
                 </h3>
 
@@ -1609,7 +1612,8 @@
                 <div class="products-controls">
                     <div class="controls-left">
                         <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="Search products..." onkeypress="if(event.key === 'Enter') filterProducts()">
+                            <input type="text" id="searchInput" placeholder="Search products..."
+                                onkeypress="if(event.key === 'Enter') filterProducts()">
                             <i class="fas fa-search" onclick="filterProducts()" style="cursor: pointer;"></i>
                         </div>
                         <div class="view-controls">
@@ -1712,7 +1716,8 @@
                         style="background: linear-gradient(135deg, #fefbf7 0%, #f5f5f5 100%); border-radius: 10px; padding: 18px; margin: 20px 0; border-left: 4px solid #dd610e;">
                         <h4
                             style="margin: 0 0 12px 0; color: #2e7d32; font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-align-left" style="color: #dd610e;"></i>Product Details</h4>
+                            <i class="fas fa-align-left" style="color: #dd610e;"></i>Product Details
+                        </h4>
                         <p class="modal-description" id="modalDescription"
                             style="margin: 0; max-height: 280px; overflow-y: auto; padding-right: 8px;"></p>
                     </div>
@@ -1735,39 +1740,57 @@
                     <!-- Reviews for this product -->
                     <div id="modalReviews" style="margin-top:20px;">
                         <h4 style="margin:0 0 10px 0; color:#2e7d32; font-weight:700;">Customer Reviews</h4>
-                        
+
                         <!-- Rate Product Form -->
-                        <div id="ratingForm" style="background:#f9f9f9; padding:15px; border-radius:8px; border:2px solid #dcf1d8; margin-bottom:20px;">
+                        <div id="ratingForm"
+                            style="background:#f9f9f9; padding:15px; border-radius:8px; border:2px solid #dcf1d8; margin-bottom:20px;">
                             <h5 style="margin:0 0 12px 0; color:#333; font-weight:600;">Rate This Product</h5>
-                            <div id="loginPrompt" style="background:#fff3e0; padding:12px; border-radius:6px; border-left:4px solid #ff9800; color:#e65100; font-weight:600; margin-bottom:12px; display:none;">
-                                <i class="fas fa-info-circle"></i> Please <a href="login.html" style="color:#d32f2f; text-decoration:underline;">login</a> to rate this product
+                            <div id="loginPrompt"
+                                style="background:#fff3e0; padding:12px; border-radius:6px; border-left:4px solid #ff9800; color:#e65100; font-weight:600; margin-bottom:12px; display:none;">
+                                <i class="fas fa-info-circle"></i> Please <a href="login.html"
+                                    style="color:#d32f2f; text-decoration:underline;">login</a> to rate this product
                             </div>
                             <div id="ratingInputs" style="display:none;">
                                 <div style="margin-bottom:12px;">
-                                    <label style="display:block; margin-bottom:8px; color:#333; font-weight:600; font-size:14px;">Rating *</label>
+                                    <label
+                                        style="display:block; margin-bottom:8px; color:#333; font-weight:600; font-size:14px;">Rating
+                                        *</label>
                                     <div style="display:flex; gap:8px; font-size:28px; cursor:pointer;">
-                                        <span class="star-rating" data-rating="1" onclick="setStar(1)" style="color:#ddd; transition:color 0.2s;">★</span>
-                                        <span class="star-rating" data-rating="2" onclick="setStar(2)" style="color:#ddd; transition:color 0.2s;">★</span>
-                                        <span class="star-rating" data-rating="3" onclick="setStar(3)" style="color:#ddd; transition:color 0.2s;">★</span>
-                                        <span class="star-rating" data-rating="4" onclick="setStar(4)" style="color:#ddd; transition:color 0.2s;">★</span>
-                                        <span class="star-rating" data-rating="5" onclick="setStar(5)" style="color:#ddd; transition:color 0.2s;">★</span>
+                                        <span class="star-rating" data-rating="1" onclick="setStar(1)"
+                                            style="color:#ddd; transition:color 0.2s;">★</span>
+                                        <span class="star-rating" data-rating="2" onclick="setStar(2)"
+                                            style="color:#ddd; transition:color 0.2s;">★</span>
+                                        <span class="star-rating" data-rating="3" onclick="setStar(3)"
+                                            style="color:#ddd; transition:color 0.2s;">★</span>
+                                        <span class="star-rating" data-rating="4" onclick="setStar(4)"
+                                            style="color:#ddd; transition:color 0.2s;">★</span>
+                                        <span class="star-rating" data-rating="5" onclick="setStar(5)"
+                                            style="color:#ddd; transition:color 0.2s;">★</span>
                                     </div>
                                     <input type="hidden" id="selectedRating" value="0">
                                 </div>
                                 <div style="margin-bottom:12px;">
-                                    <label style="display:block; margin-bottom:8px; color:#333; font-weight:600; font-size:14px;">Review Title</label>
-                                    <input type="text" id="reviewTitle" placeholder="Brief title for your review" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-family:inherit; font-size:14px;">
+                                    <label
+                                        style="display:block; margin-bottom:8px; color:#333; font-weight:600; font-size:14px;">Review
+                                        Title</label>
+                                    <input type="text" id="reviewTitle" placeholder="Brief title for your review"
+                                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-family:inherit; font-size:14px;">
                                 </div>
                                 <div style="margin-bottom:12px;">
-                                    <label style="display:block; margin-bottom:8px; color:#333; font-weight:600; font-size:14px;">Review Comment</label>
-                                    <textarea id="reviewComment" placeholder="Share your experience with this product..." style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-family:inherit; font-size:14px; resize:vertical; min-height:80px;"></textarea>
+                                    <label
+                                        style="display:block; margin-bottom:8px; color:#333; font-weight:600; font-size:14px;">Review
+                                        Comment</label>
+                                    <textarea id="reviewComment"
+                                        placeholder="Share your experience with this product..."
+                                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-family:inherit; font-size:14px; resize:vertical; min-height:80px;"></textarea>
                                 </div>
-                                <button onclick="submitReview()" style="background:linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; transition:all 0.3s;">
+                                <button onclick="submitReview()"
+                                    style="background:linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; transition:all 0.3s;">
                                     <i class="fas fa-paper-plane"></i> Submit Review
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Reviews List -->
                         <div id="modalReviewsList">Loading reviews...</div>
                     </div>
@@ -1793,12 +1816,12 @@
         function getBaseUrl() {
             const hostname = window.location.hostname;
             const port = window.location.port;
-            
+
             // For localhost or 127.0.0.1, use local backend
             if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.')) {
                 return port ? `http://${hostname}:5000` : 'http://localhost:5000';
             }
-            
+
             // For deployed environments, use the current origin
             // (since the backend serves the frontend files)
             return window.location.origin;
@@ -1806,7 +1829,7 @@
 
         const API_BASE_URL = getBaseUrl() + '/api';
         const IMAGE_BASE_URL = getBaseUrl();
-        
+
         // Store tried URLs to avoid infinite loops
         const triedImageUrls = new Set();
 
@@ -1838,14 +1861,14 @@
             console.log('📸 Image URL:', fullUrl, '(from base:', IMAGE_BASE_URL, ')');
             return fullUrl;
         }
-        
+
         // Function to handle image load errors with fallback URLs
         function handleImageError(imgElement, imagePath) {
             console.warn('❌ Image failed to load:', imgElement.src);
-            
+
             const originalPath = imagePath;
             const genericPlaceholder = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e0e0e0%22/><text x=%2250%25%22 y=%2230%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23666666%22 font-family=%22Arial%22 font-size=%2214%22 font-weight=%22bold%22>Image Not Available</text><text x=%2250%25%22 y=%2270%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999999%22 font-family=%22Arial%22 font-size=%2212%22>' + encodeURIComponent(imagePath || 'Unknown') + '</text></svg>';
-            
+
             // Try fallback to production URL if we're on localhost
             if (IMAGE_BASE_URL.includes('localhost') || IMAGE_BASE_URL.includes('127.0.0.1')) {
                 const prodUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
@@ -1853,7 +1876,7 @@
                     console.log('🔄 Trying production URL:', prodUrl);
                     triedImageUrls.add(prodUrl);
                     imgElement.src = prodUrl;
-                    imgElement.onerror = function() { tryFrontendImageFallback(this, imagePath); };
+                    imgElement.onerror = function () { tryFrontendImageFallback(this, imagePath); };
                     return;
                 }
             }
@@ -1869,7 +1892,7 @@
             if (imagePath.includes('/')) {
                 filename = imagePath.split('/').pop();
             }
-            
+
             // Extract base filename without timestamp (e.g., "coconut_oil-1775486953994-547912330.webp" → "coconut_oil.webp")
             let baseFilename = filename;
             const timestampPattern = /-\d{13}-\d{9}\./;
@@ -1877,14 +1900,14 @@
                 baseFilename = filename.replace(timestampPattern, '.');
                 console.log('🔍 Extracted base filename:', baseFilename, 'from:', filename);
             }
-            
+
             // Try with base filename first (without timestamp)
             const frontendUrl = './' + baseFilename;
             if (!triedImageUrls.has(frontendUrl)) {
                 console.log('🔄 Trying frontend image (base):', frontendUrl);
                 triedImageUrls.add(frontendUrl);
                 imgElement.src = frontendUrl;
-                imgElement.onerror = function() { 
+                imgElement.onerror = function () {
                     // If base filename fails, try the full filename with timestamp
                     tryFullFilenameVariant(this, filename, baseFilename);
                 };
@@ -1902,10 +1925,10 @@
                 console.log('🔄 Trying frontend image (full):', frontendUrl);
                 triedImageUrls.add(frontendUrl);
                 imgElement.src = frontendUrl;
-                imgElement.onerror = function() { usePlaceholder(this); };
+                imgElement.onerror = function () { usePlaceholder(this); };
                 return;
             }
-            
+
             // Use placeholder as last resort
             usePlaceholder(imgElement);
         }
@@ -1935,7 +1958,7 @@
             setupEventListeners();
             setupStorageListener();
             restoreViewMode();
-            
+
             // Note: applyCategoryFilterFromUrl() is called inside loadProducts() after data is ready
         });
 
@@ -2256,13 +2279,13 @@
 
                     if (allProducts.length > 0) {
                         console.log('✓ Loaded', allProducts.length, 'products from database');
-                        
+
                         // Log image information for first few products
                         allProducts.slice(0, 3).forEach(p => {
                             const imageUrl = getProductImageUrl(p.image);
                             console.log(`📸 ${p.name}: "${p.image}" → "${imageUrl}"`);
                         });
-                        
+
                         filteredProducts = [...allProducts];
                         updateCategoryOptions();
                         displayProducts();
@@ -2382,7 +2405,7 @@
             // Get selected categories from checkboxes
             const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked'))
                 .map(cb => cb.value.toLowerCase());
-            
+
             // Get selected ratings
             const selectedRatings = Array.from(document.querySelectorAll('.rating-filter:checked'))
                 .map(cb => parseInt(cb.value));
@@ -2392,7 +2415,7 @@
                 const name = (product.name || '').toLowerCase();
                 const description = (product.description || '').toLowerCase();
                 const category = (product.category || '').toLowerCase();
-                
+
                 const matchesSearch = name.includes(searchTerm) ||
                     description.includes(searchTerm) ||
                     category.includes(searchTerm);
@@ -2402,25 +2425,25 @@
 
                 // Category filter (if any selected or "All Categories" not checked)
                 const productCategory = (product.category || '').toLowerCase().trim().replace(/\s+/g, ' ');
-                const matchesCategory = allCategoriesChecked || selectedCategories.length === 0 || 
+                const matchesCategory = allCategoriesChecked || selectedCategories.length === 0 ||
                     selectedCategories.includes(productCategory);
 
                 // Stock filter
                 const matchesStock = !inStockFilter || product.stock > 0;
 
                 // Sale filter
-                const matchesSale = !onSaleFilter || 
-                    (product.discount && product.discount > 0) || 
+                const matchesSale = !onSaleFilter ||
+                    (product.discount && product.discount > 0) ||
                     (product.originalPrice && product.originalPrice > product.price) ||
                     (product.isOnSale === true);
 
                 // Rating filter (if any selected)
                 const productRating = Math.floor(product.averageRating || 0);
-                const matchesRating = selectedRatings.length === 0 || 
+                const matchesRating = selectedRatings.length === 0 ||
                     selectedRatings.some(rating => productRating >= rating);
 
-                return matchesSearch && matchesPrice && matchesCategory && 
-                       matchesStock && matchesSale && matchesRating;
+                return matchesSearch && matchesPrice && matchesCategory &&
+                    matchesStock && matchesSale && matchesRating;
             });
 
             console.log(`🔍 Filtered ${filteredProducts.length}/${allProducts.length} products (Search: "${searchTerm}")`);
@@ -2450,7 +2473,7 @@
         // Update category filter options dynamically
         function updateCategoryOptions() {
             const categories = [...new Set(allProducts.map(p => (p.category || '').toLowerCase().trim().replace(/\s+/g, ' ')).filter(c => c))].sort();
-            
+
             // Update hidden dropdown (for backward compatibility)
             const categorySelect = document.getElementById('categoryFilter');
             const currentValue = categorySelect.value;
@@ -2462,7 +2485,7 @@
                 categorySelect.appendChild(option);
             });
             categorySelect.value = currentValue;
-            
+
             // Update sidebar category filter checkboxes
             const categoryContainer = document.getElementById('categoryFilterContainer');
             if (categoryContainer) {
@@ -2476,7 +2499,7 @@
                         </div>
                     `;
                 }).join('');
-                
+
                 // Re-attach event listeners to newly created checkboxes
                 document.querySelectorAll('.category-filter').forEach(checkbox => {
                     checkbox.addEventListener('change', () => {
@@ -2505,7 +2528,7 @@
                 const allCategoriesChecked = document.getElementById('cat-all').checked;
                 const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value.toLowerCase());
                 const selectedRatings = Array.from(document.querySelectorAll('.rating-filter:checked')).map(cb => parseInt(cb.value));
-                
+
                 autoSortFilteredProducts(searchTerm, priceMin, priceMax, selectedCategories, inStockFilter, onSaleFilter, selectedRatings);
             } else {
                 // Manual sorting
@@ -2616,13 +2639,13 @@
                     const escapedImage = safeImage.replace(/'/g, '\\\'').replace(/"/g, '&quot;');
                     const formattedPrice = product.price ? product.price.toFixed(2) : '0.00';
                     const formattedOriginalPrice = product.originalPrice ? product.originalPrice.toFixed(2) : product.price?.toFixed(2) || '0.00';
-                    const priceDisplay = product.originalPrice && product.originalPrice > product.price 
+                    const priceDisplay = product.originalPrice && product.originalPrice > product.price
                         ? `<div class="price-container">
                              <span class="price-original">₹${formattedOriginalPrice}</span>
                              <span class="price-current">₹${formattedPrice}</span>
                            </div>`
                         : `<div class="price-container"><span class="price-current">₹${formattedPrice}</span></div>`;
-                    
+
                     html += `
                         <div class="product-card" onclick="window.location.href='product-detail-page.html?id=${product._id}'">
                             <div class="product-image-container">
@@ -2637,16 +2660,15 @@
                                     </button>
                                 </div>
                                 
-                                <div class="stock-badge-glass" style="${
-                                    product.stock <= 0 
-                                        ? 'background: rgba(198, 40, 40, 0.85);' 
-                                        : product.stock <= 10 
-                                        ? 'background: rgba(230, 81, 0, 0.85);' 
-                                        : 'background: rgba(46, 125, 50, 0.85);'
-                                }">
-                                    ${product.stock > 0 
-                                        ? `<i class="fas fa-check-circle"></i> Stock: ${product.stock}` 
-                                        : '<i class="fas fa-times-circle"></i> Out of Stock'}
+                                <div class="stock-badge-glass" style="${product.stock <= 0
+                            ? 'background: rgba(198, 40, 40, 0.85);'
+                            : product.stock <= 10
+                                ? 'background: rgba(230, 81, 0, 0.85);'
+                                : 'background: rgba(46, 125, 50, 0.85);'
+                        }">
+                                    ${product.stock > 0
+                            ? `<i class="fas fa-check-circle"></i> Stock: ${product.stock}`
+                            : '<i class="fas fa-times-circle"></i> Out of Stock'}
                                 </div>
                             </div>
                             <div class="product-content">
@@ -2659,13 +2681,11 @@
 
                                 <div class="product-footer">
                                     ${priceDisplay}
-                                    <button class="add-to-cart-modern" onclick="event.stopPropagation(); ${
-                                        product.stock > 0 
-                                            ? `window.location.href='product-detail-page.html?id=${product._id}'`
-                                            : 'alert("This product is out of stock")'
-                                    }" ${
-                                        product.stock <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''
-                                    } title="${product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}">
+                                    <button class="add-to-cart-modern" onclick="event.stopPropagation(); ${product.stock > 0
+                            ? `window.location.href='product-detail-page.html?id=${product._id}'`
+                            : 'alert("This product is out of stock")'
+                        }" ${product.stock <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''
+                        } title="${product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}">
                                         <i class="fas fa-cart-plus"></i>
                                     </button>
                                 </div>
@@ -2679,9 +2699,9 @@
                                             ${product.units && product.units.length > 0 ? `
                                                 <div id="card-units-${product._id}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 8px;">
                                                     ${product.units.map((u, idx) => {
-                                                    const unitLabel = { 'kg': 'kg', 'litre': 'L', 'ml': 'ml', 'g': 'g', 'piece': 'pcs' };
-                                                    return `<button class="unit-option" onclick="event.stopPropagation(); selectCardUnit('${product._id}', ${idx})" style="padding:8px; border:2px solid #ddd; border-radius:8px; background:white; font-weight:600; cursor:pointer;">${u.quantity}${unitLabel[u.unit]} - <span style="color:#dd610e;">₹${u.price}</span></button>`;
-                                                }).join('')}
+                            const unitLabel = { 'kg': 'kg', 'litre': 'L', 'ml': 'ml', 'g': 'g', 'piece': 'pcs' };
+                            return `<button class="unit-option" onclick="event.stopPropagation(); selectCardUnit('${product._id}', ${idx})" style="padding:8px; border:2px solid #ddd; border-radius:8px; background:white; font-weight:600; cursor:pointer;">${u.quantity}${unitLabel[u.unit]} - <span style="color:#dd610e;">₹${u.price}</span></button>`;
+                        }).join('')}
                                                 </div>
                                                 <div style="display:flex; gap:8px; align-items:center;">
                                                     <input id="card-quantity-${product._id}" type="number" min="1" value="1" style="width:70px; padding:6px; border:1px solid #ddd; border-radius:6px;">
@@ -2877,7 +2897,7 @@
             // Stock status
             const stockEl = document.getElementById('modalStock');
             const addCartBtn = document.getElementById('modalAddCart');
-            
+
             if (product.stock > 0) {
                 stockEl.textContent = `✓ In Stock (${product.stock} available)`;
                 stockEl.classList.remove('out-of-stock');
@@ -2927,12 +2947,12 @@
             // Load reviews for this product and render them for all users
             const reviewsContainer = document.getElementById('modalReviewsList');
             reviewsContainer.innerHTML = 'Loading reviews...';
-            
+
             // Show/hide rating form based on login status
             const isLoggedIn = checkUserLogin();
             const loginPrompt = document.getElementById('loginPrompt');
             const ratingInputs = document.getElementById('ratingInputs');
-            
+
             if (isLoggedIn) {
                 loginPrompt.style.display = 'none';
                 ratingInputs.style.display = 'block';
@@ -2947,7 +2967,7 @@
             document.getElementById('reviewComment').value = '';
             currentRating = 0;
             document.querySelectorAll('.star-rating').forEach(star => star.style.color = '#ddd');
-            
+
             loadProductReviews(productId);
 
             document.getElementById('productModal').classList.add('active');
@@ -3017,19 +3037,19 @@
             // Add to cart (stock validation happens at checkout)
             const userId = localStorage.getItem('userId') || 'guest';
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const existingItem = cart.find(item => 
-                item.productId === productId && 
-                item.unit === cartItem.unit && 
+            const existingItem = cart.find(item =>
+                item.productId === productId &&
+                item.unit === cartItem.unit &&
                 (item.userId || 'guest') === userId
             );
-            
+
             if (existingItem) {
                 existingItem.quantity += quantity;
             } else {
-                cart.push({ 
-                    cartItemId: 'ci_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), 
-                    userId: userId, 
-                    ...cartItem 
+                cart.push({
+                    cartItemId: 'ci_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                    userId: userId,
+                    ...cartItem
                 });
             }
 
@@ -3274,12 +3294,12 @@
             } else {
                 const userName = localStorage.getItem('userName');
                 const userId = localStorage.getItem('userId') || localStorage.getItem('token');
-                
+
                 const loginLink = document.getElementById('loginLink');
                 const signupLink = document.getElementById('signupLink');
                 const userDropdown = document.getElementById('userDropdown');
                 const welcomeText = document.getElementById('userName');
-                
+
                 if (userName || userId) {
                     if (loginLink) loginLink.style.display = 'none';
                     if (signupLink) signupLink.style.display = 'none';
@@ -3298,7 +3318,7 @@
         function setStar(rating) {
             currentRating = rating;
             document.getElementById('selectedRating').value = rating;
-            
+
             // Update star colors
             document.querySelectorAll('.star-rating').forEach(star => {
                 const starRating = parseInt(star.getAttribute('data-rating'));
@@ -3348,7 +3368,7 @@
                 }
 
                 const result = await response.json();
-                
+
                 // Clear form
                 document.getElementById('selectedRating').value = 0;
                 document.getElementById('reviewTitle').value = '';
@@ -3372,7 +3392,7 @@
         // Load product reviews (called after modal opens)
         function loadProductReviews(productId) {
             const reviewsContainer = document.getElementById('modalReviewsList');
-            
+
             (async () => {
                 try {
                     const rres = await fetch(`${API_BASE_URL}/reviews/product/${productId}?limit=10`);
@@ -3386,10 +3406,10 @@
                         } else {
                             reviewsContainer.innerHTML = reviews.map(rv => `
                                 <div style="padding:12px; border-bottom:1px solid #eee; display:flex; gap:12px;">
-                                    <div style="width:48px; height:48px; border-radius:50%; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-weight:700; color:#555;">${(rv.reviewerName||'A').charAt(0).toUpperCase()}</div>
+                                    <div style="width:48px; height:48px; border-radius:50%; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-weight:700; color:#555;">${(rv.reviewerName || 'A').charAt(0).toUpperCase()}</div>
                                     <div style="flex:1;">
                                         <div style="display:flex; align-items:center; gap:8px;">
-                                            <div style="color:#ffc107; font-weight:700;">${'★'.repeat(Math.round(rv.rating||0))}${'☆'.repeat(5 - Math.round(rv.rating||0))}</div>
+                                            <div style="color:#ffc107; font-weight:700;">${'★'.repeat(Math.round(rv.rating || 0))}${'☆'.repeat(5 - Math.round(rv.rating || 0))}</div>
                                             <div style="font-size:13px; color:#333; font-weight:700;">${rv.reviewerName || 'Anonymous'}</div>
                                             <div style="font-size:12px; color:#999; margin-left:6px;">${new Date(rv.createdAt).toLocaleDateString()}</div>
                                         </div>
@@ -3411,7 +3431,8 @@
             checkUserSession();
         });
     </script>
-        <script src="site.js"></script>
+    <script src="site.js"></script>
+    <script src="navbar-enhancements.js"></script>
 </body>
 
 </html>
