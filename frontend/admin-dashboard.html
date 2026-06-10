@@ -61,6 +61,10 @@
                     <span>About Us</span>
                     <span class="badge" id="aboutUsBadge">0</span>
                 </a>
+                <a href="#" class="nav-item" data-section="aboutusimages">
+                    <i class="fas fa-images"></i>
+                    <span>About Us Images</span>
+                </a>
                 <a href="#" class="nav-item" data-section="whatsapp" id="whatsappNavItem">
                     <i class="fab fa-whatsapp"></i>
                     <span>WhatsApp</span>
@@ -417,6 +421,115 @@
                         </table>
                     </div>
                 </section>
+
+                <!-- About Us Images Section -->
+                <section id="aboutusimages" class="section-content">
+                    <div class="section-header">
+                        <h2>About Us Images Management</h2>
+                    </div>
+
+                    <!-- Company Story Image -->
+                    <div
+                        style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <h3 style="margin-bottom: 16px; color: #333;"><i class="fas fa-image"
+                                style="color: #dd610e;"></i> Company Story Image</h3>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 16px;">This image appears next to the
+                            "Our Story" section on the About Us page.</p>
+                        <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+                            <div id="storyImagePreview"
+                                style="width: 200px; height: 150px; border: 2px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9;">
+                                <img id="storyImageImg" src="" alt="Story Image"
+                                    style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                <i id="storyImagePlaceholder" class="fas fa-image"
+                                    style="font-size: 40px; color: #ccc;"></i>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <input type="file" id="storyImageFile" accept="image/*" style="margin-bottom: 10px;">
+                                <button class="btn btn-primary" onclick="uploadAboutImage('story')"
+                                    style="margin-top: 8px;">
+                                    <i class="fas fa-upload"></i> Upload Story Image
+                                </button>
+                                <button class="btn btn-secondary" onclick="removeAboutImage('story')"
+                                    style="margin-top: 8px; margin-left: 8px;" id="removeStoryBtn" disabled>
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certification Images -->
+                    <div
+                        style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <h3 style="margin-bottom: 16px; color: #333;"><i class="fas fa-certificate"
+                                style="color: #dd610e;"></i> Certification Images</h3>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 16px;">Upload or update certification
+                            images shown on the About Us page.</p>
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            <!-- Udyam Certificate -->
+                            <div style="border: 1px solid #eee; border-radius: 8px; padding: 16px;">
+                                <h4 style="margin-bottom: 12px; color: #555;">Udyam Certificate</h4>
+                                <div id="udyamImagePreview"
+                                    style="width: 100%; height: 180px; border: 2px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; margin-bottom: 12px;">
+                                    <img id="udyamImageImg" src="" alt="Udyam Certificate"
+                                        style="display: none; width: 100%; height: 100%; object-fit: contain;">
+                                    <i id="udyamImagePlaceholder" class="fas fa-certificate"
+                                        style="font-size: 40px; color: #ccc;"></i>
+                                </div>
+                                <input type="file" id="udyamImageFile" accept="image/*" style="margin-bottom: 8px;">
+                                <div>
+                                    <button class="btn btn-primary" onclick="uploadAboutImage('udyam')"
+                                        style="font-size: 13px;">
+                                        <i class="fas fa-upload"></i> Upload
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="removeAboutImage('udyam')"
+                                        style="font-size: 13px; margin-left: 8px;" id="removeUdyamBtn" disabled>
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- FSSAI Certificate -->
+                            <div style="border: 1px solid #eee; border-radius: 8px; padding: 16px;">
+                                <h4 style="margin-bottom: 12px; color: #555;">FSSAI Certificate</h4>
+                                <div id="fssaiImagePreview"
+                                    style="width: 100%; height: 180px; border: 2px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; margin-bottom: 12px;">
+                                    <img id="fssaiImageImg" src="" alt="FSSAI Certificate"
+                                        style="display: none; width: 100%; height: 100%; object-fit: contain;">
+                                    <i id="fssaiImagePlaceholder" class="fas fa-certificate"
+                                        style="font-size: 40px; color: #ccc;"></i>
+                                </div>
+                                <input type="file" id="fssaiImageFile" accept="image/*" style="margin-bottom: 8px;">
+                                <div>
+                                    <button class="btn btn-primary" onclick="uploadAboutImage('fssai')"
+                                        style="font-size: 13px;">
+                                        <i class="fas fa-upload"></i> Upload
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="removeAboutImage('fssai')"
+                                        style="font-size: 13px; margin-left: 8px;" id="removeFssaiBtn" disabled>
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Images -->
+                    <div
+                        style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <h3 style="margin-bottom: 16px; color: #333;"><i class="fas fa-images"
+                                style="color: #dd610e;"></i> Gallery Images</h3>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 16px;">Manage the 6 gallery images shown
+                            in the "Our Farms & Facilities" section.</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;"
+                            id="galleryAdminGrid">
+                            <!-- Gallery items will be loaded dynamically -->
+                        </div>
+                        <button class="btn btn-primary" onclick="addGalleryImage()" style="margin-top: 16px;">
+                            <i class="fas fa-plus"></i> Add Gallery Image
+                        </button>
+                    </div>
+                </section>
+
                 <!-- Recipe Videos Section -->
                 <section id="recipevideos" class="section-content">
                     <div class="section-header">

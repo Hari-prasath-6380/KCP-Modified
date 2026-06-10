@@ -215,21 +215,6 @@
     }
 }
 
-/* Ken Burns slow zoom for active carousel image */
-@keyframes kenBurns {
-    0% {
-        transform: scale(1) translate(0, 0);
-    }
-
-    50% {
-        transform: scale(1.08) translate(-1%, -1%);
-    }
-
-    100% {
-        transform: scale(1) translate(0, 0);
-    }
-}
-
 /* Background blob drift */
 @keyframes blobDrift {
 
@@ -250,10 +235,6 @@
 /* ============================================
    2. CAROUSEL HERO — ANIMATED TEXT
    ============================================ */
-
-.carousel-hero-wrapper .carousel-img.active {
-    animation: kenBurns 8s ease-in-out infinite;
-}
 
 .carousel-text h1,
 .carousel-text p,

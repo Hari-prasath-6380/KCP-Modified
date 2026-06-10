@@ -47,9 +47,27 @@
       <span class="hamburger"></span>
     </button>
   </nav>
-  <div class="carousel-hero-wrapper">
-    <img src="carousel_img1.jpeg" alt="carousel-img" class="carousel-img" />
-    <img src="carrousel2.jpeg" alt="carousel-img" class="carousel-img" />
+  <div class="carousel-container">
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-slide active">
+        <img src="carousel_img1.jpeg" alt="Image 1">
+      </div>
+      <div class="carousel-slide">
+        <img src="carousel_img2.jpeg" alt="Image 2">
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-arrow carousel-arrow-left" onclick="prevSlide()" aria-label="Previous slide">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <div class="carousel-dots">
+      <span class="carousel-dot active" onclick="goToSlide(0)"></span>
+      <span class="carousel-dot" onclick="goToSlide(1)"></span>
+    </div>
+    <button class="carousel-arrow carousel-arrow-right" onclick="nextSlide()" aria-label="Next slide">
+      <i class="fas fa-chevron-right"></i>
+    </button>
   </div>
   <br><br>
 
@@ -638,47 +656,69 @@
 
   <script>
     let currentIndex = 0;
-    const images = document.querySelectorAll('.carousel-img');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    let autoSlideTimer;
 
-    // Cache-bust carousel media (images and videos) so updated files are fetched
-    images.forEach(el => {
-      try {
-        const ts = Date.now();
-        if (el.tagName === 'IMG') {
-          el.src = el.src.split('?')[0] + '?v=' + ts;
-        } else if (el.tagName === 'VIDEO') {
-          // update <source> elements inside video and reload
-          const srcEl = el.querySelector('source');
-          if (srcEl && srcEl.src) {
-            srcEl.src = srcEl.src.split('?')[0] + '?v=' + ts;
-            // reload video to pick up new source
-            try { el.load(); } catch (e) { /* ignore */ }
-          } else if (el.src) {
-            el.src = el.src.split('?')[0] + '?v=' + ts;
-            try { el.load(); } catch (e) { /* ignore */ }
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to cache-bust carousel media', e);
-      }
-    });
-
-    function showSlide(index) {
-      images.forEach((img, i) => {
-        img.classList.remove('active');
-        if (i === index) img.classList.add('active');
+    function updateDots() {
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
       });
     }
 
+    function showSlide(newIndex) {
+      const oldIndex = currentIndex;
+      if (newIndex === oldIndex) return;
+      if (newIndex < 0 || newIndex >= slides.length) return;
 
+      // Old active slide slides out to the left
+      slides[oldIndex].classList.remove('active');
+      slides[oldIndex].classList.add('prev');
 
-    showSlide(currentIndex);
+      // New slide slides in from the right
+      slides[newIndex].classList.remove('prev');
+      slides[newIndex].classList.add('active');
 
+      // Clean up prev class after transition completes
+      setTimeout(() => {
+        slides[oldIndex].classList.remove('prev');
+      }, 900);
 
-    setInterval(() => {
-      currentIndex = (currentIndex + 1) % images.length;
-      showSlide(currentIndex);
-    }, 3000);
+      currentIndex = newIndex;
+      updateDots();
+    }
+
+    function nextSlide() {
+      const nextIndex = (currentIndex + 1) % slides.length;
+      showSlide(nextIndex);
+      resetAutoSlide();
+    }
+
+    function prevSlide() {
+      const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(prevIndex);
+      resetAutoSlide();
+    }
+
+    function goToSlide(index) {
+      showSlide(index);
+      resetAutoSlide();
+    }
+
+    function startAutoSlide() {
+      autoSlideTimer = setInterval(() => {
+        const nextIndex = (currentIndex + 1) % slides.length;
+        showSlide(nextIndex);
+      }, 3000);
+    }
+
+    function resetAutoSlide() {
+      clearInterval(autoSlideTimer);
+      startAutoSlide();
+    }
+
+    // Start auto-sliding on page load
+    startAutoSlide();
 
     // ========== STAR RATING FUNCTIONALITY ==========
     const starRating = document.getElementById('starRating');

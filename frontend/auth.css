@@ -557,8 +557,12 @@ body::after {
     }
 
     .input-wrapper input {
-        padding: 12px 42px 12px 14px;
-        font-size: 16px;
+        padding: 12px 42px 12px 14px !important;
+        font-size: 16px !important;
+    }
+
+    .input-wrapper input.has-icon {
+        padding-left: 42px !important;
     }
 }
 

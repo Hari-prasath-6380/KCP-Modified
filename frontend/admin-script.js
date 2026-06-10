@@ -119,7 +119,8 @@ function showSection(sectionId) {
         'reviews': 'Customer Reviews',
         'videos': 'Shop by Videos',
         'recipevideos': 'Recipe Videos',
-        'aboutus': 'About Us Videos'
+        'aboutus': 'About Us Videos',
+        'aboutusimages': 'About Us Images'
     };
 
     sections.forEach(section => section.classList.remove('active'));
@@ -3519,6 +3520,241 @@ window.generateCustomerReport = generateCustomerReport;
 window.generateInventoryReport = generateInventoryReport;
 window.exportAnalyticsToCSV = exportAnalyticsToCSV;
 window.viewActivityLog = viewActivityLog;
+
+// ═══════════════════════════════════════════════════════════════
+// ABOUT US IMAGES MANAGEMENT
+// ═══════════════════════════════════════════════════════════════
+
+const aboutImagesKey = 'kcpAboutUsImages';
+
+function getAboutImages() {
+    return JSON.parse(localStorage.getItem(aboutImagesKey) || '{}');
+}
+
+function saveAboutImages(images) {
+    localStorage.setItem(aboutImagesKey, JSON.stringify(images));
+}
+
+function uploadAboutImage(type) {
+    const fileInput = document.getElementById(type + 'ImageFile');
+    if (!fileInput || !fileInput.files[0]) {
+        alert('Please select an image file first.');
+        return;
+    }
+
+    const file = fileInput.files[0];
+    if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const images = getAboutImages();
+        images[type] = e.target.result;
+        saveAboutImages(images);
+
+        // Update preview
+        const imgEl = document.getElementById(type + 'ImageImg');
+        const placeholder = document.getElementById(type + 'ImagePlaceholder');
+        const removeBtn = document.getElementById('remove' + type.charAt(0).toUpperCase() + type.slice(1) + 'Btn');
+
+        if (imgEl) {
+            imgEl.src = e.target.result;
+            imgEl.style.display = 'block';
+        }
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+        if (removeBtn) {
+            removeBtn.disabled = false;
+        }
+
+        alert('✅ Image uploaded successfully!');
+        fileInput.value = '';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeAboutImage(type) {
+    if (!confirm('Are you sure you want to remove this image?')) return;
+
+    const images = getAboutImages();
+    delete images[type];
+    saveAboutImages(images);
+
+    const imgEl = document.getElementById(type + 'ImageImg');
+    const placeholder = document.getElementById(type + 'ImagePlaceholder');
+    const removeBtn = document.getElementById('remove' + type.charAt(0).toUpperCase() + type.slice(1) + 'Btn');
+
+    if (imgEl) {
+        imgEl.src = '';
+        imgEl.style.display = 'none';
+    }
+    if (placeholder) {
+        placeholder.style.display = 'flex';
+    }
+    if (removeBtn) {
+        removeBtn.disabled = true;
+    }
+
+    alert('✅ Image removed.');
+}
+
+function loadAboutImages() {
+    const images = getAboutImages();
+
+    // Load story image
+    if (images.story) {
+        const img = document.getElementById('storyImageImg');
+        const ph = document.getElementById('storyImagePlaceholder');
+        const btn = document.getElementById('removeStoryBtn');
+        if (img) { img.src = images.story; img.style.display = 'block'; }
+        if (ph) { ph.style.display = 'none'; }
+        if (btn) { btn.disabled = false; }
+    }
+
+    // Load udyam image
+    if (images.udyam) {
+        const img = document.getElementById('udyamImageImg');
+        const ph = document.getElementById('udyamImagePlaceholder');
+        const btn = document.getElementById('removeUdyamBtn');
+        if (img) { img.src = images.udyam; img.style.display = 'block'; }
+        if (ph) { ph.style.display = 'none'; }
+        if (btn) { btn.disabled = false; }
+    }
+
+    // Load fssai image
+    if (images.fssai) {
+        const img = document.getElementById('fssaiImageImg');
+        const ph = document.getElementById('fssaiImagePlaceholder');
+        const btn = document.getElementById('removeFssaiBtn');
+        if (img) { img.src = images.fssai; img.style.display = 'block'; }
+        if (ph) { ph.style.display = 'none'; }
+        if (btn) { btn.disabled = false; }
+    }
+
+    // Load gallery images
+    loadGalleryAdmin();
+}
+
+// Gallery images management
+function getGalleryImages() {
+    const images = getAboutImages();
+    return images.gallery || [];
+}
+
+function saveGalleryImages(gallery) {
+    const images = getAboutImages();
+    images.gallery = gallery;
+    saveAboutImages(images);
+}
+
+function loadGalleryAdmin() {
+    const gallery = getGalleryImages();
+    const grid = document.getElementById('galleryAdminGrid');
+    if (!grid) return;
+
+    if (gallery.length === 0) {
+        grid.innerHTML = '<p style="color: #999; text-align: center; padding: 20px; grid-column: 1 / -1;">No gallery images added yet. Click "Add Gallery Image" to get started.</p>';
+        return;
+    }
+
+    grid.innerHTML = gallery.map((item, index) => `
+        <div style="border: 1px solid #eee; border-radius: 8px; padding: 12px; position: relative;">
+            <img src="${item.src}" alt="${item.title}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; margin-bottom: 8px;">
+            <input type="text" value="${item.title}" placeholder="Image title" onchange="updateGalleryTitle(${index}, this.value)" style="width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; margin-bottom: 6px;">
+            <div style="display: flex; gap: 6px;">
+                <label style="flex: 1;">
+                    <input type="file" accept="image/*" onchange="replaceGalleryImage(${index}, this)" style="font-size: 11px; width: 100%;">
+                </label>
+                <button class="btn btn-danger" onclick="removeGalleryImage(${index})" style="font-size: 11px; padding: 4px 8px;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addGalleryImage() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const gallery = getGalleryImages();
+            gallery.push({ src: e.target.result, title: 'Gallery Image ' + (gallery.length + 1) });
+            saveGalleryImages(gallery);
+            loadGalleryAdmin();
+            alert('✅ Gallery image added!');
+        };
+        reader.readAsDataURL(file);
+    };
+    input.click();
+}
+
+function updateGalleryTitle(index, title) {
+    const gallery = getGalleryImages();
+    if (gallery[index]) {
+        gallery[index].title = title;
+        saveGalleryImages(gallery);
+    }
+}
+
+function replaceGalleryImage(index, fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const gallery = getGalleryImages();
+        if (gallery[index]) {
+            gallery[index].src = e.target.result;
+            saveGalleryImages(gallery);
+            loadGalleryAdmin();
+            alert('✅ Gallery image updated!');
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeGalleryImage(index) {
+    if (!confirm('Remove this gallery image?')) return;
+    const gallery = getGalleryImages();
+    gallery.splice(index, 1);
+    saveGalleryImages(gallery);
+    loadGalleryAdmin();
+    alert('✅ Gallery image removed.');
+}
+
+// Load about images when section is shown
+window.uploadAboutImage = uploadAboutImage;
+window.removeAboutImage = removeAboutImage;
+window.addGalleryImage = addGalleryImage;
+window.updateGalleryTitle = updateGalleryTitle;
+window.replaceGalleryImage = replaceGalleryImage;
+window.removeGalleryImage = removeGalleryImage;
+
+// Auto-load about images when the section becomes active
+document.addEventListener('DOMContentLoaded', function () {
+    // Observe section changes to load about images
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (mutation.target.classList && mutation.target.classList.contains('active') && mutation.target.id === 'aboutusimages') {
+                loadAboutImages();
+            }
+        });
+    });
+
+    const aboutSection = document.getElementById('aboutusimages');
+    if (aboutSection) {
+        observer.observe(aboutSection, { attributes: true, attributeFilter: ['class'] });
+    }
+});
 
 window.waRefreshStatus = waRefreshStatus;
 window.waSendTest = waSendTest;

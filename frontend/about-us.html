@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" type="text/css" href="about-us.css">
 </head>
+
 <body style="font-family: 'Poppins', sans-serif; padding-top: 85px;">
     <!-- Navigation Bar -->
     <nav class="navbar">
@@ -28,8 +30,9 @@
             <div class="user-dropdown" id="userDropdown" style="display: none;">
                 <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
-                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                    <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
                 </div>
             </div>
             <div class="navbar-cart" onclick="toggleCart()">
@@ -60,9 +63,14 @@
             </div>
             <div class="story-content">
                 <h2>Our Story</h2>
-                <p> Since 2016, KCP Organics has been on a mission to bring truly organic food to every table. Starting with fresh vegetables, fruits, and greens grown without harmful chemicals or pesticides, we’ve always believed that healthy food is the foundation of healthy lives.</p>
-                <p> In 2021, we opened our KCP Organics Marketplace to make these pure and chemical-free products accessible to our growing community. By partnering with trusted organic farmers, we ensure that every product reflects our commitment to quality, safety, and sustainability.</p>
-                <p> At KCP Organics, it’s more than just food — it’s a promise. A promise to deliver fresh, wholesome, and trustworthy products that families can enjoy with confidence, every day.</p>
+                <p> Since 2016, KCP Organics has been on a mission to bring truly organic food to every table. Starting
+                    with fresh vegetables, fruits, and greens grown without harmful chemicals or pesticides, we’ve
+                    always believed that healthy food is the foundation of healthy lives.</p>
+                <p> In 2021, we opened our KCP Organics Marketplace to make these pure and chemical-free products
+                    accessible to our growing community. By partnering with trusted organic farmers, we ensure that
+                    every product reflects our commitment to quality, safety, and sustainability.</p>
+                <p> At KCP Organics, it’s more than just food — it’s a promise. A promise to deliver fresh, wholesome,
+                    and trustworthy products that families can enjoy with confidence, every day.</p>
                 <div class="story-highlights">
                     <div class="highlight">
                         <i class="fas fa-leaf"></i>
@@ -86,27 +94,54 @@
 
     <!-- Mission & Vision Section -->
     <section class="mission-vision">
+        <div class="mv-bg-shapes">
+            <div class="mv-shape mv-shape-1"></div>
+            <div class="mv-shape mv-shape-2"></div>
+            <div class="mv-shape mv-shape-3"></div>
+        </div>
         <div class="mission-vision-container">
-            <div class="mission-card">
-                <div class="card-icon">
-                    <i class="fas fa-bullseye"></i>
+            <div class="mission-card mv-card" data-delay="0">
+                <div class="mv-card-glow"></div>
+                <div class="mv-card-border"></div>
+                <div class="mv-card-inner">
+                    <div class="card-icon">
+                        <div class="icon-ring"></div>
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Our Mission</h3>
+                    <div class="mv-divider"><span></span></div>
+                    <p>KCP Organics is dedicated to practicing truly organic farming, supporting trusted farmers, and
+                        delivering high-quality, chemical-free fruits, vegetables, greens, and grocery products that
+                        families can rely on every day.</p>
                 </div>
-                <h3>Our Mission</h3>
-                <p>KCP Organics is dedicated to practicing truly organic farming, supporting trusted farmers, and delivering high-quality, chemical-free fruits, vegetables, greens, and grocery products that families can rely on every day.</p>
             </div>
-            <div class="vision-card">
-                <div class="card-icon">
-                    <i class="fas fa-eye"></i>
+            <div class="vision-card mv-card" data-delay="200">
+                <div class="mv-card-glow"></div>
+                <div class="mv-card-border"></div>
+                <div class="mv-card-inner">
+                    <div class="card-icon">
+                        <div class="icon-ring"></div>
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Our Vision</h3>
+                    <div class="mv-divider"><span></span></div>
+                    <p>To provide every home with fresh, wholesome, and truly organic food that is healthy, safe, and
+                        chemical-free.</p>
                 </div>
-                <h3>Our Vision</h3>
-                <p>To provide every home with fresh, wholesome, and truly organic food that is healthy, safe, and chemical-free.</p>
             </div>
-            <div class="values-card">
-                <div class="card-icon">
-                    <i class="fas fa-heart"></i>
+            <div class="values-card mv-card" data-delay="400">
+                <div class="mv-card-glow"></div>
+                <div class="mv-card-border"></div>
+                <div class="mv-card-inner">
+                    <div class="card-icon">
+                        <div class="icon-ring"></div>
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Our Values</h3>
+                    <div class="mv-divider"><span></span></div>
+                    <p>Integrity, sustainability, quality, and compassion guide every decision we make. We believe in
+                        transparency with our customers and respect for Mother Nature.</p>
                 </div>
-                <h3>Our Values</h3>
-                <p>Integrity, sustainability, quality, and compassion guide every decision we make. We believe in transparency with our customers and respect for Mother Nature.</p>
             </div>
         </div>
     </section>
@@ -115,25 +150,26 @@
     <section class="certifications">
         <div class="certifications-container">
             <h2>Our Certifications & Standards</h2>
-            <p class="section-subtitle">Certified and recognized by leading organic and quality assurance organizations</p>
-            
+            <p class="section-subtitle">Certified and recognized by leading organic and quality assurance organizations
+            </p>
+
             <div class="certifications-grid">
                 <div class="certification-card">
                     <div class="cert-icon">
-                       
+
                     </div>
                     <h3>Udyam Certified</h3>
                     <img src="udyam_certificate.png" alt="Udyam Registered">
                 </div>
-                
+
                 <div class="certification-card">
                     <div class="cert-icon">
                     </div>
                     <h3>Fssai Certified</h3>
                     <img src="fssai_certificate.jpeg" alt="fssai certified">
                 </div>
-                
-                
+
+
             </div>
         </div>
     </section>
@@ -143,45 +179,51 @@
         <div class="gallery-container">
             <h2>Our Farms & Facilities</h2>
             <p class="section-subtitle">From farm to table - a glimpse into our sustainable operations</p>
-            
+
             <div class="gallery-grid">
                 <div class="gallery-item">
-                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EFarm Field%3C/text%3E%3C/svg%3E" alt="Farm Field">
+                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EFarm Field%3C/text%3E%3C/svg%3E"
+                        alt="Farm Field">
                     <div class="gallery-overlay">
                         <h3>Organic Farming</h3>
                     </div>
                 </div>
-                
+
                 <div class="gallery-item">
-                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EHoney Harvest%3C/text%3E%3C/svg%3E" alt="Honey Harvest">
+                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EHoney Harvest%3C/text%3E%3C/svg%3E"
+                        alt="Honey Harvest">
                     <div class="gallery-overlay">
                         <h3>Pure Honey Extraction</h3>
                     </div>
                 </div>
-                
+
                 <div class="gallery-item">
-                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EProcessing Unit%3C/text%3E%3C/svg%3E" alt="Processing Unit">
+                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EProcessing Unit%3C/text%3E%3C/svg%3E"
+                        alt="Processing Unit">
                     <div class="gallery-overlay">
                         <h3>Modern Processing</h3>
                     </div>
                 </div>
-                
+
                 <div class="gallery-item">
-                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EQuality Check%3C/text%3E%3C/svg%3E" alt="Quality Check">
+                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EQuality Check%3C/text%3E%3C/svg%3E"
+                        alt="Quality Check">
                     <div class="gallery-overlay">
                         <h3>Quality Control</h3>
                     </div>
                 </div>
-                
+
                 <div class="gallery-item">
-                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EPackaging%3C/text%3E%3C/svg%3E" alt="Packaging">
+                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EPackaging%3C/text%3E%3C/svg%3E"
+                        alt="Packaging">
                     <div class="gallery-overlay">
                         <h3>Eco-Friendly Packaging</h3>
                     </div>
                 </div>
-                
+
                 <div class="gallery-item">
-                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EFarmers Team%3C/text%3E%3C/svg%3E" alt="Farmers Team">
+                    <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22350%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EFarmers Team%3C/text%3E%3C/svg%3E"
+                        alt="Farmers Team">
                     <div class="gallery-overlay">
                         <h3>Our Dedicated Team</h3>
                     </div>
@@ -195,14 +237,14 @@
         <div class="videos-container">
             <h2>Why Choose KCP Organics</h2>
             <p class="section-subtitle">Watch our stories, processes, and customer testimonials</p>
-            
+
             <!-- Add Video Button for Admin -->
             <div id="adminAddVideoBtn" class="admin-add-video-btn" style="display:none; margin-bottom: 20px;">
                 <button onclick="openAddAboutVideoModal()" class="btn-add-video">
                     <i class="fas fa-plus"></i> Add Video
                 </button>
             </div>
-            
+
             <div id="videosGrid" class="videos-grid">
                 <!-- Videos will be loaded here dynamically -->
                 <div class="no-videos-message" id="noVideosMessage">
@@ -229,8 +271,10 @@
                     <div class="form-group">
                         <label>Video Source *</label>
                         <div class="video-source-tabs">
-                            <button type="button" class="tab-btn active" data-tab="upload-tab" onclick="switchVideoSourceTab('upload-tab')">Upload from Computer</button>
-                            <button type="button" class="tab-btn" data-tab="url-tab" onclick="switchVideoSourceTab('url-tab')">Video URL</button>
+                            <button type="button" class="tab-btn active" data-tab="upload-tab"
+                                onclick="switchVideoSourceTab('upload-tab')">Upload from Computer</button>
+                            <button type="button" class="tab-btn" data-tab="url-tab"
+                                onclick="switchVideoSourceTab('url-tab')">Video URL</button>
                         </div>
                     </div>
                     <div id="upload-tab" class="form-group tab-content active">
@@ -250,7 +294,8 @@
                     </div>
                     <div class="form-group">
                         <label for="aboutVideoDescription">Description</label>
-                        <textarea id="aboutVideoDescription" placeholder="Brief description of the video" rows="3"></textarea>
+                        <textarea id="aboutVideoDescription" placeholder="Brief description of the video"
+                            rows="3"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="aboutVideoThumbnail">Thumbnail URL</label>
@@ -272,7 +317,7 @@
     </div>
 
     <!-- Team Section -->
-    
+
     <!-- Stats Section -->
     <section class="stats">
         <div class="stats-container">
@@ -299,7 +344,8 @@
     <section class="cta-section">
         <div class="cta-content">
             <h2>Join Our Organic Movement</h2>
-            <p>Experience the pure goodness of organic farming. Every purchase supports sustainable agriculture and healthy living.</p>
+            <p>Experience the pure goodness of organic farming. Every purchase supports sustainable agriculture and
+                healthy living.</p>
             <a href="products.html" class="cta-button">Shop Now</a>
         </div>
     </section>
@@ -336,7 +382,8 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 KCP Organics. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            <p>&copy; 2024 KCP Organics. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of
+                    Service</a></p>
         </div>
     </footer>
 
@@ -358,12 +405,12 @@
             } else {
                 const userName = localStorage.getItem('userName');
                 const userId = localStorage.getItem('userId') || localStorage.getItem('token');
-                
+
                 const loginLink = document.getElementById('loginLink');
                 const signupLink = document.getElementById('signupLink');
                 const userDropdown = document.getElementById('userDropdown');
                 const welcomeText = document.getElementById('userName');
-                
+
                 if (userName || userId) {
                     if (loginLink) loginLink.style.display = 'none';
                     if (signupLink) signupLink.style.display = 'none';
@@ -377,12 +424,91 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             checkUserSession();
         });
     </script>
     <script src="about-us.js"></script>
-    <script src="site.js
-  <script src="navbar-enhancements.js"></script>"></script>
+    <script src="site.js"></script>
+    <script src="navbar-enhancements.js"></script>
+    <script>
+        // Load About Us images from admin dashboard (localStorage)
+        function loadAboutUsDynamicImages() {
+            try {
+                const images = JSON.parse(localStorage.getItem('kcpAboutUsImages') || '{}');
+
+                // Story image
+                if (images.story) {
+                    const storyImg = document.querySelector('.story-image img');
+                    if (storyImg) {
+                        storyImg.src = images.story;
+                    }
+                }
+
+                // Udyam certificate
+                if (images.udyam) {
+                    const udyamImg = document.querySelector('.certification-card:nth-child(1) img');
+                    if (udyamImg) {
+                        udyamImg.src = images.udyam;
+                    }
+                }
+
+                // FSSAI certificate
+                if (images.fssai) {
+                    const fssaiImg = document.querySelector('.certification-card:nth-child(2) img');
+                    if (fssaiImg) {
+                        fssaiImg.src = images.fssai;
+                    }
+                }
+
+                // Gallery images
+                if (images.gallery && images.gallery.length > 0) {
+                    const galleryGrid = document.querySelector('.gallery-grid');
+                    if (galleryGrid) {
+                        galleryGrid.innerHTML = images.gallery.map(item => `
+                            <div class="gallery-item">
+                                <img src="${item.src}" alt="${item.title}">
+                                <div class="gallery-overlay">
+                                    <h3>${item.title}</h3>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (e) {
+                console.log('No dynamic About Us images found');
+            }
+        }
+
+        // Load images on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadAboutUsDynamicImages();
+        });
+    </script>
+    <script>
+        // Mission & Vision — Scroll-triggered card animations
+        (function () {
+            const cards = document.querySelectorAll('.mv-card');
+            if (!cards.length) return;
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const delay = parseInt(entry.target.getAttribute('data-delay')) || 0;
+                            setTimeout(() => {
+                                entry.target.classList.add('visible');
+                            }, delay);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.15, }
+            );
+
+            cards.forEach((card) => observer.observe(card));
+        })();
+    </script>
 </body>
+
 </html>

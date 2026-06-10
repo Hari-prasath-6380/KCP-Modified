@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -71,6 +72,7 @@
                 transform: translateY(50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -159,6 +161,7 @@
             from {
                 transform: scale(0);
             }
+
             to {
                 transform: scale(1);
             }
@@ -246,7 +249,7 @@
             background: white;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .form-section {
@@ -323,7 +326,7 @@
             display: none;
         }
 
-        .payment-option input[type="radio"]:checked + label {
+        .payment-option input[type="radio"]:checked+label {
             color: #2e7d32;
         }
 
@@ -351,7 +354,7 @@
             background: white;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             height: fit-content;
             position: sticky;
             top: 20px;
@@ -487,7 +490,7 @@
             color: white;
             padding: 15px 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             z-index: 10000;
             animation: slideIn 0.3s ease;
         }
@@ -505,6 +508,7 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -801,6 +805,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar">
@@ -821,8 +826,9 @@
             <div class="user-dropdown" id="userDropdown" style="display: none;">
                 <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
-                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                    <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
                 </div>
             </div>
             <div class="navbar-cart" onclick="toggleCart()">
@@ -867,7 +873,7 @@
                     <!-- Delivery Information -->
                     <div class="form-section">
                         <h2><i class="fas fa-map-marker-alt"></i> Delivery Address</h2>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="firstName">First Name *</label>
@@ -918,14 +924,15 @@
 
                         <div class="form-group">
                             <label for="instructions">Delivery Instructions (Optional)</label>
-                            <textarea id="instructions" name="instructions" rows="3" placeholder="E.g., Leave at door, Ring twice, etc."></textarea>
+                            <textarea id="instructions" name="instructions" rows="3"
+                                placeholder="E.g., Leave at door, Ring twice, etc."></textarea>
                         </div>
                     </div>
 
                     <!-- Payment Information -->
                     <div class="form-section">
                         <h2><i class="fas fa-credit-card"></i> Payment Method</h2>
-                        
+
                         <div class="form-group">
                             <label>Select Payment Method *</label>
                             <div class="payment-methods">
@@ -957,7 +964,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="cardNumber">Card Number</label>
-                                <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456"
+                                    maxlength="19">
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
@@ -980,7 +988,8 @@
                         </div>
 
                         <!-- COD Note -->
-                        <div id="codNote" style="background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #2e7d32;">
+                        <div id="codNote"
+                            style="background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #2e7d32;">
                             <p style="margin: 0; color: #1b5e20; font-weight: 600;">
                                 <i class="fas fa-info-circle"></i> Payment will be collected upon delivery
                             </p>
@@ -993,7 +1002,8 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
-                                I agree to the <a href="#" style="color: #dd610e;">Terms & Conditions</a> and <a href="#" style="color: #dd610e;">Privacy Policy</a>
+                                I agree to the <a href="#" style="color: #dd610e;">Terms & Conditions</a> and <a
+                                    href="#" style="color: #dd610e;">Privacy Policy</a>
                             </label>
                         </div>
                     </div>
@@ -1013,7 +1023,7 @@
             <!-- Right: Order Summary -->
             <div class="order-summary">
                 <h2><i class="fas fa-list-check"></i> Order Summary</h2>
-                
+
                 <div class="order-items" id="orderItems">
                     <!-- Items will be loaded here -->
                 </div>
@@ -1040,7 +1050,8 @@
                     <span id="total">₹0.00</span>
                 </div>
 
-                <div style="background: #fff9f5; padding: 12px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #dd610e;">
+                <div
+                    style="background: #fff9f5; padding: 12px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #dd610e;">
                     <p style="margin: 0; color: #dd610e; font-size: 13px;">
                         <i class="fas fa-truck-fast"></i> Free delivery on all orders!
                     </p>
@@ -1057,18 +1068,19 @@
             </div>
             <h2>Order Placed Successfully! 🎉</h2>
             <p>Your order has been confirmed and will be delivered within 3-5 business days.</p>
-            
+
             <div class="order-id-display">
                 <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Order ID:</div>
                 <div id="modalOrderId">ORD-000000</div>
             </div>
-            
+
             <p style="color: #666; font-size: 14px;">
                 <i class="fas fa-info-circle"></i> You will receive SMS and Email confirmation shortly.
             </p>
-            
+
             <div class="modal-buttons">
-                <button class="modal-btn btn-download" onclick="downloadBill()" style="background: #2ecc71; color: white; padding: 12px 24px; border: none; border-radius: 5px; font-size: 14px; font-weight: bold; cursor: pointer; margin-right: 10px;">
+                <button class="modal-btn btn-download" onclick="downloadBill()"
+                    style="background: #2ecc71; color: white; padding: 12px 24px; border: none; border-radius: 5px; font-size: 14px; font-weight: bold; cursor: pointer; margin-right: 10px;">
                     <i class="fas fa-file-pdf"></i> Download Invoice
                 </button>
                 <button class="modal-btn btn-home" onclick="goToHome()">
@@ -1094,7 +1106,7 @@
                     document.getElementById('lastName').value = nameParts.slice(1).join(' ');
                 }
                 document.getElementById('email').value = userEmail;
-                
+
                 document.getElementById('loginLink').style.display = 'none';
                 document.getElementById('signupLink').style.display = 'none';
                 document.getElementById('userDropdown').style.display = 'block';
@@ -1107,7 +1119,7 @@
             event.preventDefault();
             const userId = localStorage.getItem('userId');
             const userName = localStorage.getItem('userName');
-            
+
             if (!userId || !userName) {
                 alert('Please login to view your orders');
                 window.location.href = 'login.html';
@@ -1131,9 +1143,9 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
-            
+
             // Fetch user orders
             const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
             fetch(`${API_BASE_URL}/orders/user/${userId}`)
@@ -1210,29 +1222,29 @@
         function getImageUrl(imagePath) {
             const ORIGIN = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
             const fallback = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23888" font-family="Arial" font-size="10">Product</text></svg>';
-            
+
             if (!imagePath) return fallback;
-            
+
             // If already a full URL
             if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
                 return imagePath;
             }
-            
+
             // If it's a malformed placeholder pattern
             if (/^\d+x\d+/.test(imagePath)) {
                 return fallback;
             }
-            
+
             // If it starts with /uploads
             if (imagePath.startsWith('/uploads')) {
                 return ORIGIN + imagePath;
             }
-            
+
             // If no path prefix, assume it's a product filename
             if (!imagePath.includes('/')) {
                 return ORIGIN + '/uploads/products/' + imagePath;
             }
-            
+
             // Default
             return fallback;
         }
@@ -1291,7 +1303,7 @@
                     try {
                         const response = await fetch(`${API_BASE_URL}/products/stock/by-name?name=${encodeURIComponent(item.name)}`);
                         const data = await response.json();
-                        
+
                         if (!data.success || !data.data) {
                             // Backend not responding - skip validation but allow order to proceed
                             console.warn('Could not validate stock for:', item.name);
@@ -1299,14 +1311,14 @@
                         }
 
                         const availableStock = data.data.stock || 0;
-                        
+
                         if (availableStock <= 0) {
                             return {
                                 valid: false,
                                 message: `"${item.name}" is currently out of stock! ❌`
                             };
                         }
-                        
+
                         if (item.quantity > availableStock) {
                             return {
                                 valid: false,
@@ -1329,7 +1341,7 @@
         }
 
         // Place order
-        document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+        document.getElementById('checkoutForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -1441,7 +1453,7 @@
                     const remaining = all.filter(i => (i.userId || 'guest') !== uid);
                     localStorage.setItem('cart', JSON.stringify(remaining));
                     updateCartBadge();
-                    
+
                     // Store order data for bill generation
                     const orderId = result.data.orderId || result.data._id.substring(0, 8).toUpperCase();
                     // Remove any existing ORD- prefix to avoid duplication
@@ -1460,13 +1472,13 @@
                         paymentMethod: formData.paymentMethod,
                         createdAt: new Date().toLocaleDateString('en-IN')
                     };
-                    
+
                     localStorage.setItem('lastOrderData', JSON.stringify(orderData));
-                    
+
                     // Signal other pages to refresh stock
                     localStorage.setItem('stockNeedsRefresh', 'true');
                     localStorage.setItem('refreshTimestamp', String(Date.now()));
-                    
+
                     // Show order confirmation modal
                     showOrderModal(orderId);
                 } else {
@@ -1495,8 +1507,7 @@
         }
 
         /**
-         * Download Receipt as PDF (Calls Global site.js
-  <script src="navbar-enhancements.js"></script> function)
+         * Download Receipt as PDF (Calls Global site.js function)
          */
         async function downloadReceiptPDF(orderId) {
             if (typeof window.downloadReceiptPDF === 'function') {
@@ -1507,39 +1518,38 @@
             }
         }
 
-        /**
-         * Download bill as PDF (Fallback for older calls)
-         */
-        function downloadBill() {
-            const orderData = JSON.parse(localStorage.getItem('lastOrderData'));
-            if (!orderData || !orderData.orderId) {
-                alert('Order data not found.');
-                return;
-            }
-            downloadReceiptPDF(orderData.mongoId || orderData.orderId);
-        }
-
-        // Logout
-        function logoutUser(e) {
-            e.preventDefault();
-            localStorage.removeItem('userName');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userRole');
-            window.location.reload();
-        }
-
         // Show order confirmation modal
         function showOrderModal(orderId) {
-            // Remove any existing ORD- prefix to avoid duplication
             const cleanOrderId = orderId.replace(/^ORD-/i, '');
             document.getElementById('modalOrderId').textContent = 'ORD-' + cleanOrderId;
             document.getElementById('orderModal').classList.add('active');
         }
 
-        // Download bill as PDF
+        // Go to home
+        function goToHome() {
+            window.location.href = 'home.html';
+        }
+
+        // Logout function
+        function logoutUser(event) {
+            if (event) event.preventDefault();
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            window.location.reload();
+        }
+
+        function toggleCart() {
+            window.location.href = 'cart.html';
+        }
+
+        /**
+         * Download bill as PDF
+         */
         function downloadBill() {
-            console.log('downloadBill called');
             const orderData = JSON.parse(localStorage.getItem('lastOrderData'));
 
             if (!orderData) {
@@ -1547,7 +1557,6 @@
                 return;
             }
 
-            // Check for html2canvas and jsPDF
             if (!window.html2canvas) {
                 console.warn('html2canvas not available, using simple PDF');
                 const PDFLib = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
@@ -1603,7 +1612,7 @@
                     const pageHeight = pdf.internal.pageSize.getHeight();
                     const imgWidth = pageWidth - 10;
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                    
+
                     let heightLeft = imgHeight;
                     let position = 5;
 
@@ -1725,16 +1734,16 @@
                 content += `Order ID: ORD-${orderData.orderId}\n`;
                 content += `Date: ${orderData.createdAt}\n`;
                 content += `Payment Method: ${orderData.paymentMethod.toUpperCase()}\n\n`;
-                
+
                 content += `BILL TO:\n`;
                 content += `${orderData.customerName}\n`;
                 content += `${orderData.customerEmail}\n`;
                 content += `${orderData.customerPhone}\n`;
                 content += `${orderData.address}\n\n`;
-                
+
                 content += `PRODUCTS:\n`;
                 content += `-------------------------------------\n`;
-                
+
                 orderData.products.forEach((p, idx) => {
                     const name = p.name || p.productId || 'Product';
                     const qty = p.quantity || 0;
@@ -1742,13 +1751,13 @@
                     const total = (price * qty).toFixed(2);
                     content += `${idx + 1}. ${name} x ${qty} = ₹${total}\n`;
                 });
-                
+
                 content += `-------------------------------------\n`;
                 content += `Subtotal: ₹${orderData.subtotal.toFixed(2)}\n`;
                 content += `Tax (5%): ₹${orderData.tax.toFixed(2)}\n`;
                 content += `TOTAL: ₹${orderData.totalAmount.toFixed(2)}\n\n`;
                 content += `Thank you for your purchase!\n`;
-                
+
                 // Create blob and download
                 const blob = new Blob([content], { type: 'text/plain' });
                 const url = URL.createObjectURL(blob);
@@ -1757,7 +1766,7 @@
                 a.download = `KCP_Invoice_${orderData.orderId}.txt`;
                 a.click();
                 URL.revokeObjectURL(url);
-                
+
                 alert('✓ Invoice downloaded as text file!');
             } catch (error) {
                 console.error('Text download failed:', error);
@@ -1872,7 +1881,7 @@
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             populateUserData();
             loadOrderSummary();
             updateCartBadge();
@@ -1886,7 +1895,7 @@
                     const signupLink = document.getElementById('signupLink');
                     const userDropdown = document.getElementById('userDropdown');
                     const welcomeText = document.getElementById('userName');
-                    
+
                     if (loginLink) loginLink.style.display = 'none';
                     if (signupLink) signupLink.style.display = 'none';
                     if (userDropdown) userDropdown.style.display = 'inline-block';
@@ -1897,4 +1906,5 @@
     </script>
     <script src="site.js"></script>
 </body>
+
 </html>

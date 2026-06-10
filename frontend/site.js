@@ -7,7 +7,7 @@ function updateAuthVisibility() {
   const signupLinks = document.querySelectorAll('#signupLink');
   const userDropdowns = document.querySelectorAll('#userDropdown');
   const userNameElements = document.querySelectorAll('#userName, #welcomeText');
-  
+
   loginLinks.forEach(link => {
     if (userId) {
       link.style.setProperty('display', 'none', 'important');
@@ -41,11 +41,39 @@ function updateAuthVisibility() {
   });
 }
 
+// =================== ENSURE CONSISTENT DROPDOWN MENU ===================
+// Ensures the user dropdown menu always has the same items across all pages
+function ensureDropdownMenuItems() {
+  const dropdownMenus = document.querySelectorAll('.user-dropdown .dropdown-menu');
+  dropdownMenus.forEach(menu => {
+    // Check if "My Orders" link already exists
+    const hasMyOrders = Array.from(menu.querySelectorAll('a')).some(a =>
+      a.textContent.includes('My Orders') || a.getAttribute('onclick')?.includes('openMyOrders')
+    );
+
+    if (!hasMyOrders) {
+      // Insert "My Orders" link before the Logout link (or at the end)
+      const logoutLink = menu.querySelector('.logout-item') || menu.querySelector('a[href*="logout"]');
+      const myOrdersLink = document.createElement('a');
+      myOrdersLink.href = '#';
+      myOrdersLink.setAttribute('onclick', 'openMyOrders(event)');
+      myOrdersLink.innerHTML = '<i class="fas fa-history"></i> My Orders';
+
+      if (logoutLink) {
+        menu.insertBefore(myOrdersLink, logoutLink);
+      } else {
+        menu.appendChild(myOrdersLink);
+      }
+    }
+  });
+}
+
 // =================== GLOBAL CART TOGGLE ===================
 // Navigate to cart page - available on all pages
 
 // Ensure cart navigation works even if the inline onclick is missing
 document.addEventListener('DOMContentLoaded', () => {
+  ensureDropdownMenuItems();
   const cartEls = document.querySelectorAll('.navbar-cart');
   cartEls.forEach(el => {
     el.addEventListener('click', (e) => {
@@ -104,7 +132,7 @@ function updateCartBadge() {
 document.addEventListener('DOMContentLoaded', function () {
   // Update auth visibility on page load
   updateAuthVisibility();
-  
+
   const toggle = document.querySelector('.nav-toggle');
   if (!toggle) return;
 
@@ -113,22 +141,22 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!mobileMenu) {
     mobileMenu = document.createElement('div');
     mobileMenu.className = 'mobile-menu';
-    
+
     // Collect all navigation links
     const links = [];
-    
+
     // Get links from section1 (main navigation)
     const section1 = document.querySelector('.section1');
     if (section1) {
       const section1Links = Array.from(section1.querySelectorAll('a'));
       links.push(...section1Links);
     }
-    
+
     // Get cart from section2 or section2-home (on all pages)
     const section2 = document.querySelector('.section2');
     const section2Home = document.querySelector('.section2-home');
     const authSection = section2 || section2Home;
-    
+
     if (authSection) {
       // Add cart icon link
       const cartDiv = authSection.querySelector('.navbar-cart');
@@ -146,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         links.push(cartLink);
       }
-      
+
       // Add auth links
       const authLinks = Array.from(authSection.querySelectorAll('a'));
       authLinks.forEach(link => {
@@ -155,12 +183,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     }
-    
+
     // Clone links into mobile menu
     links.forEach(a => {
       const clone = a.cloneNode(true);
       clone.style.display = 'flex'; // Ensure links are visible
-      clone.addEventListener('click', function(e) {
+      clone.addEventListener('click', function (e) {
         // Don't close menu if link has special onclick handlers
         const onclick = clone.getAttribute('onclick');
         if (!onclick) {
@@ -170,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       mobileMenu.appendChild(clone);
     });
-    
+
     nav.appendChild(mobileMenu);
   }
 
@@ -187,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
       toggle.setAttribute('aria-expanded', 'false');
     }
   });
-  
+
   // Close menu on escape key
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && mobileMenu.classList.contains('show')) {
@@ -195,9 +223,9 @@ document.addEventListener('DOMContentLoaded', function () {
       toggle.setAttribute('aria-expanded', 'false');
     }
   });
-  
+
   // Listen for auth state changes and update visibility
-  window.addEventListener('storage', function(event) {
+  window.addEventListener('storage', function (event) {
     if (event.key === 'userId') {
       updateAuthVisibility();
     }
@@ -277,24 +305,24 @@ document.addEventListener('DOMContentLoaded', function () {
 })();
 
 // Listen for stock refresh signal from checkout after order placed
-window.addEventListener('storage', function(event) {
+window.addEventListener('storage', function (event) {
   if (event.key === 'stockNeedsRefresh' && event.newValue === 'true') {
     console.log('📢 Reloading product stock badges due to new order');
     // Reload the stock badges
     (async function refreshProductPageStocks() {
       const buttons = document.querySelectorAll('.add-product-btn');
       if (!buttons.length) return;
-    
+
       const API_URL = (typeof window !== 'undefined' && window.API_URL)
         ? window.API_URL
         : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
-    
+
       for (const btn of buttons) {
         const onclickStr = btn.getAttribute('onclick') || '';
         const match = onclickStr.match(/addProduct\(['"](.*?)['"]\)/);
         if (!match) continue;
         const productName = match[1];
-    
+
         // Find or create badge element
         let badge = btn.nextElementSibling;
         if (!badge || !badge.classList.contains('product-stock-badge')) {
@@ -311,20 +339,20 @@ window.addEventListener('storage', function(event) {
           ].join(';');
           btn.insertAdjacentElement('afterend', badge);
         }
-    
+
         try {
           const res = await fetch(
             `${API_URL}/api/products/stock/by-name?name=${encodeURIComponent(productName)}`
           );
           const data = await res.json();
-    
+
           if (!data.success || !data.data) {
             badge.remove();
             continue;
           }
-    
+
           const stock = data.data.stock || 0;
-    
+
           if (stock <= 0) {
             badge.textContent = '❌ Out of Stock';
             badge.style.background = '#fce4ec';
@@ -360,7 +388,7 @@ window.addEventListener('storage', function(event) {
 });
 
 // =================== LOGIN PROMPT MODAL (30 SECONDS) ===================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Don't show login prompt on login or signup pages
   const currentPage = window.location.pathname;
   if (currentPage.includes('login.html') || currentPage.includes('signup.html')) {
@@ -369,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Check if user is logged in
   const userId = localStorage.getItem('userId');
-  
+
   // If already logged in, don't show the prompt
   if (userId) {
     return;
@@ -424,7 +452,7 @@ function logoutUser(event) {
 async function openMyOrders(event) {
   if (event) event.preventDefault();
   const userId = localStorage.getItem('userId');
-  
+
   if (!userId) {
     alert('Please login to view your orders');
     window.location.href = 'login.html';
@@ -449,23 +477,23 @@ async function openMyOrders(event) {
       </div>
     </div>
   `;
-  
+
   document.body.appendChild(modal);
-  
+
   // Close modal on click outside
-  modal.onclick = function(e) {
+  modal.onclick = function (e) {
     if (e.target === modal) modal.remove();
   };
-  
-  const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
-    ? 'http://localhost:5000/api' 
+
+  const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:5000/api'
     : window.location.origin + '/api';
 
   try {
     const res = await fetch(`${API_BASE_URL}/orders/user/${userId}`);
     const data = await res.json();
     const container = document.getElementById('ordersContainer');
-    
+
     if (data.success && data.data && data.data.length > 0) {
       container.innerHTML = data.data.map(order => `
         <div class="order-card">
@@ -529,21 +557,21 @@ function getStatusColor(status) {
  * Download Receipt as PDF (Unified Global Version)
  */
 async function downloadReceiptPDF(orderId) {
-  const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
-    ? 'http://localhost:5000/api' 
+  const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:5000/api'
     : window.location.origin + '/api';
-  
+
   try {
     const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
     const data = await response.json();
-    
+
     if (!data.success || !data.data) {
       alert('Unable to load order details');
       return;
     }
 
     const order = data.data;
-    
+
     // Prepare order data for template (ensuring all fields exist)
     const orderData = {
       orderId: order.orderId || order._id.substring(0, 8).toUpperCase(),
@@ -617,7 +645,7 @@ function generateStyledInvoiceGlobal(orderData) {
       const pageWidth = pdf.internal.pageSize.getWidth();
       const imgWidth = pageWidth - 10;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
+
       pdf.addImage(imgData, 'PNG', 5, 5, imgWidth, imgHeight);
       pdf.save(`KCP_Invoice_${orderData.orderId}.pdf`);
       document.body.removeChild(element);
@@ -642,44 +670,44 @@ function generateTextOnlyPdfGlobal(order) {
   const doc = new PDFClass('p', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
   let y = 15;
-  
+
   doc.setFontSize(18);
   doc.setTextColor(46, 125, 50);
   doc.setFont(undefined, 'bold');
   doc.text('KCP ORGANICS', pageWidth / 2, y, { align: 'center' });
-  
+
   y += 6;
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
   doc.setFont(undefined, 'normal');
   doc.text('100% Organic | Farm Fresh to Your Doorstep', pageWidth / 2, y, { align: 'center' });
-  
+
   y += 10;
   doc.setDrawColor(46, 125, 50);
   doc.line(15, y, pageWidth - 15, y);
-  
+
   y += 10;
   doc.setFontSize(12);
   doc.setTextColor(0, 0, 0);
   doc.text('INVOICE', 15, y);
   doc.setFontSize(9);
   doc.text(`Order ID: ${order.orderId}`, pageWidth - 15, y, { align: 'right' });
-  
+
   y += 10;
   doc.text(`Customer: ${order.customerName}`, 15, y);
   doc.text(`Date: ${order.createdAt}`, pageWidth - 15, y, { align: 'right' });
-  
+
   y += 15;
   doc.setFont(undefined, 'bold');
   doc.text('Product', 15, y);
   doc.text('Qty', 140, y);
   doc.text('Price', 160, y);
   doc.text('Total', pageWidth - 15, y, { align: 'right' });
-  
+
   y += 2;
   doc.line(15, y, pageWidth - 15, y);
   doc.setFont(undefined, 'normal');
-  
+
   order.products.forEach(item => {
     y += 8;
     doc.text(item.name, 15, y);
@@ -687,7 +715,7 @@ function generateTextOnlyPdfGlobal(order) {
     doc.text(`₹${item.price}`, 160, y);
     doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, pageWidth - 15, y, { align: 'right' });
   });
-  
+
   y += 10;
   doc.line(15, y, pageWidth - 15, y);
   y += 10;
@@ -695,7 +723,7 @@ function generateTextOnlyPdfGlobal(order) {
   doc.setFontSize(11);
   doc.text('Total Amount:', 140, y);
   doc.text(`₹${order.totalAmount.toFixed(2)}`, pageWidth - 15, y, { align: 'right' });
-  
+
   y += 20;
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);

@@ -12,7 +12,7 @@ html {
 }
 
 body {
-  background-color: rgb(220, 241, 216);
+  background-color: rgb(247, 251, 252);
   margin: 0;
   font-family: 'Poppins', sans-serif;
   overflow-x: hidden;
@@ -180,6 +180,78 @@ body {
 .logo a img {
   display: block;
 }
+
+/* 1. Lock the outer container to full viewport height */
+.carousel-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-track {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+/* Hide all slides by default */
+.carousel-slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* Only show the slide that has the active class */
+.carousel-slide.active {
+  display: block;
+}
+
+
+/* 4. The image can now safely fill the 100vh space without distortion */
+.carousel-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Removes unwanted bottom margin/whitespace */
+}
+
+
+/* 
+.carousel-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+} */
+
+.carousel-slide {
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  pointer-events: none;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.carousel-slide.prev {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+
+/* 
+.carousel-track img {
+  width: 100%;
+  height: 100%;
+  display: block;
+} */
 
 /* Desktop: hide logout text in navbar — show logout icon only */
 .section2 #logoutLink {
@@ -609,16 +681,90 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
   pointer-events: none;
   z-index: 1;
+  transform: translateX(100%);
+  transition: transform 1s ease-in-out;
 }
 
 .carousel-hero-wrapper .carousel-img.active {
-  opacity: 1;
+  transform: translateX(0);
   pointer-events: auto;
   z-index: 2;
+}
+
+.carousel-hero-wrapper .carousel-img.prev {
+  transform: translateX(-100%);
+}
+
+/* Carousel Navigation Arrows & Dots */
+.carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 12px 0;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.carousel-arrow {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #2e7d32;
+  background: #fff;
+  color: #2e7d32;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-arrow:hover {
+  background: #2e7d32;
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  background: #2e7d32;
+  transform: scale(1.2);
+}
+
+.carousel-dot:hover {
+  background: #558b2f;
+}
+
+@media (max-width: 600px) {
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
+  }
 }
 
 .carousel-text {
@@ -1129,12 +1275,28 @@ video {
     padding-top: 64px;
   }
 
+  /* Responsive carousel container */
+  .carousel-container {
+    height: 55vh;
+    min-height: 260px;
+    background: #000;
+  }
+
+  .carousel-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
   .navbar {
     height: 64px;
-    padding: 0 16px;
+    padding: 0 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 4px;
   }
 
   .logo {
@@ -1156,21 +1318,21 @@ video {
   /* Show cart + auth links on home page */
   .section2-home {
     display: flex !important;
-    gap: 8px;
+    gap: 4px;
     align-items: center;
     flex-wrap: nowrap;
+    flex-shrink: 0;
   }
 
   .section2-home>a {
-    display: inline-block !important;
-    padding: 6px 10px !important;
-    font-size: 12px !important;
+    display: inline-flex !important;
+    padding: 4px 6px !important;
+    font-size: 11px !important;
     color: #dd610e !important;
     text-decoration: none !important;
     border-radius: 4px;
     white-space: nowrap;
-    min-height: 32px;
-    display: flex;
+    min-height: 30px;
     align-items: center;
     flex-shrink: 0;
   }
@@ -1181,8 +1343,10 @@ video {
   }
 
   .section2-home .navbar-cart {
-    font-size: 18px;
+    font-size: 16px;
     flex-shrink: 0;
+    min-width: 32px;
+    min-height: 32px;
   }
 
   .section2-home .navbar-cart #cartBadge {
@@ -1340,10 +1504,44 @@ video {
     padding-top: 64px;
   }
 
+  /* Responsive carousel for small mobile - full image, no black bars */
+  .carousel-container {
+    height: auto;
+    min-height: unset;
+    max-height: none;
+    background: none;
+  }
+
+  .carousel-track {
+    height: auto;
+  }
+
+  .carousel-slide {
+    height: auto;
+    position: relative;
+  }
+
+  .carousel-slide.active {
+    display: block;
+  }
+
+  .carousel-container img {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: fill;
+    object-position: center;
+    display: block;
+  }
+
+  .carousel-nav {
+    padding: 8px 0;
+  }
+
   .section2-home>a {
-    padding: 6px 10px !important;
-    font-size: 12px !important;
-    min-height: 32px !important;
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+    min-height: 30px !important;
   }
 
   .carousel-text h1 {
@@ -1608,6 +1806,7 @@ video {
   .navbar {
     height: 56px;
     padding: 0 12px;
+    flex-wrap: nowrap;
   }
 
   body {
@@ -1905,6 +2104,7 @@ video {
   .navbar {
     height: 52px;
     padding: 0 8px;
+    flex-wrap: nowrap;
   }
 
   .logo img {
