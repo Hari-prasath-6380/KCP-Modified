@@ -23,7 +23,10 @@ app.use("/uploads", (req, res, next) => {
     res.header('Pragma', 'no-cache');
     res.header('Expires', '0');
   } else {
-    res.header('Cache-Control', 'public, max-age=31536000'); // 1 year cache for static images
+    // Short cache for product images so updates appear quickly on all devices
+    res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.header('Pragma', 'no-cache');
+    res.header('Expires', '0');
   }
   next();
 }, express.static(path.join(__dirname, "uploads")));

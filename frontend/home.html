@@ -1055,8 +1055,8 @@
       const viewMoreContainer = document.getElementById('viewMoreContainer');
 
       try {
-        // Fetch 8 random products from the backend
-        const response = await fetch(`${API_BASE_URL}/products/random?count=8`);
+        // Fetch 8 random products from the backend (with cache-busting)
+        const response = await fetch(`${API_BASE_URL}/products/random?count=8&t=${Date.now()}`, { cache: 'no-store' });
         const data = await response.json();
 
         if (data.success && data.data && data.data.length > 0) {
@@ -1120,7 +1120,8 @@
         filename = imagePath.split('/').pop();
       }
 
-      return IMAGE_BASE_URL + `/uploads/products/${filename}`;
+      // Add cache-busting timestamp to force fresh image on every load
+      return IMAGE_BASE_URL + `/uploads/products/${filename}?t=${Date.now()}`;
     }
 
     function handleImageErrorHome(img, imagePath) {

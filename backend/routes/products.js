@@ -46,6 +46,9 @@ router.get('/random', async (req, res) => {
             { $sample: { size: count } }
         ]);
         
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
         res.status(200).json({
             success: true,
             data: products
@@ -85,6 +88,9 @@ router.get('/', async (req, res) => {
 
         const total = await Product.countDocuments(query);
 
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
         res.status(200).json({
             success: true,
             data: products,
@@ -142,6 +148,9 @@ router.get('/:id', async (req, res) => {
         // Increment views
         await Product.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
         
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
         res.status(200).json({ success: true, data: product });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -418,9 +427,16 @@ router.get('/admin/low-stock', async (req, res) => {
             stock: { $lte: parseInt(threshold) }
         }).sort({ stock: 1 });
 
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
         res.status(200).json({
             success: true,
-            data: products
+            data: products,
+            pagination: {
+                total: products.length,
+                pages: 1
+            }
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

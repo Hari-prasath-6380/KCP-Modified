@@ -48,6 +48,18 @@ body {
   display: block;
 }
 
+/* Remove any background/box from logo image */
+.logo a img,
+.navbar .logo img {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  mix-blend-mode: multiply;
+}
+
 .section1 {
   display: flex;
   gap: 40px;
