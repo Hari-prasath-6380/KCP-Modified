@@ -4,6 +4,7 @@ const fs = require('fs');
 const multer = require('multer');
 const mammoth = require('mammoth');
 const Product = require('../models/Product');
+const cloudinaryService = require('../services/cloudinary');
 const router = express.Router();
 
 // Create uploads directories if they don't exist
@@ -111,9 +112,9 @@ const docxFilter = (req, file, cb) => {
 
 const uploadDocx = multer({ storage: docxStorage, fileFilter: docxFilter, limits: { fileSize: 5 * 1024 * 1024 } });
 
-// Image upload endpoint
+// Image upload endpoint (stores locally AND uploads to Cloudinary for permanent storage)
 router.post('/upload', (req, res, next) => {
-    uploadImage.single('image')(req, res, function(err) {
+    uploadImage.single('image')(req, res, async function(err) {
         try {
             // Handle multer errors
             if (err) {
@@ -143,16 +144,32 @@ router.post('/upload', (req, res, next) => {
 
             // Get file stats to verify it was written
             const stats = fs.statSync(req.file.path);
-            console.log(`✅ Image uploaded successfully: ${req.file.filename} (${stats.size} bytes)`);
+            console.log(`✅ Image saved locally: ${req.file.filename} (${stats.size} bytes)`);
 
             // Return the relative path to access the image
             const imagePath = `/uploads/products/${req.file.filename}`;
+
+            // Try uploading to Cloudinary for permanent storage (non-blocking)
+            let cloudinaryUrl = null;
+            try {
+                const cloudResult = await cloudinaryService.uploadFromPath(req.file.path, {
+                    public_id: path.parse(req.file.filename).name,
+                });
+                cloudinaryUrl = cloudResult.secure_url;
+                console.log(`✅ Image uploaded to Cloudinary: ${cloudinaryUrl}`);
+            } catch (cloudErr) {
+                console.warn(`⚠️ Cloudinary upload failed (falling back to local): ${cloudErr.message}`);
+                // Don't fail the request - still return local URL
+            }
 
             res.status(200).json({
                 success: true,
                 message: 'Image uploaded successfully',
                 imageUrl: imagePath,
-                filename: req.file.filename
+                cloudinaryUrl: cloudinaryUrl, // Will be null if Cloudinary upload failed
+                filename: req.file.filename,
+                // The frontend should prefer cloudinaryUrl over imageUrl when available
+                permanentUrl: cloudinaryUrl || imagePath
             });
         } catch (error) {
             console.error('❌ Error in upload endpoint:', error);

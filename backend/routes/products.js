@@ -1,6 +1,48 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Ensure temp upload directory exists
+const tempDir = path.join(__dirname, '../uploads/temp');
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
+// Configure multer for temporary file storage (files deleted after Cloudinary upload)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, tempDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png|gif|webp|bmp|svg/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    if (extname && mimetype) {
+      return cb(null, true);
+    }
+    cb(new Error('Only image files (jpeg, jpg, png, gif, webp, bmp, svg) are allowed'));
+  }
+});
 
 // Get all products for admin dashboard (no pagination, returns all products)
 // This must come BEFORE the GET / route
@@ -218,8 +260,8 @@ router.post('/:id/decrement', async (req, res) => {
     }
 });
 
-// Create product (with full fields)
-router.post('/', async (req, res) => {
+// Create product (with image upload to Cloudinary)
+router.post('/', upload.single('image'), async (req, res) => {
     try {
         const {
             name,
@@ -232,7 +274,6 @@ router.post('/', async (req, res) => {
             cost,
             stock,
             sku,
-            image,
             images,
             category,
             subCategory,
@@ -302,6 +343,56 @@ router.post('/', async (req, res) => {
             }
         }
 
+        // Handle image upload to Cloudinary
+        let imageUrl = 'product.jpg';
+        let cloudinaryImages = [];
+
+        if (req.file) {
+            try {
+                // Upload the file from temp storage to Cloudinary
+                const result = await cloudinary.uploader.upload(req.file.path, {
+                    folder: 'kcp_organics/products',
+                    resource_type: 'image',
+                    use_filename: true,
+                    unique_filename: true,
+                });
+                imageUrl = result.secure_url;
+                console.log(`✅ Product image uploaded to Cloudinary: ${imageUrl}`);
+
+                // Clean up temp file after upload
+                try {
+                    fs.unlinkSync(req.file.path);
+                } catch (e) {
+                    // Ignore cleanup errors
+                }
+            } catch (cloudErr) {
+                console.error(`❌ Cloudinary upload failed: ${cloudErr.message}`);
+                // Fallback: save the temp file path as local URL
+                imageUrl = `/uploads/temp/${req.file.filename}`;
+            }
+        } else if (safeImages.length > 0) {
+            // If no file but images array provided, check if any are local paths needing upload
+            for (const img of safeImages) {
+                if (img.startsWith('/uploads/') || img.startsWith('http')) {
+                    cloudinaryImages.push(img);
+                } else {
+                    cloudinaryImages.push(img);
+                }
+            }
+            imageUrl = safeImages[0];
+        }
+
+        // Also upload any additional images from the images array if they are local file paths
+        if (safeImages.length > 0 && req.file) {
+            // The main image is already set from req.file above
+            // For additional images, we keep the provided URLs as-is
+            cloudinaryImages = safeImages;
+        } else if (safeImages.length > 0) {
+            cloudinaryImages = safeImages;
+        } else if (req.file) {
+            cloudinaryImages = [imageUrl];
+        }
+
         const newProduct = new Product({
             name,
             slug: productSlug,
@@ -313,8 +404,8 @@ router.post('/', async (req, res) => {
             cost: cost ? Number(cost) : undefined,
             stock: Number(stock) || 0,
             sku: sku || undefined,
-            image: image || (safeImages[0] || 'product.jpg'),
-            images: safeImages,
+            image: imageUrl,
+            images: cloudinaryImages,
             category: safeCategory,
             subCategory,
             tags: safeTags,

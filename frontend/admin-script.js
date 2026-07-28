@@ -231,16 +231,22 @@ async function loadProducts() {
                             ${groupedProducts[category].map(product => {
                 // Construct image URL with cache-busting using product's updatedAt
                 let imageUrl = product.image;
-                if (!imageUrl.startsWith('http')) {
-                    if (imageUrl.startsWith('/uploads')) {
-                        imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
-                    } else {
-                        imageUrl = `${IMAGE_BASE_URL}/uploads/products/${imageUrl}`;
-                    }
+                // If it's already a Cloudinary URL (https), use it directly
+                if (imageUrl && imageUrl.startsWith('http')) {
+                    // Already a full URL (Cloudinary or otherwise) - use as is
+                } else if (imageUrl && imageUrl.startsWith('/uploads')) {
+                    imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
+                } else if (imageUrl) {
+                    imageUrl = `${IMAGE_BASE_URL}/uploads/products/${imageUrl}`;
+                } else {
+                    imageUrl = `${IMAGE_BASE_URL}/uploads/products/product.jpg`;
                 }
                 // Use product's updatedAt time for cache-busting (unique per update)
-                const cacheKey = product.updatedAt ? new Date(product.updatedAt).getTime() : product._id;
-                imageUrl += `?cache=${cacheKey}`;
+                // Only add cache-buster for local URLs, not Cloudinary
+                if (!imageUrl.includes('cloudinary.com')) {
+                    const cacheKey = product.updatedAt ? new Date(product.updatedAt).getTime() : product._id;
+                    imageUrl += `?cache=${cacheKey}`;
+                }
 
                 // Escape product name for HTML
                 const escapedName = product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -596,9 +602,13 @@ async function uploadImage(file) {
         const result = await response.json();
         console.log('✅ Upload result:', result);
 
-        if (result.success && result.imageUrl) {
-            uploadedImageUrl = result.imageUrl;
+        if (result.success && (result.imageUrl || result.cloudinaryUrl)) {
+            // Prefer Cloudinary URL for permanent storage, fallback to local URL
+            uploadedImageUrl = result.cloudinaryUrl || result.permanentUrl || result.imageUrl;
             console.log('✅ Image URL stored:', uploadedImageUrl);
+            if (result.cloudinaryUrl) {
+                console.log('☁️ Cloudinary permanent URL:', result.cloudinaryUrl);
+            }
 
             // Show success message
             const uploadStatus = document.getElementById('uploadStatus');
@@ -803,16 +813,20 @@ async function editProduct(productId) {
             if (product.image && product.image !== 'product.jpg') {
                 let imageUrl = product.image;
                 // Ensure full URL for image display
-                if (!imageUrl.startsWith('http')) {
-                    if (imageUrl.startsWith('/uploads')) {
-                        imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
-                    } else {
-                        imageUrl = `${IMAGE_BASE_URL}/uploads/products/${imageUrl}`;
-                    }
+                if (imageUrl && imageUrl.startsWith('http')) {
+                    // Already a full URL (Cloudinary or otherwise) - use as is
+                } else if (imageUrl && imageUrl.startsWith('/uploads')) {
+                    imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
+                } else if (imageUrl) {
+                    imageUrl = `${IMAGE_BASE_URL}/uploads/products/${imageUrl}`;
+                } else {
+                    imageUrl = `${IMAGE_BASE_URL}/uploads/products/product.jpg`;
                 }
-                // Use product's updatedAt time for cache-busting (unique per update)
-                const cacheKey = product.updatedAt ? new Date(product.updatedAt).getTime() : product._id;
-                imageUrl += `?cache=${cacheKey}`;
+                // Only add cache-buster for local URLs, not Cloudinary
+                if (!imageUrl.includes('cloudinary.com')) {
+                    const cacheKey = product.updatedAt ? new Date(product.updatedAt).getTime() : product._id;
+                    imageUrl += `?cache=${cacheKey}`;
+                }
                 document.getElementById('previewImg').src = imageUrl;
                 document.getElementById('imagePreview').style.display = 'block';
                 console.log('📸 Preview image URL:', imageUrl);
