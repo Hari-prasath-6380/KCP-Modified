@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -158,9 +159,10 @@
         .product-main-image {
             width: 100%;
             height: 400px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 12px;
             background: #f5f5f5;
+            image-rendering: auto;
         }
 
         .product-info-section h1 {
@@ -344,6 +346,19 @@
             color: #666;
             line-height: 1.8;
             margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .product-description-section ul,
+        .product-description-section ol {
+            color: #666;
+            line-height: 1.8;
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .product-description-section li {
+            margin-bottom: 8px;
         }
 
         .reviews-section {
@@ -498,8 +513,9 @@
             overflow: hidden;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             padding: 0;
-            display: none; /* hidden until video loads */
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            display: none;
+            /* hidden until video loads */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
 
         .recipe-video-section.has-video {
@@ -537,7 +553,7 @@
         }
 
         .recipe-video-header .recipe-title-group p {
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 13px;
             margin: 0;
         }
@@ -570,32 +586,56 @@
         }
 
         .recipe-video-desc {
-            color: rgba(255,255,255,0.75);
+            color: rgba(255, 255, 255, 0.75);
             font-size: 14px;
             line-height: 1.6;
             margin-top: 14px;
             padding: 12px 16px;
-            background: rgba(255,255,255,0.07);
+            background: rgba(255, 255, 255, 0.07);
             border-radius: 8px;
             border-left: 3px solid #e74c3c;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .recipe-video-header { padding: 16px 16px 12px; }
-            .recipe-video-body { padding: 0 16px 18px; }
-            .recipe-video-player iframe { height: 220px; }
-            .recipe-video-player video { max-height: 260px; }
+            .recipe-video-header {
+                padding: 16px 16px 12px;
+            }
+
+            .recipe-video-body {
+                padding: 0 16px 18px;
+            }
+
+            .recipe-video-player iframe {
+                height: 220px;
+            }
+
+            .recipe-video-player video {
+                max-height: 260px;
+            }
         }
 
         @media (max-width: 480px) {
-            .recipe-video-header { gap: 10px; }
-            .recipe-video-header .icon-badge { width: 36px; height: 36px; }
-            .recipe-video-header .recipe-title-group h3 { font-size: 15px; }
-            .recipe-video-player iframe { height: 190px; }
+            .recipe-video-header {
+                gap: 10px;
+            }
+
+            .recipe-video-header .icon-badge {
+                width: 36px;
+                height: 36px;
+            }
+
+            .recipe-video-header .recipe-title-group h3 {
+                font-size: 15px;
+            }
+
+            .recipe-video-player iframe {
+                height: 190px;
+            }
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -616,9 +656,10 @@
             <div class="user-dropdown" id="userDropdown" style="display: none;">
                 <span id="userName" class="dropdown-toggle">Welcome, User</span>
                 <div class="dropdown-menu">
-                  <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
-                  <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
-                  <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="track-order.html"><i class="fas fa-truck"></i> Track Status</a>
+                    <a href="#" onclick="openMyOrders(event)"><i class="fas fa-history"></i> My Orders</a>
+                    <a href="#" onclick="logoutUser(event)" class="logout-item"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
                 </div>
             </div>
             <div class="navbar-cart" onclick="toggleCart()">
@@ -633,7 +674,9 @@
 
     <!-- Back Button -->
     <div style="padding: 20px 40px;">
-        <a href="products.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; transition: background-color 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.backgroundColor='#2e7d32'" onmouseout="this.style.backgroundColor='#4CAF50'">
+        <a href="products.html"
+            style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; transition: background-color 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+            onmouseover="this.style.backgroundColor='#2e7d32'" onmouseout="this.style.backgroundColor='#4CAF50'">
             <i class="fas fa-arrow-left"></i>
             <span>Back to Products</span>
         </a>
@@ -645,7 +688,9 @@
         <div class="product-detail-header">
             <!-- Image Section -->
             <div class="product-image-section">
-                <img id="mainImage" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23999999' font-family='Arial' font-size='18'>Loading Image...</text></svg>" alt="Product" class="product-main-image">
+                <img id="mainImage"
+                    src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23999999' font-family='Arial' font-size='18'>Loading Image...</text></svg>"
+                    alt="Product" class="product-main-image">
             </div>
 
             <!-- Info Section -->
@@ -751,8 +796,75 @@
         </div>
     </div>
 
-    <footer style="background: #1a1a1a; color: white; padding: 40px 20px; text-align: center; margin-top: 60px;">
-        <p>&copy; 2024 KCP Organics. All rights reserved. Bringing organic goodness to your doorstep.</p>
+    <!-- ========== FOOTER ========== -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section about-section">
+                <div class="footer-logo">
+                    <h3>🌿 KCP ORGANICS</h3>
+                </div>
+                <p>Bringing nature's best to your table. We are committed to providing 100% organic, chemical-free products
+                    directly from trusted farmers to your home.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/share/17etRdJUJX/" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/kcp_organic?igsh=MW9sdmxibjF4c2ozeQ==" title="Instagram"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="home.html"><i class="fas fa-angle-right"></i> Home</a></li>
+                    <li><a href="shop.html"><i class="fas fa-angle-right"></i> Shop</a></li>
+                    <li><a href="about-us.html"><i class="fas fa-angle-right"></i> About Us</a></li>
+                    <li><a href="contact.html"><i class="fas fa-angle-right"></i> Contact</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Our Products</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Organic Rice</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Fresh Vegetables</a></li>
+                    <li><a href="honey_products.html"><i class="fas fa-angle-right"></i> Natural Honey</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Sweeteners</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right"></i> Organic Oils</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <ul class="footer-contact">
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Organic Lane, Green Valley,<br>Tamil Nadu, India - 600001</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span>+91 8883566777</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>kcporganicsonlinestore@gmail.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <p>&copy; 2026 KCP Organics. All Rights Reserved. | Made with 💚 for a healthier world</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Refund Policy</a>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script>
@@ -760,21 +872,21 @@
         function getBaseUrl() {
             const hostname = window.location.hostname;
             const port = window.location.port;
-            
+
             // For localhost or 127.0.0.1, use local backend
             if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.')) {
                 return port ? `http://${hostname}:5000` : 'http://localhost:5000';
             }
-            
+
             // For deployed environments, use production URL
-                return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
-            
+            return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
+
             // For custom domains, try to construct the backend URL
             if (hostname.includes('kcporganics') || hostname.includes('kcp-organics')) {
                 const protocol = window.location.protocol;
                 return `${protocol}//${hostname}:5000`;
             }
-            
+
             // Default fallback
             return (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin);
         }
@@ -839,10 +951,10 @@
         }
 
         function renderRecipeVideo(video) {
-            const section  = document.getElementById('recipeVideoSection');
-            const player   = document.getElementById('recipeVideoPlayer');
-            const titleEl  = document.getElementById('recipeVideoTitle');
-            const descEl   = document.getElementById('recipeVideoDesc');
+            const section = document.getElementById('recipeVideoSection');
+            const player = document.getElementById('recipeVideoPlayer');
+            const titleEl = document.getElementById('recipeVideoTitle');
+            const descEl = document.getElementById('recipeVideoDesc');
 
             if (!video.videoUrl) return;
 
@@ -850,7 +962,7 @@
 
             const url = video.videoUrl;
             const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
-            const isVimeo   = url.includes('vimeo.com');
+            const isVimeo = url.includes('vimeo.com');
 
             if (isYoutube || isVimeo) {
                 // Embed via iframe (YouTube / Vimeo)
@@ -890,7 +1002,7 @@
         function displayProductDetail(product) {
             currentProduct = product; // Store product data globally
             document.getElementById('productName').textContent = product.name;
-            
+
             // Set up image with error handling
             const mainImg = document.getElementById('mainImage');
             const imageUrl = getProductImageUrl(product.image);
@@ -899,15 +1011,15 @@
                 constructedUrl: imageUrl,
                 baseUrl: IMAGE_BASE_URL
             });
-            
+
             // Add error handler for image loading
             mainImg.onerror = () => {
                 handleImageError(mainImg, product.image);
             };
-            
+
             mainImg.src = imageUrl;
             mainImg.alt = product.name;
-            document.getElementById('productDescription').textContent = product.description;
+            document.getElementById('productDescription').innerHTML = product.description;
             document.getElementById('productStars').textContent = generateStars(product.averageRating);
             document.getElementById('ratingCount').textContent = `${product.averageRating || 0} out of 5`;
             document.getElementById('totalReviews').textContent = `${product.totalReviews || 0} reviews`;
@@ -916,7 +1028,7 @@
             const salePrice = product.price || 0;
             const originalPrice = product.originalPrice || product.price || 0;
             document.getElementById('salePrice').textContent = `₹${salePrice.toFixed(2)}`;
-            
+
             if (originalPrice > salePrice) {
                 document.getElementById('originalPrice').style.display = 'inline';
                 document.getElementById('originalPrice').textContent = `₹${originalPrice.toFixed(2)}`;
@@ -990,10 +1102,10 @@
         // Function to handle image load errors with fallback URLs
         function handleImageError(imgElement, imagePath) {
             console.warn('❌ Image failed to load:', imgElement.src);
-            
+
             const originalPath = imagePath;
             const genericPlaceholder = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e0e0e0%22/><text x=%2250%25%22 y=%2230%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23666666%22 font-family=%22Arial%22 font-size=%2214%22 font-weight=%22bold%22>Image Not Available</text><text x=%2250%25%22 y=%2270%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999999%22 font-family=%22Arial%22 font-size=%2212%22>' + encodeURIComponent(imagePath || 'Unknown') + '</text></svg>';
-            
+
             // Try fallback to production URL if we're on localhost
             if (IMAGE_BASE_URL.includes('localhost') || IMAGE_BASE_URL.includes('127.0.0.1')) {
                 const prodUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + (imagePath.startsWith('/') ? imagePath : `/uploads/products/${imagePath}`);
@@ -1001,7 +1113,7 @@
                     console.log('🔄 Trying production URL:', prodUrl);
                     triedImageUrls.add(prodUrl);
                     imgElement.src = prodUrl;
-                    imgElement.onerror = function() { tryFrontendImageFallback(this, imagePath); };
+                    imgElement.onerror = function () { tryFrontendImageFallback(this, imagePath); };
                     return;
                 }
             }
@@ -1017,7 +1129,7 @@
             if (imagePath.includes('/')) {
                 filename = imagePath.split('/').pop();
             }
-            
+
             // Extract base filename without timestamp (e.g., "coconut_oil-1775486953994-547912330.webp" → "coconut_oil.webp")
             let baseFilename = filename;
             const timestampPattern = /-\d{13}-\d{9}\./;
@@ -1025,14 +1137,14 @@
                 baseFilename = filename.replace(timestampPattern, '.');
                 console.log('🔍 Extracted base filename:', baseFilename, 'from:', filename);
             }
-            
+
             // Try with base filename first (without timestamp)
             const frontendUrl = './' + baseFilename;
             if (!triedImageUrls.has(frontendUrl)) {
                 console.log('🔄 Trying frontend image (base):', frontendUrl);
                 triedImageUrls.add(frontendUrl);
                 imgElement.src = frontendUrl;
-                imgElement.onerror = function() { 
+                imgElement.onerror = function () {
                     // If base filename fails, try the full filename with timestamp
                     tryFullFilenameVariant(this, filename, baseFilename);
                 };
@@ -1050,10 +1162,10 @@
                 console.log('🔄 Trying frontend image (full):', frontendUrl);
                 triedImageUrls.add(frontendUrl);
                 imgElement.src = frontendUrl;
-                imgElement.onerror = function() { usePlaceholder(this); };
+                imgElement.onerror = function () { usePlaceholder(this); };
                 return;
             }
-            
+
             // Use placeholder as last resort
             usePlaceholder(imgElement);
         }
@@ -1157,28 +1269,28 @@
                     reviewerName: userName
                 })
             })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    showToast('✅ Review submitted successfully!');
-                    document.getElementById('reviewTitle').value = '';
-                    document.getElementById('reviewComment').value = '';
-                    document.getElementById('selectedRating').value = '0';
-                    document.querySelectorAll('.star-rating').forEach(s => s.classList.remove('active'));
-                    loadProductReviews();
-                } else {
-                    showToast('❌ ' + (data.message || 'Error submitting review'));
-                }
-            })
-            .catch(error => {
-                console.error('Review submission error:', error);
-                showToast('❌ Error submitting review: ' + error.message);
-            });
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        showToast('✅ Review submitted successfully!');
+                        document.getElementById('reviewTitle').value = '';
+                        document.getElementById('reviewComment').value = '';
+                        document.getElementById('selectedRating').value = '0';
+                        document.querySelectorAll('.star-rating').forEach(s => s.classList.remove('active'));
+                        loadProductReviews();
+                    } else {
+                        showToast('❌ ' + (data.message || 'Error submitting review'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Review submission error:', error);
+                    showToast('❌ Error submitting review: ' + error.message);
+                });
         }
 
         function loadProductReviews() {
@@ -1204,7 +1316,7 @@
 
         function displayReviews(reviews) {
             const reviewsList = document.getElementById('reviewsList');
-            
+
             if (reviews.length === 0) {
                 reviewsList.innerHTML = '<p style="text-align: center; color: #999;">No reviews yet. Be the first to review!</p>';
                 return;
@@ -1238,12 +1350,12 @@
             } else {
                 const userName = localStorage.getItem('userName');
                 const userId = localStorage.getItem('userId') || localStorage.getItem('token');
-                
+
                 const loginLink = document.getElementById('loginLink');
                 const signupLink = document.getElementById('signupLink');
                 const userDropdown = document.getElementById('userDropdown');
                 const welcomeText = document.getElementById('userName');
-                
+
                 if (userName || userId) {
                     if (loginLink) loginLink.style.display = 'none';
                     if (signupLink) signupLink.style.display = 'none';
@@ -1264,7 +1376,7 @@
             event.preventDefault();
             const userId = localStorage.getItem('userId');
             const userName = localStorage.getItem('userName');
-            
+
             if (!userId || !userName) {
                 alert('Please login to view your orders');
                 window.location.href = 'login.html';
@@ -1288,9 +1400,9 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
-            
+
             // Fetch user orders
             const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
             fetch(`${API_BASE_URL}/orders/user/${userId}`)
@@ -1360,11 +1472,11 @@
         async function downloadReceiptPDF(orderId) {
             const userId = localStorage.getItem('userId');
             const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : window.location.origin) + '/api';
-            
+
             try {
                 const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
                 const data = await response.json();
-                
+
                 if (data.success) {
                     const order = data.data;
                     const PDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
@@ -1372,59 +1484,59 @@
                         alert('PDF library not loaded. Please refresh the page.');
                         return;
                     }
-                    
+
                     const doc = new PDFClass('p', 'mm', 'a4');
                     const pageWidth = doc.internal.pageSize.getWidth();
                     let y = 15;
-                    
+
                     // Header
                     doc.setFontSize(18);
                     doc.setTextColor(46, 125, 50);
                     doc.setFont(undefined, 'bold');
                     doc.text('KCP ORGANICS', pageWidth / 2, y, { align: 'center' });
-                    
+
                     y += 6;
                     doc.setFontSize(10);
                     doc.setTextColor(100, 100, 100);
                     doc.setFont(undefined, 'normal');
                     doc.text('100% Organic | Farm Fresh to Your Doorstep', pageWidth / 2, y, { align: 'center' });
-                    
+
                     y += 4;
                     doc.setFontSize(9);
                     doc.text('Contact: +91 98765 43210 | Email: support@kcporganics.com', pageWidth / 2, y, { align: 'center' });
-                    
+
                     // Horizontal line
                     y += 6;
                     doc.setDrawColor(46, 125, 50);
                     doc.setLineWidth(0.5);
                     doc.line(15, y, pageWidth - 15, y);
-                    
+
                     // Invoice Details Section
                     y += 8;
                     doc.setFontSize(11);
                     doc.setTextColor(0, 0, 0);
                     doc.setFont(undefined, 'bold');
                     doc.text('INVOICE DETAILS', 15, y);
-                    
+
                     y += 6;
                     doc.setFontSize(9);
                     doc.setFont(undefined, 'normal');
                     const orderIdFormatted = order._id.substring(0, 8).toUpperCase();
                     const tax = Math.round(order.totalAmount * 0.05 / 1.05);
                     const subtotal = order.totalAmount - tax;
-                    
+
                     doc.text(`Order ID: ORD-${orderIdFormatted}-${new Date(order.createdAt).getTime().toString().slice(-6)}`, 15, y);
                     y += 5;
                     doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString('en-IN')}`, 15, y);
                     y += 5;
                     doc.text(`Payment Method: ${order.paymentMethod || 'COD'}`, 15, y);
-                    
+
                     // Bill To Section
                     y += 8;
                     doc.setFont(undefined, 'bold');
                     doc.setFontSize(10);
                     doc.text('BILL TO', 15, y);
-                    
+
                     y += 5;
                     doc.setFont(undefined, 'normal');
                     doc.setFontSize(9);
@@ -1435,7 +1547,7 @@
                     doc.text(`${order.phone || order.email || ''}`, 15, y);
                     y += 4;
                     doc.text(`Email: ${order.email || ''}`, 15, y);
-                    
+
                     // Items Table
                     y += 8;
                     const tableStartY = y;
@@ -1447,18 +1559,18 @@
                         unitPrice: 25,
                         total: 25
                     };
-                    
+
                     const col1 = 15;
                     const col2 = col1 + colWidths.sno;
                     const col3 = col2 + colWidths.productId;
                     const col4 = col3 + colWidths.productName;
                     const col5 = col4 + colWidths.qty;
                     const col6 = col5 + colWidths.unitPrice;
-                    
+
                     // Table header background
                     doc.setFillColor(46, 125, 50);
                     doc.rect(col1 - 2, y - 3, pageWidth - 30, 6, 'F');
-                    
+
                     // Table headers
                     doc.setTextColor(255, 255, 255);
                     doc.setFont(undefined, 'bold');
@@ -1469,12 +1581,12 @@
                     doc.text('Qty', col4 + 2, y);
                     doc.text('Unit Price', col5 + 2, y);
                     doc.text('Total', col6 + 5, y);
-                    
+
                     y += 7;
                     doc.setTextColor(0, 0, 0);
                     doc.setFont(undefined, 'normal');
                     doc.setFontSize(8);
-                    
+
                     // Table rows
                     order.products.forEach((item, index) => {
                         const itemTotal = (item.price * item.quantity).toFixed(2);
@@ -1485,62 +1597,62 @@
                         doc.text(`₹${item.price}`, col5 + 2, y);
                         doc.text(`₹${itemTotal}`, col6 + 5, y);
                         y += 5;
-                        
+
                         if (y > 250) {
                             doc.addPage();
                             y = 15;
                         }
                     });
-                    
+
                     // Totals Section
                     y += 3;
                     doc.setDrawColor(46, 125, 50);
                     doc.line(col1 - 2, y, pageWidth - 15, y);
-                    
+
                     y += 6;
                     doc.setFont(undefined, 'normal');
                     doc.setFontSize(9);
                     doc.setTextColor(0, 0, 0);
-                    
+
                     const subtotalAmount = subtotal.toFixed(2);
                     const taxAmount = tax.toFixed(2);
                     const totalAmount = order.totalAmount.toFixed(2);
-                    
+
                     // Align right for amounts
                     const amountColX = pageWidth - 30;
                     const labelColX = col3;
-                    
+
                     doc.text('Subtotal:', labelColX, y);
                     doc.text(`₹${subtotalAmount}`, amountColX, y, { align: 'right' });
-                    
+
                     y += 4;
                     doc.text('Tax (5%):', labelColX, y);
                     doc.text(`₹${taxAmount}`, amountColX, y, { align: 'right' });
-                    
+
                     y += 6;
                     doc.setFont(undefined, 'bold');
                     doc.setFontSize(10);
                     doc.setTextColor(46, 125, 50);
                     doc.text('Total Amount:', labelColX, y);
                     doc.text(`₹${totalAmount}`, amountColX, y, { align: 'right' });
-                    
+
                     // Footer
                     y = doc.internal.pageSize.getHeight() - 25;
                     doc.setDrawColor(200, 200, 200);
                     doc.line(15, y, pageWidth - 15, y);
-                    
+
                     y += 4;
                     doc.setFontSize(8);
                     doc.setTextColor(100, 100, 100);
                     doc.setFont(undefined, 'normal');
                     doc.text('Thank you for shopping with KCP Organics!', pageWidth / 2, y, { align: 'center' });
-                    
+
                     y += 3;
                     doc.text(`You can track your order using Order ID and Mobile Number at www.kcporganics.com`, pageWidth / 2, y, { align: 'center' });
-                    
+
                     y += 3;
                     doc.text('This is a computer generated invoice. No signature required.', pageWidth / 2, y, { align: 'center' });
-                    
+
                     const fileName = `Invoice_KCP_${orderIdFormatted}_${new Date().getTime()}.pdf`;
                     doc.save(fileName);
                 } else {
@@ -1578,6 +1690,7 @@
         }
     </script>
     <script src="site.js
-  <script src="navbar-enhancements.js"></script>"></script>
+  <script src=" navbar-enhancements.js"></script>"></script>
 </body>
+
 </html>

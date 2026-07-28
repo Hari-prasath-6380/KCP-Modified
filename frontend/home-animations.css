@@ -378,7 +378,6 @@ h1[style*="font-size: 36px"]::after {
 /* All section H2s animate in */
 .organic-header h2,
 .mv-title,
-.organic-poster-section h2,
 .reviews-section h2,
 .newsletter-content h2,
 .recipe-videos-section h2,
@@ -393,6 +392,20 @@ h1[style*="font-size: 36px"]::after {
     -webkit-text-fill-color: transparent;
     color: transparent;
     animation: shimmer 6s linear infinite;
+}
+
+/* Poster heading - keep solid white for readability */
+.organic-poster-section h2 {
+    position: relative;
+    display: inline-block;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    animation: none;
+    text-shadow: none;
+    font-weight: 700;
 }
 
 /* ============================================
@@ -974,8 +987,6 @@ html {
     height: 58px;
     width: auto;
     display: block;
-    transition: height 0.3s ease, transform 0.4s ease, filter 0.3s ease;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
     background: transparent !important;
     border: none !important;
     outline: none !important;
@@ -984,8 +995,8 @@ html {
 }
 
 .logo:hover img {
-    transform: scale(1.05) rotate(-2deg);
-    filter: drop-shadow(0 4px 10px rgba(221, 97, 14, 0.35));
+    transform: none !important;
+    filter: none !important;
 }
 
 .logo a {
